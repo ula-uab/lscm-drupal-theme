@@ -1,0 +1,5 @@
+name: Preview
+slots:
+  date: '14'
+  month: Oct
+  content: '12:34 - Lorem ipsum dolor sit amet.'

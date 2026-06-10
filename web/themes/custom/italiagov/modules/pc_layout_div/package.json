@@ -1,0 +1,16 @@
+
+    {
+      "name": "layout_div",
+      "version": "1.0.0",
+      "description": "",
+      "main": "index.js",
+      "scripts": {
+        "compile": "dart-sass --no-source-map css/style.scss css/style.css"
+      },
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "devDependencies": {
+        "dart-sass": "^1.25.0"
+      }
+    }

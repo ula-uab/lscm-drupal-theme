@@ -1,0 +1,11 @@
+name: 'Paragraph Component: layout_div'
+description: 'A module for this Paragraph Component'
+package: Paragraphs
+type: module
+version: '1.0'
+core_version_requirement: '^11'
+dependencies:
+  - field_group:field_group
+  - imce:imce
+  - paragraphs:paragraphs
+  - bootstrap_italia:bootstrap_italia_paragraph

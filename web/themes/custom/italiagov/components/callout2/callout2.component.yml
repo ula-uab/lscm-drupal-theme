@@ -1,0 +1,86 @@
+name: 'Callout 2'
+description: 'Callouts can be used to highlight certain parts of the text that require special attention. They may contain error messages, warnings, tips, etc. https://italia.github.io/bootstrap-italia/docs/componenti/callout/'
+variants:
+  default:
+    title: Default
+    description: 'Basic callout. https://italia.github.io/bootstrap-italia/docs/componenti/callout/'
+  highlight:
+    title: Highlight
+    description: 'Callout with border only on the left side. https://italia.github.io/bootstrap-italia/docs/componenti/callout/#callout-highlights'
+  more:
+    title: More
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/callout/#callout-approfondimento'
+slots:
+  title:
+    title: 'Title (raw text)'
+    description: 'Callout title. Raw text.'
+  content:
+    title: 'Content (field)'
+    description: 'Callout content. Wrap your content with <p> tag.'
+  callout_type:
+    title: 'Type (raw text)'
+    description: 'Callout type: "success", "warning", "danger", "important", "note", "default". Raw text.'
+  more_content:
+    title: 'More content (field, only more variant)'
+    description: 'Callout more content. Wrap your content with <p> tag.'
+  more_call_to_action_url:
+    title: 'Call to action link (eg. /node/id, raw text).'
+    description: 'Enter a url in raw text format. Only more variant.'
+  more_call_to_action_label:
+    title: 'Call to action label (raw text).'
+    description: 'Enter a string in raw text format. Only more variant.'
+  more_call_to_action_icon:
+    title: 'Call to action icon (it-name, raw text).'
+    description: 'Enter the icon name format in raw text. Only more variant.'
+  custom_icon:
+    title: 'Custom icon (raw text)'
+    description: 'Choose a custom icon. Icon name format in Raw text. Leave blank for automatic icon.'
+props:
+  type: object
+  properties:
+    default_type:
+      title: 'Default type'
+      description: 'Choose default type.'
+      type: string
+      enum:
+        - default
+        - success
+        - warning
+        - danger
+        - important
+        - note
+      'meta:enum':
+        default: Default
+        success: Success
+        warning: Warning
+        danger: Danger
+        important: Important
+        note: Note
+    default_call_to_action_label:
+      title: 'Default call to action label'
+      description: 'Choose default label (only more variant).'
+      type: string
+    default_call_to_action_icon:
+      title: 'Default all to action icon'
+      description: 'Choose default icon (only more variant).'
+      type: string
+    max_width:
+      title: 'Max width'
+      description: 'Choose max width.'
+      type: string
+      enum:
+        - full
+        - col-md-6
+        - col-md-8
+        - col-lg-6
+        - col-lg-8
+        - col-xl-6
+        - col-xl-8
+      'meta:enum':
+        full: 'All available space'
+        col-md-6: 'Half form medium breakpoint (col-md-6)'
+        col-md-8: 'Two-thirds form medium breakpoint (col-md-8)'
+        col-lg-6: 'Half form large breakpoint (col-lg-6)'
+        col-lg-8: 'Two-thirds form large breakpoint (col-lg-8)'
+        col-xl-6: 'Half form extra-large breakpoint (col-xl-6)'
+        col-xl-8: 'Two-thirds form extra-large breakpoint (col-xl-8)'

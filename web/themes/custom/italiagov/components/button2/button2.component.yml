@@ -1,0 +1,61 @@
+name: 'Button 2'
+description: 'Buttons to be used as needed. It includes options for color. https://italia.github.io/bootstrap-italia/docs/componenti/buttons/'
+variants:
+  link:
+    title: Link
+    description: 'Button with tag <a>'
+  input:
+    title: Input
+    description: 'Button with tag <input>'
+  button:
+    title: Bottone
+    description: 'Button with tag <button>'
+slots:
+  button_text:
+    title: 'Button text'
+    description: 'Button text.'
+  button_href:
+    title: 'Button link'
+    description: 'Button link for link variant.'
+props:
+  type: object
+  properties:
+    color:
+      title: 'Color variants'
+      type: string
+      enum:
+        - primary
+        - secondary
+        - success
+        - danger
+        - warning
+        - info
+        - light
+        - dark
+        - outline-primary
+        - outline-secondary
+        - outline-success
+        - outline-danger
+        - outline-warning
+        - outline-info
+        - outline-light
+        - outline-dark
+        - link
+      'meta:enum':
+        primary: Primary
+        secondary: Secondary
+        success: Success
+        danger: Danger
+        warning: Warning
+        info: Info
+        light: Light
+        dark: Dark
+        outline-primary: Outline Primary
+        outline-secondary: Outline Secondary
+        outline-success: Outline Success
+        outline-danger: Outline Danger
+        outline-warning: Outline Warning
+        outline-info: Outline Info
+        outline-light: Outline Light
+        outline-dark: Outline Dark
+        link: Link

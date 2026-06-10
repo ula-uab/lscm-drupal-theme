@@ -1,0 +1,23 @@
+{% set _button_label = button_label|default('') %}
+{% set _button_attributes = button_attributes %}
+{% set _collapse_body = collapse_body %}
+{% set _id = id|default('modal-'~random()) %}
+
+{% if _button_attributes is empty %}
+  {% set _button_attributes = create_attribute() %}
+{% endif %}
+{% set _button_attributes = _button_attributes
+  .addClass("btn")
+  .setAttribute('type', 'button')
+  .setAttribute('data-bs-toggle', 'collapse')
+  .setAttribute('data-bs-target', '#'~_id)
+  .setAttribute('aria-expanded', 'false')
+  .setAttribute('aria-controls', _id)
+%}
+
+<button {{ _button_attributes }}>
+  _button_label
+</button>
+<div class="collapse" id={{ _id }}>
+  {{ _collapse_body }}
+</div>

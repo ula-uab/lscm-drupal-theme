@@ -1,0 +1,105 @@
+
+{% apply spaceless %}
+  <div class="shadow p-4 mb-3">
+    {% set _calendar_button_text = ac_calendar_button_text|render|trim|default("Download") %}
+    {% set _calendar_button_link = ac_calendar_button_link|render|striptags|trim|default("#") %}
+    <div class="row mb-2">
+      <div class="col-12 col-lg-9 h3">
+        {{ ac_header }}
+      </div>
+      <div class="col-12 col-lg-3 text-center text-lg-end">
+        <a class="btn btn-outline-success" href={{ _calendar_button_link }}>{{ _calendar_button_text }}</a>
+      </div>
+    </div>
+    <h4 class="border rounded-3 p-1 px-2 bg-secondary text-light">
+      Welcome Session
+    </h4>
+    <div style="
+      display: grid;
+      grid-template-columns: 0fr 1fr;
+">
+      <i class="mt-1 mx-2 fa-regular fa-calendar"></i>
+      {{ ac_welcome_session_date }}
+      <i class="mt-1 mx-2 fa-solid fa-location-dot"></i>
+      {{ ac_welcome_session_location }}
+    </div>
+    <h4 class="border rounded-3 p-1 px-2 bg-secondary text-light">
+      Registration
+    </h4>
+    <div class="mb-2" style="
+      display: grid;
+      grid-template-columns: 1fr 0fr 1fr;
+">
+      <div>
+        <h5 class="border-bottom">In Person</h5>
+        <div style="
+              display: grid;
+              grid-template-columns: 0fr 1fr;
+        ">
+          <i class="mt-1 mx-2 fa-regular fa-calendar"></i>
+          {{ ac_registration_date }}
+        </div>
+        {{ ac_registration_foot }}
+      </div>
+      <div class="border mx-3"></div>
+      <div>
+        <h5 class="border-bottom">Online</h5>
+        {{ ac_ol_reg_foot }}
+      </div>
+    </div>
+
+    <h4 class="border rounded-3 p-1 px-2 bg-secondary text-light">
+      Lectures Start
+    </h4>
+    <div class="row">
+      {% set has_1st = ac_lecture_start_1st_sem|render|striptags|trim|length ? 1 : 0 %}
+      {% set has_3rd_rtu = ac_lecture_start_3rd_sem_rtu|render|striptags|trim|length ? 1 : 0 %}
+      {% set has_3rd_uasw = ac_lecture_start_3rd_sem_uasw|render|striptags|trim|length ? 1 : 0 %}
+
+      {% set n_cols = has_1st + has_3rd_rtu + has_3rd_uasw %}
+
+      {% set col_attributes = create_attribute()
+        .addClass("col-12")
+      %}
+      {% if n_cols == 2 %}
+        {% set col_attributes = col_attributes.addClass("col-md-6") %}
+      {% elseif n_cols == 3 %}
+        {% set col_attributes = col_attributes.addClass("col-lg-4") %}
+      {% endif %}
+
+      {% set button_text = ac_schedule_button_text|render|trim|default("Schedule") %}
+      {% set link_1st = ac_schedule_1st_sem|render|striptags|trim|default("#") %}
+      {% set link_3rd_rtu = ac_schedule_3rd_sem_rtu|render|striptags|trim|default("#") %}
+      {% set link_3rd_uas = ac_schedule_3rd_sem_uasw|render|striptags|trim|default("#") %}
+
+      {% if has_1st %}
+        <div {{ col_attributes }}>
+          <h5 class="border-bottom">1st Semester</h5>
+          {{ ac_lecture_start_1st_sem }}
+          <div class="text-align-center">
+            <a class="btn btn-outline-primary" href={{ link_1st }}>{{ button_text }}</a>
+          </div>
+        </div>
+      {% endif %}
+      {% if has_3rd_rtu %}
+        <div {{ col_attributes }}>
+          <h5 class="border-bottom">3rd Semester at RTU</h5>
+          {{ ac_lecture_start_3rd_sem_rtu }}
+          <div class="text-align-center">
+            <a class="btn btn-outline-primary" href={{ link_3rd_rtu }}>{{ button_text }}</a>
+          </div>
+        </div>
+      {% endif %}
+      {% if has_3rd_uasw %}
+        <div {{ col_attributes }}>
+          <h5 class="border-bottom">3rd Semester at UASW</h5>
+          {{ ac_lecture_start_3rd_sem_uasw }}
+          <div class="text-align-center">
+            <a class="btn btn-outline-primary" href={{ link_3rd_uas }}>{{ button_text }}</a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+{% endapply %}

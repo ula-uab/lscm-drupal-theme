@@ -1,0 +1,4 @@
+name: Preview
+slots:
+  button_text: 'Go to...'
+  button_href: 'https://www.drupal.org/project/bootstrap_italia'

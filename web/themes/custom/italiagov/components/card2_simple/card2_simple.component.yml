@@ -1,0 +1,86 @@
+name: 'Card 2 Simple'
+description: 'A card is a flexible and extensible content container. It includes options for headers and footers, a wide variety of content, contextual background colors, and powerful display options. https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-semplice'
+variants:
+  default:
+    title: Default
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-semplice'
+  article:
+    title: 'Article (tags and date are mandatory)'
+    description: 'In this variant card_category and card_date field are mandatory. https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-articolo-semplice'
+  icon:
+    title: 'Icon (category and icon are mandatory)'
+    description: 'In this variant card_icon field are mandatory, use the settings to provide a default value. https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-con-icona'
+  image:
+    title: 'Image (image field are mandatory)'
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-con-immagine'
+slots:
+  card_title:
+    title: 'Title (field)'
+    description: 'Card title.'
+  card_subtitle:
+    title: 'Subtitle (field)'
+    description: 'Card subtitle.'
+  card_text:
+    title: 'Text (eg. body, raw text)'
+    description: 'Card content.'
+  card_category:
+    title: 'Category, tag or link (field)'
+    description: 'Link of the category, tag or taxonomy term to associate.'
+  card_date:
+    title: 'Date (field)'
+    description: 'Submitting date. Format: Bootstrap Italia Medium Format (dd month yyyy)'
+  card_icon:
+    title: 'Icon (eg. it-name, raw text)'
+    description: 'https://italia.github.io/bootstrap-italia/docs/utilities/icone/'
+  card_signature:
+    title: 'Author name (field)'
+    description: 'The author of the content or signature.'
+  card_read_more_url:
+    title: 'Link (eg. /node/id, raw text).'
+    description: 'Enter a url in raw text format.'
+  card_image:
+    title: 'Image (field)'
+    description: 'Enter a image field.'
+props:
+  type: object
+  properties:
+    card_shadow:
+      title: 'Enable shadow'
+      description: 'Shows card shadow.'
+      type: boolean
+    image_panoramic:
+      title: 'Enable image panoramic'
+      description: 'Shows image panoramic.'
+      type: boolean
+    default_icon:
+      title: 'Default icon'
+      description: 'Choose default icon.'
+      type: string
+    read_more_type:
+      title: 'Read more type'
+      type: string
+      enum:
+        - read_more
+        - simple_link
+      'meta:enum':
+        read_more: Default
+        simple_link: 'Simple link'
+    content_padding:
+      title: 'Card content padding'
+      type: string
+      enum:
+        - default
+        - xs
+        - sm
+        - md
+        - lg
+        - xl
+        - xxl
+      'meta:enum':
+        default: 'Default (from CSS)'
+        xs: 'Extra small'
+        sm: Small
+        md: Medium
+        lg: Large
+        xl: 'Extra large'
+        xxl: 'Extra extra large'

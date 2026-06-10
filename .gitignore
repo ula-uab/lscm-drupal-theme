@@ -1,0 +1,11 @@
+/vendor/
+node_modules/
+/web/core/
+/web/modules/contrib/
+/web/themes/contrib/
+/web/sites/*/settings.php
+/web/sites/*/files/
+/backups/
+env
+*.sql
+*.sql.gz

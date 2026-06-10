@@ -1,0 +1,114 @@
+name: 'Card 2 Big'
+description: 'A card is a flexible and extensible content container. It includes options for headers and footers, a wide variety of content, contextual background colors, and powerful display options. https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-grande'
+variants:
+  article:
+    title: 'Article (category and date are mandatory)'
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-grande-con-tag-data-e-call-to-action'
+  flag:
+    title: 'Flag (category and icon are mandatory)'
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/card/#esempio-2'
+  icon:
+    title: 'Icon (icon are mandatory)'
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-grande'
+  image:
+    title: 'Image (image are mandatory)'
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-con-immagine'
+slots:
+  card_title:
+    title: 'Title (field)'
+    description: 'Card title.'
+  card_subtitle:
+    title: 'Subtitle (field)'
+    description: 'Card subtitle.'
+  card_text:
+    title: 'Text (eg. body, raw text)'
+    description: 'Card content.'
+  card_category:
+    title: 'Category, tag or link (field)'
+    description: 'Link of the category, tag or taxonomy term to associate.'
+  card_date:
+    title: 'Date (field)'
+    description: 'Submitting date. Format: Bootstrap Italia Medium Format (dd month yyyy)'
+  card_icon:
+    title: 'Icon (eg. it-name, raw text)'
+    description: 'https://italia.github.io/bootstrap-italia/docs/utilities/icone/'
+  card_signature:
+    title: 'Author name (field)'
+    description: 'The author of the content or signature.'
+  card_read_more_url:
+    title: 'Link (eg. /node/id, raw text).'
+    description: 'Enter a url in raw text format.'
+  card_image:
+    title: 'Image (field)'
+    description: 'Enter a image field.'
+props:
+  type: object
+  properties:
+    border_bottom:
+      title: 'Show border bottom'
+      description: 'Show border bottom.'
+      type: boolean
+    card_shadow:
+      title: 'Enable shadow'
+      description: 'Shows card shadow.'
+      type: boolean
+    content_padding:
+      title: 'Card content padding'
+      type: string
+      enum:
+        - default
+        - xs
+        - sm
+        - md
+        - lg
+        - xl
+        - xxl
+      'meta:enum':
+        default: 'Default (from CSS)'
+        xs: 'Extra small'
+        sm: Small
+        md: Medium
+        lg: Large
+        xl: 'Extra large'
+        xxl: 'Extra extra large'
+    image_panoramic:
+      title: 'Enable image panoramic'
+      description: 'Shows image panoramic.'
+      type: boolean
+    flag_invisible:
+      title: 'Hide flag'
+      description: 'Only in flag variant.'
+      type: boolean
+    default_icon:
+      title: 'Default icon'
+      description: 'Choose default icon. Only in flag variant. Eg: it-name'
+      type: string
+    default_icon_color:
+      title: 'Icon color'
+      description: 'Only in flag variant'
+      type: string
+      enum:
+        - primary
+        - secondary
+        - success
+        - warning
+        - danger
+        - light
+        - white
+      'meta:enum':
+        primary: Primary
+        secondary: Secondary
+        success: Success
+        warning: Warning
+        danger: Danger
+        light: Light
+        white: White
+    read_more_type:
+      title: 'Read more type'
+      type: string
+      enum:
+        - link
+        - button
+      'meta:enum':
+        link: Default
+        button: Button

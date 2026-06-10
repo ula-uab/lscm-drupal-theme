@@ -1,0 +1,33 @@
+name: 'Academic Calendar'
+slots:
+  ac_header:
+    title: 'Header'
+  ac_welcome_session_date:
+    title: 'Welcome Session Date'
+  ac_welcome_session_location:
+    title: 'Welcome Session Location'
+  ac_registration_foot:
+    title: 'Registration Foot'
+  ac_registration_date:
+    title: 'Registration Date'
+  ac_ol_reg_foot:
+    title: 'AC Online Registration Foot'
+  ac_lecture_start_1st_sem:
+    title: 'Lecture Start 1st Semester'
+  ac_lecture_start_3rd_sem_rtu:
+    title: 'AC Lecture Start 3rd Semester RTU'
+  ac_lecture_start_3rd_sem_uasw:
+    title: 'AC Lecture Start 3rd Semester UASW'
+  ac_calendar_button_text:
+    title: 'Calendar Button Text'
+  ac_calendar_button_link:
+    title: 'Calendar Button Link'
+  ac_schedule_button_text:
+    title: 'Schedule Button Text'
+  ac_schedule_1st_sem:
+    title: '1st Semester Schedule Button Link'
+  ac_schedule_3rd_sem_rtu:
+    title: '3rd Semester RTU Schedule Button Link'
+  ac_schedule_3rd_sem_uasw:
+    title: '3rd Semester UASW Schedule Button Link'
+

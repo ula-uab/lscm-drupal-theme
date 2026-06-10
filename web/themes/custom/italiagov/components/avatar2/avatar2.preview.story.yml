@@ -1,0 +1,13 @@
+name: Preview
+slots:
+  avatar_image: '<img src="https://randomuser.me/api/portraits/women/24.jpg" alt="Francesca Rossi picture">'
+  avatar_text: 'Francesca Rossi'
+  avatar_url: '#/user/1'
+  avatar_tooltip_text: 'Francesca Rossi - Administrator'
+  avatar_extra_title: 'Francesca Rossi'
+  avatar_extra_text: Administrator
+props:
+  variant: 'text'
+  default_avatar_size: xxl
+  default_icon: it-user
+  avatar_tooltip_placement: top

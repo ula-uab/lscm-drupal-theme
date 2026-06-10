@@ -1,0 +1,26 @@
+name: 'Card 2 Carousel evidence'
+description: 'Use this card in carousel slide. https://italia.github.io/bootstrap-italia/docs/componenti/carousel/#card-con-immagine-in-evidenza'
+slots:
+  card_title:
+    title: 'Title (field)'
+    description: 'Card title.'
+  card_text:
+    title: 'Text (eg. body, raw text)'
+    description: 'Card content.'
+  card_category:
+    title: 'Category, tag or link (field)'
+    description: 'Link of the category, tag or taxonomy term to associate.'
+  card_date:
+    title: 'Date (field)'
+    description: 'Submitting date. Format: Bootstrap Italia Medium Format (dd month yyyy)'
+  card_signature:
+    title: 'Author name (field)'
+    description: 'The author of the content or signature.'
+  card_read_more_url:
+    title: 'Link (eg. /node/id, raw text).'
+    description: 'Enter a url in raw text format.'
+  card_image:
+    title: 'Image (field)'
+    description: 'Enter a image field.'
+  content_padding:
+    title: 'Card content padding'

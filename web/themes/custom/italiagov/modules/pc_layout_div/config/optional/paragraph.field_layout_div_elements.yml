@@ -1,0 +1,18 @@
+uuid: 09525569-affa-4b55-9f23-94bfd0cd0c52
+langcode: en
+status: true
+dependencies:
+    module: [entity_reference_revisions, paragraphs]
+id: paragraph.field_layout_div_elements
+field_name: field_layout_div_elements
+entity_type: paragraph
+type: entity_reference_revisions
+settings:
+    target_type: paragraph
+module: entity_reference_revisions
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

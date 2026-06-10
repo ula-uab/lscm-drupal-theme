@@ -1,0 +1,4 @@
+paragraph--layout-div:
+    version: 1.x
+    css: { component: { css/style.css: {  } } }
+    js: { js/script.js: {  } }

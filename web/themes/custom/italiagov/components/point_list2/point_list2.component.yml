@@ -1,0 +1,34 @@
+name: 'Point list 2'
+description: 'https://italia.github.io/bootstrap-italia/'
+variants:
+  primary:
+    title: Primary
+    description: 'Type Primary'
+  secondary:
+    title: Secondary
+    description: 'Type Primary'
+  info:
+    title: Info
+    description: 'Type info'
+  success:
+    title: Success
+    description: 'Type success'
+  warning:
+    title: Warning
+    description: 'Type waring'
+  danger:
+    title: Danger
+    description: danger
+  dark:
+    title: Danger
+    description: danger
+slots:
+  date:
+    title: 'Date (raw text)'
+    description: 'Usually is the day, 1...31. Raw text'
+  month:
+    title: 'Month (raw text)'
+    description: 'The month. Raw text'
+  content:
+    title: 'Content (raw text)'
+    description: 'The content.'

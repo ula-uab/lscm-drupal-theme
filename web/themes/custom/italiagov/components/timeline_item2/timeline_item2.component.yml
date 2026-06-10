@@ -1,0 +1,20 @@
+name: 'Timeline Item 2'
+description: 'https://italia.github.io/bootstrap-italia/'
+
+slots:
+  pin_text:
+    title: 'Pin Text'
+    description: 'The content.'
+  pin_icon:
+    title: 'Pin Icon'
+    description: 'The content.'
+  content:
+    title: 'Content (raw text)'
+    description: 'The content.'
+props:
+  type: object
+  properties:
+    timeline_item_attributes:
+      title: "Timeline Item attributes"
+      description: "The attributes to customize the tag with the timeline class if present."
+      $ref: "ui-patterns://attributes"

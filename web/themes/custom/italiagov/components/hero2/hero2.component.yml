@@ -1,0 +1,143 @@
+name: 'Hero 2'
+description: 'Hero is a lightweight and flexible component that can optionally extend the entire window to show featured posts on your site. https://italia.github.io/bootstrap-italia/docs/componenti/hero/'
+variants:
+  default:
+    title: Default
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/hero/'
+slots:
+  image:
+    title: 'Image (field)'
+    description: 'Image from drupal field.'
+  hero_kicker:
+    title: 'Kicker (field)'
+    description: 'Hero Kicker. Field.'
+  hero_title:
+    title: 'Title (field)'
+    description: 'Hero title. Field.'
+  hero_text:
+    title: 'Content text (field)'
+    description: 'Hero content with <p> wrapper. Field.'
+  hero_cta_url:
+    title: 'Call to action link (eg. /node/id, raw text).'
+    description: 'Enter a url in raw text format.'
+props:
+  type: object
+  properties:
+    hero_description:
+      title: 'Accessibility description'
+      description: 'Customize accessibility description. Default: Highlights section.'
+      type: string
+    default_hero_cta_label:
+      title: 'Default call to action label'
+      description: 'Choose default call to action label.'
+      type: string
+    hero_cta_type:
+      title: 'Call to action type'
+      description: 'Choose button type.'
+      type: string
+      enum:
+        - primary
+        - secondary
+        - success
+        - warning
+        - danger
+        - info
+        - white
+        - dark
+        - light
+        - black
+      'meta:enum':
+        primary: Primary
+        secondary: Secondary
+        success: Success
+        warning: Warning
+        danger: Danger
+        info: Info
+        white: White
+        dark: Dark
+        light: Light
+        black: Black
+    hero_small:
+      title: 'Enable hero small'
+      description: 'Enable small variant.'
+      type: boolean
+    hero_overlay_color:
+      title: 'Overlay color'
+      description: 'Choose the color of the overlay. In this version only Primary work.'
+      type: string
+      enum:
+        - primary
+        - secondary
+        - success
+        - warning
+        - danger
+        - info
+        - white
+        - dark
+        - light
+        - black
+        - blue
+        - indigo
+        - purple
+        - pink
+        - red
+        - orange
+        - yellow
+        - green
+        - teal
+        - cyan
+        - gray-100
+        - gray-200
+        - gray-300
+        - gray-400
+        - gray-500
+        - gray-600
+        - gray-700
+        - gray-800
+        - gray-900
+      'meta:enum':
+        primary: Primary
+        secondary: Secondary
+        success: Success
+        warning: Warning
+        danger: Danger
+        info: Info
+        white: White
+        dark: Dark
+        light: Light
+        black: Black
+        blue: Blue
+        indigo: Indigo
+        purple: Purple
+        pink: Pink
+        red: Red
+        orange: Orange
+        yellow: Yellow
+        green: Green
+        teal: Teal
+        cyan: Cyan
+        gray-100: 'Gray 100'
+        gray-200: 'Gray 200'
+        gray-300: 'Gray 300'
+        gray-400: 'Gray 400'
+        gray-500: 'Gray 500'
+        gray-600: 'Gray 600'
+        gray-700: 'Gray 700'
+        gray-800: 'Gray 800'
+        gray-900: 'Gray 900'
+    hero_image_light:
+      title: 'Image Light'
+      description: 'Adjust the contrast for light images. https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-testi-ed-immagine-di-sfondo'
+      type: boolean
+    hero_image_filter:
+      title: 'Image filter'
+      description: 'If checked, a filter is added as described in the https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-overlay-e-filtro-di-colore-primario'
+      type: boolean
+    hero_text_centered:
+      title: 'Text centered'
+      description: 'If checked, centers the text. https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-contenuti-testuali-centrati'
+      type: boolean
+    hero_overlapping_content:
+      title: Overlapping
+      description: 'If checked, the following content covers a portion of this component. https://italia.github.io/bootstrap-italia/docs/componenti/hero/#con-immagine-e-margine-negativo-per-contenuti-sovrapposti'
+      type: boolean

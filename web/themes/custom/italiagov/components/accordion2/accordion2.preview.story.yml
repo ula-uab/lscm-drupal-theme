@@ -1,0 +1,6 @@
+name: Preview
+slots:
+  accordion_title: 'Lorem ipsum dolor sit amet'
+  accordion_content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor…'
+props:
+  item_title_tag: h2

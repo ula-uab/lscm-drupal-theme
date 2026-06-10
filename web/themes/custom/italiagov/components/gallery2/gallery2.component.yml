@@ -1,0 +1,30 @@
+name: 'Gallery 2'
+description: 'The image list is a flexible component for displaying series of images in the form of a grid. https://italia.github.io/bootstrap-italia/docs/organizzare-i-contenuti/liste-di-immagini/'
+variants:
+  standard:
+    title: Standard
+    description: 'https://italia.github.io/bootstrap-italia/docs/organizzare-i-contenuti/liste-di-immagini/#standard'
+slots:
+  image:
+    title: 'Image (field)'
+    description: 'Image from drupal field.'
+  image_description:
+    title: 'Description (raw text)'
+    description: 'Image description. Raw text.'
+  icon_name:
+    title: 'Icon (raw text)'
+    description: 'Icon noma in it-name format. Raw text.'
+  call_to_action_url:
+    title: 'Call to action link (eg. /node/id, raw text).'
+    description: 'Enter a url in raw text format.'
+props:
+  type: object
+  properties:
+    overlay:
+      title: 'Enable overlay'
+      description: 'Enable overlay.'
+      type: boolean
+    default_icon_name:
+      title: 'Default Icon'
+      description: 'Choose default icon (it-name).'
+      type: string

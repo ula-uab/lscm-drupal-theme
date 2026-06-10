@@ -1,0 +1,68 @@
+name: 'Card 2 Teaser'
+description: 'A card is a flexible and extensible content container. It includes options for headers and footers, a wide variety of content, contextual background colors, and powerful display options. https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-teaser'
+variants:
+  default:
+    title: Default
+    description: 'Default variant title and body'
+  icon:
+    title: 'Icon (icon are mandatory)'
+    description: 'In this variant card_icon field are mandatory, use the settings to provide a default value.'
+slots:
+  card_title:
+    title: 'Title (field)'
+    description: 'Enter the title field.'
+  card_text:
+    title: 'Text (eg. body, raw text)'
+    description: 'Card content in raw text'
+  card_icon:
+    title: 'Icon (eg. it-name, raw text)'
+    description: 'Only icon variant. https://italia.github.io/bootstrap-italia/docs/utilities/icone/'
+props:
+  type: object
+  properties:
+    card_shadow:
+      title: 'Enable shadow'
+      description: 'Shows card shadow.'
+      type: boolean
+    content_padding:
+      title: 'Card content padding'
+      type: string
+      enum:
+        - default
+        - xs
+        - sm
+        - md
+        - lg
+        - xl
+        - xxl
+      'meta:enum':
+        default: 'Default (from CSS)'
+        xs: 'Extra small'
+        sm: Small
+        md: Medium
+        lg: Large
+        xl: 'Extra large'
+        xxl: 'Extra extra large'
+    default_icon:
+      title: 'Default icon'
+      description: 'Choose default icon.'
+      type: string
+    default_icon_color:
+      title: 'Icon color'
+      type: string
+      enum:
+        - primary
+        - secondary
+        - success
+        - warning
+        - danger
+        - light
+        - white
+      'meta:enum':
+        primary: Primary
+        secondary: Secondary
+        success: Success
+        warning: Warning
+        danger: Danger
+        light: Light
+        white: White

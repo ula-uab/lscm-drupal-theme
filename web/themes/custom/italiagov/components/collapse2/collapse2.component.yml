@@ -1,0 +1,20 @@
+name: 'Modal 2'
+description: 'https://italia.github.io/bootstrap-italia/docs/componenti/modale/'
+variants:
+  default:
+    title: Default
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/modale/'
+slots:
+  collapse_body:
+    title: 'Body (field).'
+    description: 'Enter a body. Wrap text in <p> tag'
+  button_label:
+    title: 'Button label (raw text)'
+    description: 'Customize button label'
+props:
+  type: object
+  properties:
+    button_attributes:
+      title: "Button attributes"
+      description: "The attributes to customize the tag with the button."
+      $ref: "ui-patterns://attributes"

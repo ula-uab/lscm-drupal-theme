@@ -1,0 +1,6 @@
+name: Preview
+slots:
+  heading: 'Lorem ipsum'
+  message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor…'
+props:
+  dismissible: 1

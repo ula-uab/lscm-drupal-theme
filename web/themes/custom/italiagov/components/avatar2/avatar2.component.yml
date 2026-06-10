@@ -1,0 +1,105 @@
+name: 'Avatar 2'
+description: 'The Avatar element is a graphical representation of a user and can include an image, text, icon, or drop-down menu with additional content. https://italia.github.io/bootstrap-italia/docs/componenti/avatar/'
+variants:
+  icon:
+    title: Icon
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/avatar/#avatar-con-icona'
+  image:
+    title: Image
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/avatar/#avatar-con-immagine'
+  text:
+    title: Text
+    description: 'https://italia.github.io/bootstrap-italia/docs/componenti/avatar/#avatar-con-testo'
+slots:
+  avatar_image:
+    title: 'Image (field)'
+    description: 'Image from drupal field. Square format. Only image variant.'
+  avatar_text:
+    title: 'Name (raw text)'
+    description: 'Avatar text. Eg. Username. Raw text. Only text variant.'
+  avatar_url:
+    title: 'Link (eg. /user/id, raw text).'
+    description: 'Enter a url in raw text format.'
+  avatar_tooltip_text:
+    title: 'Tooltip text (field)'
+    description: 'Tooltip text.'
+  avatar_extra_title:
+    title: 'Extra title (field)'
+    description: 'Avatar Extra text. Eg. User Name.'
+  avatar_extra_text:
+    title: 'Extra text (field)'
+    description: 'Avatar Extra text. Eg. Role.'
+props:
+  type: object
+  properties:
+    default_avatar_size:
+      title: 'Avatar size'
+      type: string
+      enum:
+        - xs
+        - sm
+        - md
+        - lg
+        - xl
+        - xxl
+      'meta:enum':
+        xs: 'Extra small'
+        sm: Small
+        md: Medium
+        lg: Large
+        xl: 'Extra large'
+        xxl: 'Extra Extra Large'
+    default_icon:
+      title: 'Default icon'
+      description: 'Choose default icon (only icon variant).'
+      type: string
+    default_icon_color:
+      title: 'Default icon color'
+      description: 'Choose default icon color (only icon variant).'
+      type: string
+      enum:
+        - primary
+        - secondary
+        - success
+        - warning
+        - danger
+        - light
+        - white
+      'meta:enum':
+        primary: Primary
+        secondary: Secondary
+        success: Success
+        warning: Warning
+        danger: Danger
+        light: Light
+        white: White
+    default_background_color:
+      title: 'Default background color'
+      description: 'Choose default background color (except image variant).'
+      type: string
+      enum:
+        - primary
+        - secondary
+        - green
+        - orange
+        - red
+      'meta:enum':
+        primary: Primary
+        secondary: Secondary
+        green: Green
+        orange: Orange
+        red: Red
+    avatar_tooltip_placement:
+      title: 'Tooltip placement'
+      description: 'Choose tooltip placement.'
+      type: string
+      enum:
+        - top
+        - bottom
+        - left
+        - right
+      'meta:enum':
+        top: Top
+        bottom: Bottom
+        left: Left
+        right: right

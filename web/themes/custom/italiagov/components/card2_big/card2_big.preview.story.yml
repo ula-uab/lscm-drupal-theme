@@ -1,0 +1,17 @@
+name: Preview
+slots:
+  card_title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor…'
+  card_subtitle: 'Lorem ipsum dolor sit amet'
+  card_text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+  card_category: Category
+  card_date: '09 October 2022'
+  card_icon: it-file
+  card_signature: 'Federico De Paolis'
+  card_read_more_url: '#/node/1'
+  card_image: '<img src="https://placehold.co/310x190/0066cc/FFFFFF/?text=EXAMPLE%20IMAGE" title="Image title" alt="Card big image description">'
+props:
+  border_bottom: 1
+  card_shadow: 1
+  image_panoramic: 0
+  flag_invisible: 0
+  default_icon: it-file

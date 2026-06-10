@@ -1,0 +1,7 @@
+name: Preview
+slots:
+  list_url: '#/node/1'
+  list_text: 'Lorem ipsum'
+  list_image: '<img src="https://placehold.co/40x40.png?text=40x40" alt="List image description">'
+props:
+  list_default_icon: it-file

@@ -1,0 +1,13 @@
+
+    <?php
+    /**
+     * Implements hook_theme().
+     */
+    function pc_layout_div_theme($existing, $type, $theme, $path): array {
+      return [
+        'paragraph__layout_div' => [
+          'base hook' => 'paragraph',
+          'path' => $path . '/templates',
+        ],
+      ];
+    }

@@ -1,0 +1,37 @@
+name: 'Card 2 Special'
+description: 'A card is a flexible and extensible content container. It includes options for headers and footers, a wide variety of content, contextual background colors, and powerful display options. https://italia.github.io/bootstrap-italia/docs/componenti/card/#card-speciali'
+slots:
+  card_title:
+    title: 'Title (raw text)'
+    description: 'Enter the title in text format and without links.'
+  card_date:
+    title: 'Date (dd/mm/yy)'
+    description: 'Format: dd/mm/yyyy'
+  card_image:
+    title: 'Image (field)'
+    description: 'Mandatory and without links.'
+  card_target_url:
+    title: 'Target Url (raw text)'
+    description: 'Enter url in raw text format (eg. /node/id).'
+props:
+  type: object
+  properties:
+    content_padding:
+      title: 'Card content padding'
+      type: string
+      enum:
+        - default
+        - xs
+        - sm
+        - md
+        - lg
+        - xl
+        - xxl
+      'meta:enum':
+        default: 'Default (from CSS)'
+        xs: 'Extra small'
+        sm: Small
+        md: Medium
+        lg: Large
+        xl: 'Extra large'
+        xxl: 'Extra extra large'

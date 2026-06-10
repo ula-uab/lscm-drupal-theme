@@ -1,0 +1,7 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: LSCM Master Static
+status: experimental
+description: >
+  Versión estática y autónoma del componente lscm-master-page.
+  No tiene props ni slots — todo el contenido está hardcodeado en el template.
+  Ideal para un primer despliegue o entorno sin CMS dinámico.

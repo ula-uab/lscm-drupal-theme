@@ -1,0 +1,32 @@
+name: 'Alert 2'
+description: 'https://italia.github.io/bootstrap-italia/docs/componenti/alert/'
+variants:
+  primary:
+    title: Primary
+    description: 'Type Primary'
+  info:
+    title: Info
+    description: 'Type info'
+  success:
+    title: Success
+    description: 'Type success'
+  warning:
+    title: Warning
+    description: 'Type waring'
+  danger:
+    title: Danger
+    description: danger
+slots:
+  heading:
+    title: 'Heading (raw text)'
+    description: 'Optional. Raw text.'
+  message:
+    title: 'Message (field)'
+    description: 'Alert content.'
+props:
+  type: object
+  properties:
+    dismissible:
+      title: 'Alert dismissible'
+      description: 'Enable alert dismissible.'
+      type: boolean

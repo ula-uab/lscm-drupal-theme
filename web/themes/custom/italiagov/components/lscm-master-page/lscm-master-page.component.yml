@@ -1,0 +1,278 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: LSCM Master Page
+status: experimental
+description: >
+  Full-page layout for the LSCM European Joint Master programme website.
+  Converts all hardcoded strings into props and rich content areas into slots.
+
+# ─────────────────────────────────────────────
+# SLOTS — contenido HTML enriquecido / listas
+# ─────────────────────────────────────────────
+slots:
+  nav_links:
+    title: Navigation Links
+    description: >
+      One or more <li> elements for the main navigation menu.
+      Each <li> may contain an <a> element. The "Apply Now" CTA link
+      is controlled by the nav_cta_* props instead.
+
+  hero_stats:
+    title: Hero Statistics
+    description: >
+      One or more .hero-stat <div> blocks showing key programme numbers.
+      Each block should contain a .hero-stat-num and a .hero-stat-label span.
+
+  about_features:
+    title: About Features Grid
+    description: >
+      One or more .feature-item <div> blocks (icon + strong label + span text)
+      rendered inside the two-column features grid.
+
+  journey_semesters:
+    title: Journey Semester Cards
+    description: >
+      Alternating .sem-card and .journey-connector <div> blocks that build
+      the four-semester academic track. Include all four sem-cards and the
+      three connector divs between them.
+
+  universities:
+    title: Partner University Cards
+    description: >
+      One or more .uni-card <div> blocks, each containing country badge,
+      university name, abbreviation, description and semester tags.
+
+  specializations:
+    title: Specialisation Cards
+    description: >
+      One or more .spec-card <div> blocks with a .spec-top header
+      and a .spec-body with description and module list.
+
+  why_items:
+    title: Why LSCM Items
+    description: >
+      One or more .why-item <div> blocks with a number/emoji, headline
+      and supporting text.
+
+  timeline_items:
+    title: Admission Timeline Steps
+    description: >
+      One or more .timeline-item <div> blocks, each containing a dot/line
+      visual and a .timeline-content with step title and description.
+
+  requirements_cards:
+    title: Admission Requirements Cards
+    description: >
+      One or more .req-card <div> blocks with icon, title and description.
+
+  footer_col1_links:
+    title: Footer Programme Column Links
+    description: <li> elements for the "Programme" footer column.
+
+  footer_col2_links:
+    title: Footer Admissions Column Links
+    description: <li> elements for the "Admissions" footer column.
+
+  footer_col3_links:
+    title: Footer Partners Column Links
+    description: <li> elements for the "Partners" footer column.
+
+# ─────────────────────────────────────────────
+# PROPS — strings / URLs simples
+# ─────────────────────────────────────────────
+props:
+  type: object
+#  required:
+#    - site_name
+#    - hero_title
+#    - hero_title_highlight
+  properties:
+
+    # ── Nav ────────────────────────────────────
+    site_name:
+      type: string
+      title: Site Name
+      description: Primary brand name shown in the nav logo (e.g. "LSCM Master").
+    site_subtitle:
+      type: string
+      title: Site Subtitle
+      description: Small uppercase text below the site name (e.g. "European Joint Programme").
+    nav_cta_text:
+      type: string
+      title: Nav CTA Button Text
+      description: Label for the highlighted nav action button.
+    nav_cta_url:
+      type: string
+      title: Nav CTA URL
+      description: Destination URL for the nav CTA button.
+
+    # ── Hero ───────────────────────────────────
+    hero_badge_text:
+      type: string
+      title: Hero Badge Text
+      description: Small pill badge text above the hero headline.
+    hero_title:
+      type: string
+      title: Hero Title (plain part)
+      description: First line of the hero h1, rendered in white.
+    hero_title_highlight:
+      type: string
+      title: Hero Title Highlighted Part
+      description: Second line of the hero h1, rendered in yellow italics inside a <span>.
+    hero_description:
+      type: string
+      title: Hero Description
+      description: Supporting paragraph text in the hero section.
+    hero_cta_primary_text:
+      type: string
+      title: Hero Primary CTA Text
+    hero_cta_primary_url:
+      type: string
+      title: Hero Primary CTA URL
+    hero_cta_secondary_text:
+      type: string
+      title: Hero Secondary CTA Text
+    hero_cta_secondary_url:
+      type: string
+      title: Hero Secondary CTA URL
+
+    # ── About ──────────────────────────────────
+    about_card_title:
+      type: string
+      title: About Card Title
+      description: Headline inside the blue visual card on the left.
+    about_card_body:
+      type: string
+      title: About Card Body
+      description: Paragraph inside the blue visual card.
+    about_accent_title:
+      type: string
+      title: About Accent Card Title
+      description: Title of the yellow accent card (e.g. "Joint Diploma").
+    about_accent_body:
+      type: string
+      title: About Accent Card Body
+      description: Text inside the yellow accent card.
+    about_section_tag:
+      type: string
+      title: About Section Tag
+    about_section_title:
+      type: string
+      title: About Section Title
+    about_section_desc:
+      type: string
+      title: About Section Description
+
+    # ── Journey ────────────────────────────────
+    journey_section_tag:
+      type: string
+      title: Journey Section Tag
+    journey_section_title:
+      type: string
+      title: Journey Section Title
+    journey_section_desc:
+      type: string
+      title: Journey Section Description
+    journey_split_note:
+      type: string
+      title: Journey Split Note
+      description: Informational note shown below the semester track (e.g. "🔀 Semesters 3 & 4 — choose your specialisation…").
+
+    # ── Universities ───────────────────────────
+    universities_section_tag:
+      type: string
+      title: Universities Section Tag
+    universities_section_title:
+      type: string
+      title: Universities Section Title
+    universities_section_desc:
+      type: string
+      title: Universities Section Description
+
+    # ── Specializations ────────────────────────
+    spec_section_tag:
+      type: string
+      title: Specializations Section Tag
+    spec_section_title:
+      type: string
+      title: Specializations Section Title
+    spec_section_desc:
+      type: string
+      title: Specializations Section Description
+
+    # ── Why ────────────────────────────────────
+    why_section_tag:
+      type: string
+      title: Why Section Tag
+    why_section_title:
+      type: string
+      title: Why Section Title
+
+    # ── Admission ──────────────────────────────
+    admission_section_tag:
+      type: string
+      title: Admission Section Tag
+    admission_section_title:
+      type: string
+      title: Admission Section Title
+    admission_section_desc:
+      type: string
+      title: Admission Section Description
+    requirements_tag:
+      type: string
+      title: Requirements Tag
+      description: Small label above the requirements cards column.
+    req_cta_title:
+      type: string
+      title: Requirements CTA Title
+    req_cta_desc:
+      type: string
+      title: Requirements CTA Description
+    req_cta_url:
+      type: string
+      title: Requirements CTA URL
+    req_cta_button_text:
+      type: string
+      title: Requirements CTA Button Text
+
+    # ── CTA Section ────────────────────────────
+    cta_section_tag:
+      type: string
+      title: CTA Section Tag
+    cta_section_title:
+      type: string
+      title: CTA Section Title
+    cta_section_desc:
+      type: string
+      title: CTA Section Description
+    cta_email:
+      type: string
+      title: Contact Email Address
+    cta_faq_url:
+      type: string
+      title: FAQ Page URL
+    cta_faq_text:
+      type: string
+      title: FAQ Button Text
+
+    # ── Footer ─────────────────────────────────
+    footer_brand_name:
+      type: string
+      title: Footer Brand Name
+    footer_brand_desc:
+      type: string
+      title: Footer Brand Description
+    footer_col1_title:
+      type: string
+      title: Footer Column 1 Title
+    footer_col2_title:
+      type: string
+      title: Footer Column 2 Title
+    footer_col3_title:
+      type: string
+      title: Footer Column 3 Title
+    footer_copyright:
+      type: string
+      title: Footer Copyright Text
+    footer_eu_badge_text:
+      type: string
+      title: Footer EU Badge Text

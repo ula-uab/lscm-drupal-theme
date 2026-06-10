@@ -1,0 +1,6 @@
+name: Preview
+slots:
+  card_title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor…'
+  card_date: 09/10/2022
+  card_image: '<img src="https://placehold.co/174x214/F9F9FE/0066CC/?text=EXAMPLE%20IMAGE" title="Image title" alt="Card special image description">'
+  card_target_url: '#/node/1'

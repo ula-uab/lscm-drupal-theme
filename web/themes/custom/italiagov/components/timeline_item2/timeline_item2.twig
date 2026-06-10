@@ -1,0 +1,8 @@
+{% apply spaceless %}
+  {% include '@italiagov_components/timeline_fixed/timeline-item.html.twig' with {
+    pin_icon: pin_icon|render|striptags|trim,
+    pin_text: pin_text,
+    content: content,
+    timeline_item_attributes: timeline_item_attributes
+  } %}
+{% endapply %}

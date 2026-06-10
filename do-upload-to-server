@@ -1,0 +1,33 @@
+#!/bin/bash
+
+. ./env
+
+cp ./web/sites/default/settings.php ./deploy_files/temp
+
+export DB_HOST=$DB_HOST DB_PORT=$DB_PORT DB_NAME=$DB_NAME DB_USER=$DB_USER DB_PASSWORD=$DB_PASSWORD
+bash ./inject_drupal_db.sh ./deploy_files/temp/settings.php
+
+lftp -f "
+set ssl:verify-certificate no
+open $HOST
+user $USER $PASS
+
+## COPY the .htaccess file that redirects everything to /web
+#put -c ./deploy_files/.htaccess -o ./httpdocs/.htaccess
+#
+## UPDATE the whole web folder
+#mirror -c --reverse --delete --dereference --verbose ./web ./httpdocs/web
+#
+## UPDATE the whole vendor folder
+#mirror -c --reverse --delete --dereference --verbose ./vendor ./httpdocs/vendor
+#
+## SAVE the composer files just in case
+#put -c ./composer.json -o ./httpdocs/composer.json
+#put -c ./composer.lock -o ./httpdocs/composer.lock
+
+# COPY the settings file with the credentians to database
+put -e ./deploy_files/temp/settings.php -o ./httpdocs/web/sites/default/settings.php
+
+#mirror -c --reverse --delete --dereference --verbose --exclude 'defaultweb' ./web ./httpdocs/web
+bye
+"

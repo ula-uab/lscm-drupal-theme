@@ -1,0 +1,38 @@
+name: 'List 2'
+description: 'The list is a flexible component for displaying lists with related text, links, or items. https://italia.github.io/bootstrap-italia/docs/organizzare-i-contenuti/liste/'
+variants:
+  simple:
+    title: Simple
+    description: 'https://italia.github.io/bootstrap-italia/docs/organizzare-i-contenuti/liste/#lista-semplice-solo-testo'
+  avatar:
+    title: Avatar
+    description: 'https://italia.github.io/bootstrap-italia/docs/organizzare-i-contenuti/liste/#lista-con-avatar'
+  icon:
+    title: Icon
+    description: 'https://italia.github.io/bootstrap-italia/docs/organizzare-i-contenuti/liste/#lista-con-icona'
+  image:
+    title: Image
+    description: 'https://italia.github.io/bootstrap-italia/docs/organizzare-i-contenuti/liste/#lista-con-immagine'
+slots:
+  list_url:
+    title: 'Link (eg. /node/id, raw text).'
+    description: 'Enter a url in raw text format.'
+  list_text:
+    title: 'List text (raw text)'
+    description: 'List text in raw format.'
+  list_icon:
+    title: 'Icon (eg. it-name, raw text)'
+    description: 'https://italia.github.io/bootstrap-italia/docs/utilities/icone/'
+  list_image:
+    title: 'Image (field)'
+    description: 'Image from drupal field. Only avatar and image variant.'
+  list_metadata:
+    title: 'Metadata (field)'
+    description: 'https://italia.github.io/bootstrap-italia/docs/organizzare-i-contenuti/liste/#con-metadata'
+props:
+  type: object
+  properties:
+    list_default_icon:
+      title: 'Default icon'
+      description: 'Choose default icon. Only in icon variant. Eg: it-name'
+      type: string

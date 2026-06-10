@@ -1,0 +1,8 @@
+name: Preview
+slots:
+  card_title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor…'
+  card_text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+  card_icon: it-file
+props:
+  card_shadow: 1
+  default_icon: it-file
