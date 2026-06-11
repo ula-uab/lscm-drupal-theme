@@ -1,0 +1,13 @@
+{% apply spaceless %}
+  {% include '@bootstrap_ula_lscm_components/timeline_fixed/point-list.html.twig' with {
+    date: date|render|striptags|trim,
+    month: month|render|striptags|trim,
+    card: {
+      card_text: content,
+      card_teaser: true,
+      card_rounded: true,
+      card_shadow: true,
+    },
+    variant: variant
+  } %}
+{% endapply %}

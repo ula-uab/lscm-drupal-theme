@@ -1,0 +1,19 @@
+name: "Content types: header"
+slots:
+  header: "Featured"
+  content:
+    - type: component
+      component: "bootstrap_ula_lscm:card_body"
+      slots:
+        title: "Special title treatment"
+        text: "With supporting text below as a natural lead-in to additional content."
+        content:
+          type: component
+          component: "bootstrap_ula_lscm:button"
+          slots:
+            label: "Go somewhere"
+          props:
+            variant: primary
+            url: "#"
+props:
+  variant: default
