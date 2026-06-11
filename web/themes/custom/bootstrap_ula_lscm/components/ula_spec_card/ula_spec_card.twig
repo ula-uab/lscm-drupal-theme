@@ -1,0 +1,22 @@
+{#
+  ula_spec_card — tarjeta de especialización.
+  Props: icon, title, university, description, modules (array), variant (primary|secondary).
+  Markup y clases idénticos a la maqueta. La variante 'secondary' añade .spec-top-2.
+#}
+<div class="spec-card">
+  <div class="spec-top{{ variant == 'secondary' ? ' spec-top-2' : '' }}">
+    <div class="spec-icon">{{ icon }}</div>
+    <h3>{{ title }}</h3>
+    <div class="spec-uni">{{ university }}</div>
+  </div>
+  <div class="spec-body">
+    <p>{{ description }}</p>
+    {% if modules is not empty %}
+      <ul class="spec-modules">
+        {% for module in modules %}
+          <li>{{ module }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</div>

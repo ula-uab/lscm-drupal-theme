@@ -1,0 +1,60 @@
+/**
+ * ula_uni_card — estilos propios del patrón uni-card.
+ * Extraídos SIN CAMBIOS de la maqueta. Consumen tokens de ula_tokens.
+ * El contenedor .uni-grid no está aquí (lo aporta la sección).
+ * Colores claros: pensado para fondo OSCURO (sección azul).
+ */
+.uni-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  transition: background 0.25s, transform 0.25s;
+}
+.uni-card:hover {
+  background: rgba(255,255,255,0.14);
+  transform: translateY(-4px);
+}
+.uni-country {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--eu-yellow);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.uni-flag { font-size: 18px; }
+.uni-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--white);
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+}
+.uni-card .uni-abbr {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--eu-yellow);
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+.uni-card p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+  font-weight: 300;
+  margin-bottom: 1.2rem;
+}
+.uni-semesters { display: flex; gap: 6px; flex-wrap: wrap; }
+.uni-sem-tag {
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255,204,0,0.18);
+  color: var(--eu-yellow);
+  border: 1px solid rgba(255,204,0,0.3);
+  padding: 3px 10px;
+  border-radius: 100px;
+}

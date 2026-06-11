@@ -1,0 +1,18 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Hero Stat
+status: experimental
+description: >
+  Estadística individual del hero de la landing (un número grande y una etiqueta).
+  Componente autónomo del design system ULA, independiente de Bootstrap Italia.
+  Se compone dentro del slot 'hero_stats' de la landing.
+props:
+  type: object
+  properties:
+    number:
+      type: string
+      title: Number
+      description: 'Texto grande destacado (p. ej. "120", "3").'
+    label:
+      type: string
+      title: Label
+      description: 'Etiqueta descriptiva bajo el número (p. ej. "ECTS Credits").'

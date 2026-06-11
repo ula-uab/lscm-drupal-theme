@@ -1,0 +1,4 @@
+name: Preview
+props:
+  number: '120'
+  label: 'ECTS Credits'

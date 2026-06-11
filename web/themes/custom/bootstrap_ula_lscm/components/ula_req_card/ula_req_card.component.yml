@@ -1,0 +1,22 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Req Card
+status: experimental
+description: >
+  Tarjeta de requisito de admisión: icono + título + descripción, en disposición vertical.
+  Componente autónomo del design system ULA. Se compone dentro del slot 'requirements_cards'.
+  El contenedor en rejilla (.req-cards) lo aporta la sección, no este componente.
+props:
+  type: object
+  properties:
+    icon:
+      type: string
+      title: Icon
+      description: 'Icono (emoji o carácter), p. ej. "🎓".'
+    title:
+      type: string
+      title: Title
+      description: 'Título del requisito.'
+    description:
+      type: string
+      title: Description
+      description: 'Texto descriptivo del requisito.'

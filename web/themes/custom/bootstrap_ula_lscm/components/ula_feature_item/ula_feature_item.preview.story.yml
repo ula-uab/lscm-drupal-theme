@@ -1,0 +1,5 @@
+name: Preview
+props:
+  icon: '🎓'
+  title: 'Accredited Programme'
+  description: 'Verified by legal bodies in all three countries'

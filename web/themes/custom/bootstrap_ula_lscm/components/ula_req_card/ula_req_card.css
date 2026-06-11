@@ -1,0 +1,23 @@
+/**
+ * ula_req_card — estilos propios del patrón req-card.
+ * Extraídos SIN CAMBIOS de la maqueta. Consumen tokens de ula_tokens.
+ * Pensado para fondo CLARO. El contenedor .req-cards no está aquí.
+ */
+.req-card {
+  background: var(--off-white);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+}
+.req-card-icon { font-size: 24px; margin-bottom: 0.6rem; }
+.req-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+}
+.req-card p {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.5;
+}

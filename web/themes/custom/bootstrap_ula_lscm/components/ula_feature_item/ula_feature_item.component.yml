@@ -1,0 +1,22 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Feature Item
+status: experimental
+description: >
+  Ítem de la sección "About" (rejilla de features): icono + título + texto, en disposición horizontal.
+  Componente autónomo del design system ULA. Se compone dentro del slot 'about_features'.
+  El contenedor en rejilla (.about-features) lo aporta la sección, no este componente.
+props:
+  type: object
+  properties:
+    icon:
+      type: string
+      title: Icon
+      description: 'Icono (emoji o carácter), p. ej. "🎓".'
+    title:
+      type: string
+      title: Title
+      description: 'Título corto en negrita.'
+    description:
+      type: string
+      title: Description
+      description: 'Texto descriptivo breve.'

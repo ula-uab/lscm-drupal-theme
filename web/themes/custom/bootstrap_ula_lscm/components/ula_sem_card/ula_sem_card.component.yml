@@ -1,0 +1,43 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Sem Card
+status: experimental
+description: >
+  Tarjeta de semestre del recorrido académico: etiqueta de semestre, icono, pastilla de
+  universidad, título y lista de asignaturas. Componente autónomo del design system ULA.
+  Se compone dentro del slot 'journey_semesters'. El contenedor (.journey-track) y los
+  conectores entre tarjetas (.journey-connector) los aporta la sección, no este componente.
+props:
+  type: object
+  properties:
+    semester:
+      type: string
+      title: Semester
+      description: 'Etiqueta del semestre (p. ej. "Semester 1").'
+    icon:
+      type: string
+      title: Icon
+      description: 'Icono (emoji o carácter), p. ej. "📐".'
+    university:
+      type: string
+      title: University
+      description: 'Universidad y ciudad (p. ej. "UAB · Barcelona").'
+    title:
+      type: string
+      title: Title
+      description: 'Título temático del semestre.'
+    subjects:
+      type: array
+      title: Subjects
+      description: 'Lista de asignaturas (textos simples).'
+      items:
+        type: string
+    variant:
+      type: string
+      title: Variant
+      description: 'Variante de color (icono y pastilla de universidad) según el semestre.'
+      enum:
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+      default: '1'

@@ -69,3 +69,17 @@ ddev:
     http://project-name.ddev.site:8080/js/bootstrap-italia.min.js: { type: external, minified: true }
   dependencies:
     - core/drupal
+
+ula_tokens:
+  version: 1.0
+  css:
+    base:
+      css/ula-tokens.css: {}
+
+ula_landing_base:
+  version: 1.0
+  css:
+    theme:
+      css/ula-landing-base.css: {}
+  dependencies:
+    - bootstrap_ula_lscm/ula_tokens

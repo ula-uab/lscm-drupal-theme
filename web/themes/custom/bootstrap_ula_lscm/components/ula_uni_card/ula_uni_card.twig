@@ -1,0 +1,24 @@
+{#
+  ula_uni_card — tarjeta de universidad socia.
+  Props: flag, country, name, abbr, description, tags (array).
+  Markup y clases idénticos a la maqueta.
+
+  NOTA sobre tags: cada pastilla se renderiza HOY como etiqueta estática (.uni-sem-tag),
+  fiel a la maqueta. La estructura admite {label, info}; 'info' está reservado para
+  convertir la pastilla en botón con popover/modal en una iteración futura (API nativa),
+  y de momento se ignora. También se acepta una cadena simple como tag.
+#}
+<div class="uni-card">
+  <div class="uni-country"><span class="uni-flag">{{ flag }}</span> {{ country }}</div>
+  <h3>{{ name }}</h3>
+  <div class="uni-abbr">{{ abbr }}</div>
+  <p>{{ description }}</p>
+  {% if tags is not empty %}
+    <div class="uni-semesters">
+      {% for tag in tags %}
+        {% set tag_label = tag.label is defined ? tag.label : tag %}
+        <span class="uni-sem-tag">{{ tag_label }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

@@ -1,0 +1,5 @@
+name: Preview
+props:
+  icon: '🎓'
+  title: 'Academic Background'
+  description: "Bachelor's degree in engineering, technology, business, or a related field from a recognised institution."

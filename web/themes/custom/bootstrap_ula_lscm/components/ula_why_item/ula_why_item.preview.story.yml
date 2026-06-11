@@ -1,0 +1,5 @@
+name: Preview
+props:
+  number: '3'
+  title: 'Countries, one degree'
+  description: 'Live, study and build your network in Spain, Latvia, and Germany — with one joint diploma at the end.'

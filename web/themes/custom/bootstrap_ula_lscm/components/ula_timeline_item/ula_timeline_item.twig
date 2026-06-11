@@ -1,0 +1,18 @@
+{#
+  ula_timeline_item — un paso de la cronología.
+  Props: title, description, show_line (boolean, default true).
+  Markup y clases idénticos a la maqueta. La línea conectora se omite si show_line es false
+  (caso del último paso).
+#}
+<div class="timeline-item">
+  <div class="timeline-left">
+    <div class="timeline-dot"></div>
+    {% if show_line is not defined or show_line %}
+      <div class="timeline-line"></div>
+    {% endif %}
+  </div>
+  <div class="timeline-content">
+    <h4>{{ title }}</h4>
+    <p>{{ description }}</p>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+name: Preview
+props:
+  semester: 'Semester 1'
+  icon: '📐'
+  university: 'UAB · Barcelona'
+  title: 'Foundations of LSCM'
+  variant: '1'
+  subjects:
+    - 'Supply Chain Management'
+    - 'Operations Management'
+    - 'Logistics Systems'
+    - 'Quantitative Methods'
+    - 'Information Systems'
+    - 'Project Management'

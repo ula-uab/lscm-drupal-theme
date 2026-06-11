@@ -1,0 +1,24 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Timeline Item
+status: experimental
+description: >
+  Paso de una cronología (punto + línea conectora + título + descripción).
+  Componente autónomo del design system ULA. Se compone dentro del slot 'timeline_items'.
+  El contenedor (.timeline) lo aporta la sección. En el último paso, poner show_line: false
+  para no dibujar la línea conectora final.
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Title
+      description: 'Título del paso (p. ej. "1. Pre-enrolment opens").'
+    description:
+      type: string
+      title: Description
+      description: 'Texto descriptivo del paso.'
+    show_line:
+      type: boolean
+      title: Show connector line
+      description: 'Dibuja la línea vertical que conecta con el siguiente paso. Poner false en el último.'
+      default: true

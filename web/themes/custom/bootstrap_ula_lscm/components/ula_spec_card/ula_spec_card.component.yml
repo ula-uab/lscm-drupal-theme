@@ -1,0 +1,41 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Spec Card
+status: experimental
+description: >
+  Tarjeta de especialización: cabecera de color (icono + título + universidad) y
+  cuerpo (descripción + lista de módulos). Componente autónomo del design system ULA.
+  Se compone dentro del slot 'specializations'. El contenedor en rejilla (.spec-grid)
+  lo aporta la sección, no este componente.
+props:
+  type: object
+  properties:
+    icon:
+      type: string
+      title: Icon
+      description: 'Icono (emoji o carácter), p. ej. "📊".'
+    title:
+      type: string
+      title: Title
+      description: 'Nombre de la especialización.'
+    university:
+      type: string
+      title: University
+      description: 'Universidad y país (p. ej. "Riga Technical University · Latvia").'
+    description:
+      type: string
+      title: Description
+      description: 'Texto descriptivo de la especialización.'
+    modules:
+      type: array
+      title: Modules
+      description: 'Lista de módulos (textos simples).'
+      items:
+        type: string
+    variant:
+      type: string
+      title: Variant
+      description: 'Variante de color de la cabecera.'
+      enum:
+        - primary
+        - secondary
+      default: primary

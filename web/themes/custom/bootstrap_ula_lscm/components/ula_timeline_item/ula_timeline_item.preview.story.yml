@@ -1,0 +1,5 @@
+name: Preview
+props:
+  title: '1. Pre-enrolment opens'
+  description: 'January – September each year. Rolling review of applications.'
+  show_line: true

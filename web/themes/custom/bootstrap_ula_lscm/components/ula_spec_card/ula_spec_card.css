@@ -1,0 +1,73 @@
+/**
+ * ula_spec_card — estilos propios del patrón spec-card.
+ * Extraídos SIN CAMBIOS de la maqueta. Consumen tokens de ula_tokens.
+ * El contenedor .spec-grid no está aquí (lo aporta la sección).
+ */
+.spec-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+  transition: box-shadow 0.25s, transform 0.25s;
+}
+.spec-card:hover {
+  box-shadow: 0 12px 36px rgba(0,51,153,0.1);
+  transform: translateY(-4px);
+}
+.spec-top {
+  padding: 2rem;
+  background: var(--eu-blue);
+  position: relative;
+}
+.spec-top-2 { background: #2a5c8b; }
+.spec-icon {
+  width: 48px; height: 48px;
+  background: rgba(255,204,0,0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 1rem;
+}
+.spec-top h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--white);
+  margin-bottom: 0.4rem;
+}
+.spec-top .spec-uni {
+  font-size: 12px;
+  color: var(--eu-yellow);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.spec-body {
+  padding: 1.8rem 2rem;
+  background: var(--white);
+}
+.spec-body p {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+}
+.spec-modules {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.spec-modules li {
+  font-size: 13px;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.spec-modules li::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--eu-yellow);
+  border-radius: 50%;
+  flex-shrink: 0;
+}

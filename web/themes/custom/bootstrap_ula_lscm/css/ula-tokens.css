@@ -1,0 +1,25 @@
+/**
+ * ULA design tokens — variables globales del tema.
+ * Librería 'ula_tokens', cargada siempre (global-styling): reutilizable por
+ * cualquier página del tema, no solo la landing.
+ * Origen: extraído sin cambios del :root de la maqueta lscm-master-static.
+ * Nota: los NOMBRES de variables se mantienen tal cual la maqueta (sin prefijo),
+ * para que el CSS de los componentes funcione sin reescribir referencias.
+ */
+:root {
+  --eu-blue: #003399;
+  --eu-blue-dark: #002277;
+  --eu-blue-light: #1a4db3;
+  --eu-yellow: #FFCC00;
+  --eu-yellow-dark: #e6b800;
+  --white: #ffffff;
+  --off-white: #f4f6fc;
+  --text-dark: #0d1b3e;
+  --text-mid: #3a4a6b;
+  --text-light: #6b7fa3;
+  --border: #d0d9ef;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Manrope', sans-serif;
+  --radius: 12px;
+  --radius-lg: 20px;
+}

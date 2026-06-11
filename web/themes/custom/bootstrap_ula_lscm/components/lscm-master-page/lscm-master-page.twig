@@ -1,427 +1,348 @@
 {#
-  Component: lscm-master-page
-  Props:   ver lscm-master-page.component.yml
-  Slots:   ver lscm-master-page.component.yml
-#}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ site_name }} — European Master in Logistics &amp; Supply Chain Management</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
+  lscm-master-page — Marco de la landing del máster LSCM.
 
-{# ─────────────────────────────────────────────
-   NAV
-───────────────────────────────────────────── #}
+  COMPONE los componentes ula_* en cada sección, con diseño fiel a la maqueta e
+  independiente de Bootstrap Italia.
+
+  - Textos de página: PROPS editables (ver .component.yml). Mapeables a campos de un bloque.
+  - Colecciones de ítems: DATOS FIJOS definidos abajo (decisión: contenido casi estático).
+  - Botones de salto: por sección, con texto + URL (placeholders editables).
+  - Menú hamburguesa y pastillas interactivas: ITERACIÓN POSTERIOR (no incluidos aún).
+
+  Las clases .reveal/.reveal-delay-* (animación al hacer scroll) se mantienen en el marco
+  para fidelidad; el JS que las activa es el de la maqueta (lscm-master-page.js).
+#}
+
+{# ───────── DATOS FIJOS DE LAS COLECCIONES (contenido de la maqueta) ───────── #}
+{% set hero_stats = [
+  { number: '120', label: 'ECTS Credits' },
+  { number: '3', label: 'Partner Universities' }
+] %}
+
+{% set about_features = [
+  { icon: '🎓', title: 'Accredited Programme', description: 'Verified by legal bodies in all three countries' },
+  { icon: '🌍', title: 'International Cohort', description: 'Study alongside students from across Europe' },
+  { icon: '🏭', title: 'Industry Links', description: 'Strong ties with logistics companies & consultancies' },
+  { icon: '🔬', title: 'Research Focus', description: 'Close connection to academic research projects' },
+  { icon: '💼', title: 'Career-Ready', description: 'Practical projects with real companies' },
+  { icon: '📄', title: 'PhD Access', description: 'Eligible to continue to doctoral studies' }
+] %}
+
+{% set journey_semesters = [
+  { semester: 'Semester 1', icon: '📐', university: 'UAB · Barcelona', title: 'Foundations of LSCM', variant: '1',
+    subjects: ['Supply Chain Management','Operations Management','Logistics Systems','Quantitative Methods','Information Systems','Project Management'] },
+  { semester: 'Semester 2', icon: '🔗', university: 'RTU · Riga', title: 'Advanced Logistics', variant: '2',
+    subjects: ['Transport & Distribution','Warehousing','Procurement','Supply Chain Analytics','Lean Management'] },
+  { semester: 'Semester 3', icon: '⚙️', university: 'RTU or UASW', title: 'Specialisation', variant: '3',
+    subjects: ['Specialisation Track','Electives','Applied Projects'] },
+  { semester: 'Semester 4', icon: '📝', university: 'RTU or UASW', title: "Master's Thesis", variant: '4',
+    subjects: ['Research Methods','Thesis','Defence'] }
+] %}
+
+{% set universities = [
+  { flag: '🇪🇸', country: 'Spain · Barcelona', name: 'Universitat Autònoma de Barcelona', abbr: 'UAB',
+    description: "The lead institution of the LSCM consortium. A top public research university located in the Barcelona metropolitan area — one of Europe's leading logistics hubs. All admissions and enrolment are handled by UAB.",
+    tags: [ { label: 'Semester 1' }, { label: 'Lead Partner' } ] },
+  { flag: '🇱🇻', country: 'Latvia · Riga', name: 'Riga Technical University', abbr: 'RTU',
+    description: 'One of the oldest and largest technical universities in the Baltic states. RTU specialises in engineering, technology, and information systems — bringing a strong technical and digital perspective to the programme.',
+    tags: [ { label: 'Semester 2' }, { label: 'Semester 3 & 4 (option)' } ] },
+  { flag: '🇩🇪', country: 'Germany · Wildau', name: 'University of Applied Sciences Wildau', abbr: 'UASW',
+    description: 'Located near Berlin, UASW is renowned for its applied research in logistics systems engineering. Strong industry connections and a hands-on approach to learning make it ideal for students seeking practical expertise.',
+    tags: [ { label: 'Semester 3 & 4 (option)' } ] }
+] %}
+
+{% set specializations = [
+  { icon: '📊', title: 'Logistics Information Systems', university: 'Riga Technical University · Latvia', variant: 'primary',
+    description: 'Focus on how integrated IT solutions support and optimise logistics and supply chain management. Ideal for those interested in digitalisation, data-driven decision-making and smart logistics.',
+    modules: ['Logistics IT Systems & Architecture','Digital Transformation in SCM','Data Analytics & Business Intelligence','ERP & WMS Systems','IoT & Smart Logistics'] },
+  { icon: '🏗️', title: 'Logistics Systems Engineering', university: 'University of Applied Sciences Wildau · Germany', variant: 'secondary',
+    description: 'Focus on analysis, design, evaluation and implementation of materials handling, transport, and logistics management and control systems. Hands-on and engineering-oriented.',
+    modules: ['Materials Handling Systems','Warehouse Design & Automation','Transport Network Optimisation','Simulation & Modelling','Logistics Control Systems'] }
+] %}
+
+{% set why_items = [
+  { number: '3', title: 'Countries, one degree', description: 'Live, study and build your network in Spain, Latvia, and Germany — with one joint diploma at the end.' },
+  { number: '120', title: "ECTS — full master's", description: 'A complete two-year programme that qualifies you for PhD programmes in logistics and engineering.' },
+  { number: '2', title: 'Focused specialisations', description: 'Choose a track aligned with your career goals — digital IT systems or engineering implementation.' },
+  { number: '∞', title: 'Industry connections', description: 'Real projects, guest lectures, and company visits integrated throughout the programme.' },
+  { number: 'EN', title: 'Fully in English', description: 'All courses are taught in English, designed for an international and multicultural student body.' },
+  { number: '🇪🇺', title: 'EU accredited', description: 'An officially verified joint programme compliant with European higher education standards.' }
+] %}
+
+{% set timeline_items = [
+  { title: '1. Pre-enrolment opens', description: 'January – September each year. Rolling review of applications.' },
+  { title: '2. Document submission', description: 'Upload required documents via the UAB online portal. Obtain your student NIA number first if not yet a UAB student.' },
+  { title: '3. Admissions committee review', description: 'Decision communicated within 20 days of application submission.' },
+  { title: '4. Enrolment & start of studies', description: 'Follow UAB enrolment procedures. Programme begins in September.' }
+] %}
+
+{% set requirements_cards = [
+  { icon: '🎓', title: 'Academic Background', description: "Bachelor's degree in engineering, technology, business, or a related field from a recognised institution." },
+  { icon: '🌐', title: 'English Proficiency', description: 'TOEFL 90+ (internet-based) or equivalent B2 level according to the CEFR framework.' },
+  { icon: '📋', title: 'Documents', description: 'CV, motivation letter, academic transcripts, degree certificate, and language certificate.' },
+  { icon: '🌍', title: 'Open to EU & non-EU', description: "International students outside the EU are supported through UAB's International Support Service for visa applications." }
+] %}
+
+{# ───────────────────────────── NAV ───────────────────────────── #}
 <nav>
   <div class="nav-inner">
-    <a href="#" class="nav-logo">
-      {# EU Stars SVG — decorativo, sin contenido editable #}
-      <svg class="eu-stars" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="19" cy="19" r="19" fill="#003399"/>
-        <g fill="#FFCC00">
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(0 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(30 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(60 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(90 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(120 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(150 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(180 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(210 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(240 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(270 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(300 19 19) translate(0,-6)"/>
-          <polygon points="19,4 19.6,6.2 21.9,6.2 20.1,7.5 20.7,9.7 19,8.4 17.3,9.7 17.9,7.5 16.1,6.2 18.4,6.2" transform="rotate(330 19 19) translate(0,-6)"/>
-        </g>
-      </svg>
+    <a href="/" class="nav-logo">
+      <img src="{{ logo_url }}" alt="{{ brand_top }}" class="nav-logo-img">
       <div class="nav-brand">
-        <span class="nav-brand-top">{{ site_name }}</span>
-        {% if site_subtitle %}
-          <span class="nav-brand-sub">{{ site_subtitle }}</span>
-        {% endif %}
+        <span class="nav-brand-top">{{ brand_top }}</span>
+        <span class="nav-brand-sub">{{ brand_sub }}</span>
       </div>
     </a>
-
     <ul class="nav-links">
-      {# Slot: enlaces internos del menú como <li> items #}
-      {{ nav_links }}
-
-      {% if nav_cta_url and nav_cta_text %}
-        <li>
-          <a href="{{ nav_cta_url }}" class="nav-cta">{{ nav_cta_text }}</a>
-        </li>
-      {% endif %}
+      <li><a href="#about">About</a></li>
+      <li><a href="#journey">Programme</a></li>
+      <li><a href="#universities">Partners</a></li>
+      <li><a href="#specializations">Specialisations</a></li>
+      <li><a href="#admission">Admission</a></li>
+      <li><a href="{{ hero_cta1_url }}" class="nav-cta">Apply Now</a></li>
     </ul>
   </div>
 </nav>
 
-{# ─────────────────────────────────────────────
-   HERO
-───────────────────────────────────────────── #}
+{# ───────────────────────────── HERO ───────────────────────────── #}
 <section class="hero">
-  {% if hero_badge_text %}
-    <div class="hero-badge">{{ hero_badge_text }}</div>
-  {% endif %}
-
-  <h1>
-    {{ hero_title }}<br>
-    {% if hero_title_highlight %}
-      <span>{{ hero_title_highlight }}</span>
-    {% endif %}
-  </h1>
-
-  {% if hero_description %}
-    <p>{{ hero_description }}</p>
-  {% endif %}
-
+  <div class="hero-badge">{{ hero_badge_text }}</div>
+  <h1>{{ hero_title }}<br><span>{{ hero_title_highlight }}</span></h1>
+  <p>{{ hero_description }}</p>
   <div class="hero-btns">
-    {% if hero_cta_primary_url and hero_cta_primary_text %}
-      <a href="{{ hero_cta_primary_url }}" class="btn-primary">{{ hero_cta_primary_text }} &rarr;</a>
-    {% endif %}
-    {% if hero_cta_secondary_url and hero_cta_secondary_text %}
-      <a href="{{ hero_cta_secondary_url }}" class="btn-outline">{{ hero_cta_secondary_text }}</a>
-    {% endif %}
+    <a href="#admission" class="btn-primary">{{ hero_cta1_text }} &rarr;</a>
+    <a href="#journey" class="btn-outline">{{ hero_cta2_text }}</a>
   </div>
-
-  {% if hero_stats %}
-    <div class="hero-stats">
-      {# Slot: bloques .hero-stat con .hero-stat-num y .hero-stat-label #}
-      {{ hero_stats }}
+  <div class="hero-stats">
+    {% for stat in hero_stats %}
+      {{ include('bootstrap_ula_lscm:ula_hero_stat', { number: stat.number, label: stat.label }) }}
+    {% endfor %}
+    {# Stat especial (banderas), fiel a la maqueta: orden invertido + tamaños propios #}
+    <div class="hero-stat">
+      <span class="hero-stat-label" style="font-size:10px;margin-top:0;">STUDY IN</span>
+      <span class="hero-stat-num" style="font-size:1.5rem;">🇪🇸 🇱🇻 🇩🇪</span>
     </div>
-  {% endif %}
-
-  <div class="hero-scroll">
-    <div class="scroll-arrow"></div>
+    {{ include('bootstrap_ula_lscm:ula_hero_stat', { number: '2', label: 'Specialisations' }) }}
   </div>
+  <div class="hero-scroll"><div class="scroll-arrow"></div></div>
 </section>
 
-{# ─────────────────────────────────────────────
-   ABOUT
-───────────────────────────────────────────── #}
+{# ───────────────────────────── ABOUT ───────────────────────────── #}
 <section class="about" id="about">
   <div class="container">
     <div class="about-grid">
-
-      {# Columna izquierda: tarjetas visuales #}
       <div class="about-visual reveal">
-        {% if about_card_title or about_card_body %}
-          <div class="about-card-main">
-            {% if about_card_title %}
-              <h3>{{ about_card_title }}</h3>
-            {% endif %}
-            {% if about_card_body %}
-              <p>{{ about_card_body }}</p>
-            {% endif %}
-          </div>
-        {% endif %}
-
-        {% if about_accent_title or about_accent_body %}
-          <div class="about-card-accent">
-            {% if about_accent_title %}
-              <h4>{{ about_accent_title }}</h4>
-            {% endif %}
-            {% if about_accent_body %}
-              <p>{{ about_accent_body }}</p>
-            {% endif %}
-          </div>
-        {% endif %}
+        <div class="about-card-main">
+          <h3>A programme built for the European labour market</h3>
+          <p>The LSCM Master is a joint accredited programme jointly offered by leading European universities. It addresses the most pressing challenges in global supply chain management through technology, engineering, and business — with a deeply international approach.</p>
+        </div>
+        <div class="about-card-accent">
+          <h4>Joint Diploma</h4>
+          <p>Official diploma issued by UAB on behalf of all partner universities. Recognised across Europe and grants access to PhD studies.</p>
+        </div>
       </div>
-
-      {# Columna derecha: descripción + features #}
       <div>
         <div class="reveal reveal-delay-1">
-          {% if about_section_tag %}
-            <p class="section-tag">{{ about_section_tag }}</p>
-          {% endif %}
-          {% if about_section_title %}
-            <h2 class="section-title">{{ about_section_title }}</h2>
-          {% endif %}
-          {% if about_section_desc %}
-            <p class="section-desc">{{ about_section_desc }}</p>
-          {% endif %}
+          <p class="section-tag">{{ about_tag }}</p>
+          <h2 class="section-title">{{ about_title }}</h2>
+          <p class="section-desc">{{ about_desc }}</p>
         </div>
-
-        {% if about_features %}
-          <div class="about-features reveal reveal-delay-2">
-            {# Slot: .feature-item divs con icono, <strong> y <span> #}
-            {{ about_features }}
-          </div>
-        {% endif %}
+        <div class="about-features reveal reveal-delay-2">
+          {% for f in about_features %}
+            {{ include('bootstrap_ula_lscm:ula_feature_item', { icon: f.icon, title: f.title, description: f.description }) }}
+          {% endfor %}
+        </div>
+        <div class="reveal reveal-delay-3" style="margin-top:2rem;">
+          <a href="{{ about_cta_url }}" class="btn-primary">{{ about_cta_text }} &rarr;</a>
+        </div>
       </div>
-
     </div>
   </div>
 </section>
 
-{# ─────────────────────────────────────────────
-   JOURNEY
-───────────────────────────────────────────── #}
+{# ───────────────────────────── JOURNEY ───────────────────────────── #}
 <section class="journey" id="journey">
   <div class="container">
     <div class="journey-header reveal">
-      {% if journey_section_tag %}
-        <p class="section-tag">{{ journey_section_tag }}</p>
-      {% endif %}
-      {% if journey_section_title %}
-        <h2 class="section-title">{{ journey_section_title }}</h2>
-      {% endif %}
-      {% if journey_section_desc %}
-        <p class="section-desc" style="margin: 0 auto;">{{ journey_section_desc }}</p>
-      {% endif %}
+      <p class="section-tag">{{ journey_tag }}</p>
+      <h2 class="section-title">{{ journey_title }}</h2>
+      <p class="section-desc" style="margin: 0 auto;">{{ journey_desc }}</p>
     </div>
-
     <div class="journey-track">
-      {# Slot: .sem-card y .journey-connector alternados (4 cards + 3 conectores) #}
-      {{ journey_semesters }}
+      {% for sem in journey_semesters %}
+        {{ include('bootstrap_ula_lscm:ula_sem_card', {
+          semester: sem.semester, icon: sem.icon, university: sem.university,
+          title: sem.title, variant: sem.variant, subjects: sem.subjects
+        }) }}
+        {# Conector decorativo entre tarjetas (no tras la última) — decisión: es del layout #}
+        {% if not loop.last %}
+          <div class="journey-connector reveal"><div class="connector-line"></div></div>
+        {% endif %}
+      {% endfor %}
     </div>
-
-    {% if journey_split_note %}
-      <div style="text-align:center; margin-top:2.5rem;" class="reveal">
-        <div class="journey-split-note" style="display:inline-block;">
-          <p>{{ journey_split_note }}</p>
-        </div>
+    <div style="text-align:center; margin-top:2.5rem;" class="reveal">
+      <div class="journey-split-note" style="display:inline-block;">
+        <p>🔀 Semesters 3 &amp; 4 — choose your specialisation track: study at <span>RTU (Riga, Latvia)</span> or <span>UASW (Wildau, Germany)</span></p>
       </div>
-    {% endif %}
+    </div>
+    <div class="reveal" style="text-align:center; margin-top:2rem;">
+      <a href="{{ journey_cta_url }}" class="btn-primary">{{ journey_cta_text }} &rarr;</a>
+    </div>
   </div>
 </section>
 
-{# ─────────────────────────────────────────────
-   UNIVERSITIES
-───────────────────────────────────────────── #}
+{# ───────────────────────────── UNIVERSITIES ───────────────────────────── #}
 <section class="universities" id="universities">
   <div class="container">
     <div class="reveal">
-      {% if universities_section_tag %}
-        <p class="section-tag">{{ universities_section_tag }}</p>
-      {% endif %}
-      {% if universities_section_title %}
-        <h2 class="section-title">{{ universities_section_title }}</h2>
-      {% endif %}
-      {% if universities_section_desc %}
-        <p class="section-desc">{{ universities_section_desc }}</p>
-      {% endif %}
+      <p class="section-tag">{{ uni_tag }}</p>
+      <h2 class="section-title">{{ uni_title }}</h2>
+      <p class="section-desc">{{ uni_desc }}</p>
     </div>
-
-    {% if universities %}
-      <div class="uni-grid">
-        {# Slot: .uni-card divs con país, nombre, abreviatura, descripción y tags #}
-        {{ universities }}
-      </div>
-    {% endif %}
+    <div class="uni-grid">
+      {% for uni in universities %}
+        {{ include('bootstrap_ula_lscm:ula_uni_card', {
+          flag: uni.flag, country: uni.country, name: uni.name, abbr: uni.abbr,
+          description: uni.description, tags: uni.tags
+        }) }}
+      {% endfor %}
+    </div>
+    <div class="reveal" style="margin-top:2.5rem;">
+      <a href="{{ uni_cta_url }}" class="btn-outline">{{ uni_cta_text }} &rarr;</a>
+    </div>
   </div>
 </section>
 
-{# ─────────────────────────────────────────────
-   SPECIALIZATIONS
-───────────────────────────────────────────── #}
+{# ───────────────────────────── SPECIALIZATIONS ───────────────────────────── #}
 <section class="specializations" id="specializations">
   <div class="container">
     <div class="spec-header">
       <div class="reveal">
-        {% if spec_section_tag %}
-          <p class="section-tag">{{ spec_section_tag }}</p>
-        {% endif %}
-        {% if spec_section_title %}
-          <h2 class="section-title">{{ spec_section_title }}</h2>
-        {% endif %}
+        <p class="section-tag">{{ spec_tag }}</p>
+        <h2 class="section-title">{{ spec_title }}</h2>
       </div>
-      {% if spec_section_desc %}
-        <p class="section-desc reveal reveal-delay-1" style="max-width: 360px;">
-          {{ spec_section_desc }}
-        </p>
-      {% endif %}
+      <p class="section-desc reveal reveal-delay-1" style="max-width: 360px;">{{ spec_desc }}</p>
     </div>
-
-    {% if specializations %}
-      <div class="spec-grid">
-        {# Slot: .spec-card divs con .spec-top y .spec-body #}
-        {{ specializations }}
-      </div>
-    {% endif %}
+    <div class="spec-grid">
+      {% for spec in specializations %}
+        {{ include('bootstrap_ula_lscm:ula_spec_card', {
+          icon: spec.icon, title: spec.title, university: spec.university,
+          description: spec.description, modules: spec.modules, variant: spec.variant
+        }) }}
+      {% endfor %}
+    </div>
+    <div class="reveal" style="margin-top:2.5rem; text-align:center;">
+      <a href="{{ spec_cta_url }}" class="btn-primary">{{ spec_cta_text }} &rarr;</a>
+    </div>
   </div>
 </section>
 
-{# ─────────────────────────────────────────────
-   WHY LSCM
-───────────────────────────────────────────── #}
+{# ───────────────────────────── WHY ───────────────────────────── #}
 <section class="why">
   <div class="container">
     <div class="reveal">
-      {% if why_section_tag %}
-        <p class="section-tag">{{ why_section_tag }}</p>
-      {% endif %}
-      {% if why_section_title %}
-        <h2 class="section-title" style="color:white;">{{ why_section_title }}</h2>
-      {% endif %}
+      <p class="section-tag">Why choose LSCM</p>
+      <h2 class="section-title" style="color:white;">The LSCM Advantage</h2>
     </div>
-
-    {% if why_items %}
-      <div class="why-grid">
-        {# Slot: .why-item divs con .why-num, h4 y p #}
-        {{ why_items }}
-      </div>
-    {% endif %}
+    <div class="why-grid">
+      {% for item in why_items %}
+        {{ include('bootstrap_ula_lscm:ula_why_item', { number: item.number, title: item.title, description: item.description }) }}
+      {% endfor %}
+    </div>
   </div>
 </section>
 
-{# ─────────────────────────────────────────────
-   ADMISSION
-───────────────────────────────────────────── #}
+{# ───────────────────────────── ADMISSION ───────────────────────────── #}
 <section class="admission" id="admission">
   <div class="container">
     <div class="admission-grid">
-
-      {# Columna izquierda: intro + timeline #}
       <div>
         <div class="reveal">
-          {% if admission_section_tag %}
-            <p class="section-tag">{{ admission_section_tag }}</p>
-          {% endif %}
-          {% if admission_section_title %}
-            <h2 class="section-title">{{ admission_section_title }}</h2>
-          {% endif %}
-          {% if admission_section_desc %}
-            <p class="section-desc">{{ admission_section_desc }}</p>
-          {% endif %}
+          <p class="section-tag">{{ adm_tag }}</p>
+          <h2 class="section-title">{{ adm_title }}</h2>
+          <p class="section-desc">{{ adm_desc }}</p>
         </div>
-
-        {% if timeline_items %}
-          <div class="timeline reveal reveal-delay-1">
-            {# Slot: .timeline-item divs con dot/line visual y .timeline-content #}
-            {{ timeline_items }}
-          </div>
-        {% endif %}
+        <div class="timeline reveal reveal-delay-1">
+          {% for step in timeline_items %}
+            {{ include('bootstrap_ula_lscm:ula_timeline_item', {
+              title: step.title, description: step.description, show_line: not loop.last
+            }) }}
+          {% endfor %}
+        </div>
+        <div class="reveal" style="margin-top:1rem;">
+          <a href="{{ adm_cta_url }}" class="btn-primary">{{ adm_cta_text }} &rarr;</a>
+        </div>
       </div>
-
-      {# Columna derecha: requisitos + CTA #}
       <div>
-        {% if requirements_tag %}
-          <p class="section-tag reveal">{{ requirements_tag }}</p>
-        {% endif %}
-
-        {% if requirements_cards %}
-          <div class="req-cards reveal reveal-delay-1">
-            {# Slot: .req-card divs con icono, título y descripción #}
-            {{ requirements_cards }}
-          </div>
-        {% endif %}
-
-        {% if req_cta_title or req_cta_url %}
-          <div class="req-cta reveal reveal-delay-2">
-            {% if req_cta_title %}
-              <h4>{{ req_cta_title }}</h4>
-            {% endif %}
-            {% if req_cta_desc %}
-              <p>{{ req_cta_desc }}</p>
-            {% endif %}
-            {% if req_cta_url and req_cta_button_text %}
-              <a href="{{ req_cta_url }}" target="_blank">{{ req_cta_button_text }} &rarr;</a>
-            {% endif %}
-          </div>
-        {% endif %}
+        <p class="section-tag reveal">Requirements</p>
+        <div class="req-cards reveal reveal-delay-1">
+          {% for req in requirements_cards %}
+            {{ include('bootstrap_ula_lscm:ula_req_card', { icon: req.icon, title: req.title, description: req.description }) }}
+          {% endfor %}
+        </div>
+        <div class="req-cta reveal reveal-delay-2">
+          <h4>Start your European journey today</h4>
+          <p>All admissions are handled by UAB. Click below to begin the pre-enrolment process at the Autonomous University of Barcelona.</p>
+          <a href="{{ adm_cta_url }}">Go to Application Portal &rarr;</a>
+        </div>
       </div>
-
     </div>
   </div>
 </section>
 
-{# ─────────────────────────────────────────────
-   CTA SECTION
-───────────────────────────────────────────── #}
+{# ───────────────────────────── GET IN TOUCH (CTA) ───────────────────────────── #}
 <section class="cta-section">
   <div class="container">
     <div class="cta-inner reveal">
-      {% if cta_section_tag %}
-        <p class="section-tag">{{ cta_section_tag }}</p>
-      {% endif %}
-      {% if cta_section_title %}
-        <h2 class="section-title">{{ cta_section_title }}</h2>
-      {% endif %}
-      {% if cta_section_desc %}
-        <p class="section-desc">{{ cta_section_desc }}</p>
-      {% endif %}
+      <p class="section-tag">{{ contact_tag }}</p>
+      <h2 class="section-title">{{ contact_title }}</h2>
+      <p class="section-desc">{{ contact_desc }}</p>
       <div class="cta-btns">
-        {% if cta_email %}
-          <a href="mailto:{{ cta_email }}" class="btn-blue">📧 {{ cta_email }}</a>
-        {% endif %}
-        {% if cta_faq_url and cta_faq_text %}
-          <a href="{{ cta_faq_url }}" target="_blank" class="btn-primary">{{ cta_faq_text }} &rarr;</a>
-        {% endif %}
+        <a href="mailto:{{ contact_email }}" class="btn-blue">📧 {{ contact_email }}</a>
+        <a href="{{ contact_faq_url }}" target="_blank" class="btn-primary">{{ contact_faq_text }} &rarr;</a>
       </div>
     </div>
   </div>
 </section>
 
-{# ─────────────────────────────────────────────
-   FOOTER
-───────────────────────────────────────────── #}
+{# ───────────────────────────── FOOTER ───────────────────────────── #}
 <footer>
   <div class="footer-inner">
     <div class="footer-top">
-
       <div class="footer-brand">
-        <span class="nav-brand-top">{{ footer_brand_name }}</span>
-        {% if footer_brand_desc %}
-          <p>{{ footer_brand_desc }}</p>
-        {% endif %}
+        <span class="nav-brand-top">{{ brand_top }}</span>
+        <p>European Joint Master's Programme in Logistics &amp; Supply Chain Management. A consortium of UAB, RTU, and UASW — training the next generation of European logistics leaders.</p>
       </div>
-
-      {% if footer_col1_links %}
-        <div class="footer-col">
-          {% if footer_col1_title %}
-            <h5>{{ footer_col1_title }}</h5>
-          {% endif %}
-          <ul>
-            {# Slot: <li> elements con enlaces del bloque "Programme" #}
-            {{ footer_col1_links }}
-          </ul>
-        </div>
-      {% endif %}
-
-      {% if footer_col2_links %}
-        <div class="footer-col">
-          {% if footer_col2_title %}
-            <h5>{{ footer_col2_title }}</h5>
-          {% endif %}
-          <ul>
-            {# Slot: <li> elements con enlaces del bloque "Admissions" #}
-            {{ footer_col2_links }}
-          </ul>
-        </div>
-      {% endif %}
-
-      {% if footer_col3_links %}
-        <div class="footer-col">
-          {% if footer_col3_title %}
-            <h5>{{ footer_col3_title }}</h5>
-          {% endif %}
-          <ul>
-            {# Slot: <li> elements con enlaces del bloque "Partners" #}
-            {{ footer_col3_links }}
-          </ul>
-        </div>
-      {% endif %}
-
+      <div class="footer-col">
+        <h5>Programme</h5>
+        <ul>
+          <li><a href="{{ about_cta_url }}">About the Master</a></li>
+          <li><a href="{{ journey_cta_url }}">Academic Path</a></li>
+          <li><a href="{{ spec_cta_url }}">Specialisations</a></li>
+          <li><a href="{{ uni_cta_url }}">Partner Universities</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Admissions</h5>
+        <ul>
+          <li><a href="{{ adm_cta_url }}">How to Apply</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Partners</h5>
+        <ul>
+          <li><a href="https://www.uab.cat" target="_blank">UAB Barcelona</a></li>
+          <li><a href="https://www.rtu.lv" target="_blank">RTU Riga</a></li>
+          <li><a href="https://en.th-wildau.de" target="_blank">UASW Wildau</a></li>
+        </ul>
+      </div>
     </div>
-
     <div class="footer-bottom">
-      {% if footer_copyright %}
-        <p>{{ footer_copyright }}</p>
-      {% endif %}
-      {% if footer_eu_badge_text %}
-        <div class="eu-badge">
-          <span>🇪🇺</span>
-          <span>{{ footer_eu_badge_text }}</span>
-        </div>
-      {% endif %}
+      <p>© 2025 Master in Logistics &amp; Supply Chain Management. All rights reserved.</p>
+      <div class="eu-badge">
+        <span>🇪🇺</span>
+        <span>Supported by the European Union · Erasmus+ Programme</span>
+      </div>
     </div>
   </div>
 </footer>
-
-</body>
-</html>

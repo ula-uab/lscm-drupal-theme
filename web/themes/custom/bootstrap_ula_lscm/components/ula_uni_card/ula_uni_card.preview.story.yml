@@ -1,0 +1,10 @@
+name: Preview
+props:
+  flag: '🇪🇸'
+  country: 'Spain · Barcelona'
+  name: 'Universitat Autònoma de Barcelona'
+  abbr: 'UAB'
+  description: "The lead institution of the LSCM consortium. A top public research university located in the Barcelona metropolitan area — one of Europe's leading logistics hubs. All admissions and enrolment are handled by UAB."
+  tags:
+    - label: 'Semester 1'
+    - label: 'Lead Partner'

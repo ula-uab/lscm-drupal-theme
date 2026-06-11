@@ -1,0 +1,19 @@
+{#
+  ula_sem_card — tarjeta de semestre del recorrido académico.
+  Props: semester, icon, university, title, subjects (array), variant (1|2|3|4).
+  Markup y clases idénticos a la maqueta. La variante aplica sem-icon-N y sem-uni-N
+  (la variante '1' usa el color base de .sem-uni, sin sufijo).
+#}
+<div class="sem-card">
+  <div class="sem-num">{{ semester }}</div>
+  <div class="sem-icon sem-icon-{{ variant }}">{{ icon }}</div>
+  <span class="sem-uni{{ variant != '1' ? ' sem-uni-' ~ variant : '' }}">{{ university }}</span>
+  <h3>{{ title }}</h3>
+  {% if subjects is not empty %}
+    <ul class="sem-subjects">
+      {% for subject in subjects %}
+        <li>{{ subject }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>

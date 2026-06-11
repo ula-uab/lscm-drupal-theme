@@ -1,0 +1,13 @@
+name: Preview
+props:
+  icon: '📊'
+  title: 'Logistics Information Systems'
+  university: 'Riga Technical University · Latvia'
+  description: 'Focus on how integrated IT solutions support and optimise logistics and supply chain management. Ideal for those interested in digitalisation, data-driven decision-making and smart logistics.'
+  variant: primary
+  modules:
+    - 'Logistics IT Systems & Architecture'
+    - 'Digital Transformation in SCM'
+    - 'Data Analytics & Business Intelligence'
+    - 'ERP & WMS Systems'
+    - 'IoT & Smart Logistics'

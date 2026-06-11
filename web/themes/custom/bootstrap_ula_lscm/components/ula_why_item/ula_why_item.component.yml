@@ -1,0 +1,22 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Why Item
+status: experimental
+description: >
+  Ítem de la sección "Why LSCM": un número destacado, un título y una descripción.
+  Componente autónomo del design system ULA. Se compone dentro del slot 'why_items'
+  de la landing. El contenedor en rejilla (.why-grid) lo aporta la sección, no este componente.
+props:
+  type: object
+  properties:
+    number:
+      type: string
+      title: Number
+      description: 'Número o símbolo destacado (p. ej. "3", "120", "∞").'
+    title:
+      type: string
+      title: Title
+      description: 'Título corto del ítem.'
+    description:
+      type: string
+      title: Description
+      description: 'Texto descriptivo del ítem.'

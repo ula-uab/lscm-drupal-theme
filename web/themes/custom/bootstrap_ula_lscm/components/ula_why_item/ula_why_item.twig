@@ -1,0 +1,11 @@
+{#
+  ula_why_item — un ítem de la sección "Why LSCM".
+  Props: number, title, description. Markup y clases idénticos a la maqueta.
+  Nota: las clases .reveal/.reveal-delay-* (animación al hacer scroll) las añade
+  la sección contenedora al instanciar, no este componente.
+#}
+<div class="why-item">
+  <div class="why-num">{{ number }}</div>
+  <h4>{{ title }}</h4>
+  <p>{{ description }}</p>
+</div>

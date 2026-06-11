@@ -1,0 +1,47 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Uni Card
+status: experimental
+description: >
+  Tarjeta de universidad socia: bandera + país, nombre, acrónimo, descripción y pastillas
+  de semestre/rol. Componente autónomo del design system ULA. Se compone dentro del slot
+  'universities'. El contenedor en rejilla (.uni-grid) lo aporta la sección.
+  Pensado para fondo OSCURO (sección azul).
+props:
+  type: object
+  properties:
+    flag:
+      type: string
+      title: Flag
+      description: 'Bandera como emoji (p. ej. "🇪🇸").'
+    country:
+      type: string
+      title: Country / City
+      description: 'País y ciudad (p. ej. "Spain · Barcelona").'
+    name:
+      type: string
+      title: Name
+      description: 'Nombre completo de la universidad.'
+    abbr:
+      type: string
+      title: Abbreviation
+      description: 'Acrónimo (p. ej. "UAB").'
+    description:
+      type: string
+      title: Description
+      description: 'Texto descriptivo de la universidad.'
+    tags:
+      type: array
+      title: Tags
+      description: >
+        Pastillas de semestre/rol. Cada pastilla es un objeto con 'label' (texto visible) y,
+        opcionalmente, 'info' (contenido para un popover/modal en una iteración futura;
+        actualmente NO se renderiza). También se admite una cadena simple por compatibilidad.
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+            title: Label
+          info:
+            type: string
+            title: Info (reservado para popover futuro)
