@@ -70,12 +70,19 @@ ddev:
   dependencies:
     - core/drupal
 
+# ─────────────────────────────────────────────
+# ULA — Design system propio (independiente de Bootstrap Italia)
+# ─────────────────────────────────────────────
+
+# Tokens globales (variables CSS). Cargada SIEMPRE vía info.yml (global).
 ula_tokens:
   version: 1.0
   css:
     base:
       css/ula-tokens.css: {}
 
+# Estilos base/globales de la landing (reset, container, section-*, botones, reveal).
+# Depende de los tokens.
 ula_landing_base:
   version: 1.0
   css:

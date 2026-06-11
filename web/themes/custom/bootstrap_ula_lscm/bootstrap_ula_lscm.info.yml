@@ -14,9 +14,10 @@ libraries:
   #- bootstrap_ula_lscm/hot
   #- bootstrap_ula_lscm/ddev
   - bootstrap_italia/base
+  # ULA design tokens — cargados siempre, reutilizables en toda la web
+  - bootstrap_ula_lscm/ula_tokens
   - bootstrap_italia/enable-all-tooltips
   - bootstrap_italia/load-fonts
-  - bootstrap_ula_lscm/ula_tokens
 
 # Check these settings, they must match the "libraries" choices.
 #ckeditor5-stylesheets:
