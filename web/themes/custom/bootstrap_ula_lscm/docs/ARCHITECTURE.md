@@ -261,9 +261,11 @@ bootstrap_ula_lscm/
 │   ├── ula_spec_card/  ula_sem_card/  ula_timeline_item/  ula_uni_card/   # Design system (§3)
 │   ├── lscm-master-page/                # Marco de la home (ver doc del elemento home)
 │   └── lscm-master-static/              # Maqueta original de referencia (no en producción)
-├── templates/
-│   ├── layout/page--front.html.twig     # Portada (elemento home)
-│   └── content/node--landing.html.twig  # Render del nodo landing (elemento home)
+├── templates/                           # Plantillas Twig, organizadas en subcarpetas por tipo
+│   ├── layout/                          # Plantillas de página/región (page--*, html, region--*)
+│   │   └── page--front.html.twig        # Portada (elemento home)
+│   └── content/                         # Plantillas de entidad (node--*, etc.)
+│       └── node--landing.html.twig      # Render del nodo landing (elemento home)
 └── docs/
     ├── README.md                        # Índice de la documentación
     ├── ARCHITECTURE.md                  # Este documento (nivel tema)
@@ -271,6 +273,19 @@ bootstrap_ula_lscm/
         └── home/
             └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"
 ```
+
+> **[CONVENCIÓN] Organización de `templates/` en subcarpetas por tipo.** Las plantillas Twig se
+> organizan en subcarpetas según el tipo de elemento de Drupal que sobreescriben, para mantener
+> el directorio navegable a medida que el tema crece:
+>
+> - `templates/layout/` — plantillas de página y región: `page--*.html.twig`, `html.html.twig`, `region--*.html.twig`.
+> - `templates/content/` — plantillas de entidad: `node--*.html.twig`, etc.
+> - `templates/block/`, `templates/field/`, `templates/views/`, `templates/navigation/` — se crean cuando se necesiten (bloques, campos, vistas, menús).
+>
+> Drupal localiza las plantillas por su **nombre**, no por su ubicación (busca de forma recursiva
+> en `templates/` y subcarpetas), por lo que esta organización es puramente para claridad y no
+> afecta a la funcionalidad. Tras mover una plantilla, ejecutar `ddev drush cr` para que Drupal
+> reindexe el registro de plantillas.
 
 > Los **scripts de configuración** están en `scripts/` (raíz del proyecto, no del tema):
 > `crear-campos-landing.php`, `anadir-campos-formdisplay.php`, `ordenar-campos-landing.php`.

@@ -188,8 +188,10 @@ components/lscm-master-page/        # El marco (ensambla la home)
 └── lscm-master-page.js             # Animaciones reveal + sombra del nav
 
 templates/
-├── layout/page--front.html.twig    # Portada a pantalla completa (sin chrome del tema base)
-└── content/node--landing.html.twig # Mapea campos del nodo → props del marco
+├── layout/
+│   └── page--front.html.twig       # Portada a pantalla completa (sin chrome del tema base)
+└── content/
+    └── node--landing.html.twig     # Mapea campos del nodo → props del marco
 ```
 
 > Los scripts que crearon el tipo de contenido `landing` y sus 42 campos están en `scripts/`
