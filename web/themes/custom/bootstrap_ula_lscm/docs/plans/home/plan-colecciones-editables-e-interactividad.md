@@ -20,7 +20,7 @@ Requisitos transversales (heredados del proyecto):
 - **Fidelidad visual** a la maqueta: ningún cambio debe alterar el aspecto ya validado.
 - **Independencia de frameworks externos** en lo que se añada (interactividad con **API nativa** del
   navegador, sin Bootstrap ni librerías JS de terceros).
-- **No meter configuración pesada en BD** innecesariamente (ver `../../ARCHITECTURE.md` §5.1):
+- **No meter configuración pesada en BD** innecesariamente (ver `../../ARCHITECTURE.md` §6.1):
   la config nueva (tipos de contenido, campos, vistas) vive en BD y se respalda con dumps; se
   conservan scripts reproducibles cuando aplique.
 
