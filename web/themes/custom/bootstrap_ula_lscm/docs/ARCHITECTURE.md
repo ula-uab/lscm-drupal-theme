@@ -137,14 +137,100 @@ El CSS del tema se organiza en tres capas, de lo global a lo específico:
 
 ---
 
-## 5. Notas técnicas y restricciones del entorno
+## 5. Patrón de contenido editable: tipos de contenido + vistas + componentes
+
+Este es el patrón con el que el tema convierte **contenido editable desde el admin** en
+**presentación con los componentes `ula_*`**. Es transversal: se usará en cualquier elemento del
+tema que necesite mostrar colecciones de ítems editables (la home es el primer caso, con sus
+universidades, especializaciones, etc.).
+
+### 5.1. Los tres conceptos de Drupal implicados
+
+**Tipo de contenido (content type).** Es la *plantilla* que define qué campos tiene una clase de
+entidad. Por ejemplo, un tipo de contenido "Universidad" se define por sus campos: nombre,
+acrónimo, país, descripción, URL, galería de imágenes, etc. El tipo de contenido es el **molde**,
+no el dato concreto.
+
+**Nodo (node).** Es una *instancia* concreta de un tipo de contenido, con sus campos rellenos. Si
+"Universidad" es el tipo (el molde), entonces "UAB" es un nodo (una pieza hecha con ese molde),
+con su nombre, su acrónimo, su descripción, etc. Cada universidad real es un nodo. El contenido
+editable desde el admin **son los nodos**: crear, editar o borrar una universidad es crear, editar
+o borrar un nodo de tipo Universidad.
+
+**Vista (view).** Es un elemento de Drupal que hace **dos cosas** a la vez:
+
+1. **Selecciona** qué entidades mostrar (el *qué*): p. ej. "todos los nodos de tipo Universidad,
+   publicados, ordenados por peso". Esto incluye filtrado y ordenación.
+2. **Define cómo se renderiza** cada una (el *cómo*): p. ej. "pinta cada universidad con el
+   componente `ula_uni_card`".
+
+Es importante retener que la vista no solo decide la apariencia, sino también **qué subconjunto de
+entidades entra y en qué orden**.
+
+### 5.2. La pieza que conecta vista y componente: `ui_patterns_views`
+
+El submódulo **`ui_patterns_views`** (de UI Patterns) es lo que permite que una vista, en lugar de
+renderizar cada fila con el HTML por defecto de Drupal, la renderice con un **componente SDC**,
+**mapeando los campos del nodo a las props del componente**.
+
+Por ejemplo, para la colección de universidades:
+
+- La vista selecciona los nodos de tipo Universidad.
+- Para cada fila (cada universidad), `ui_patterns_views` pinta el componente `ula_uni_card`,
+  mapeando: campo *nombre* → prop `name`, campo *acrónimo* → prop `abbr`, campo *país* → prop
+  `country`, campo *descripción* → prop `description`, etc.
+- El resultado es una rejilla de tarjetas `ula_uni_card`, una por universidad, alimentada por
+  contenido editable.
+
+Este es el **mismo patrón que el sitio ya usa** en la timeline de Admissions: nodos
+`ct_admission_preenrolment_step` listados por una vista que los pinta con el componente
+`timeline_item2` vía `ui_patterns_views`.
+
+> **Distinción importante (lección aprendida).** Este mecanismo —"pinta **cada fila de una vista**
+> con un componente"— es **distinto** de "renderiza **una entidad completa** (un nodo o un bloque)
+> con un componente". Lo segundo es lo que UI Patterns 2.x **no** ofrece sin Layout Builder (ver el
+> documento de la home, sobre por qué la home se sirve con una plantilla Twig y no con
+> `ui_patterns_blocks` ni Layout Builder). `ui_patterns_views` opera a nivel de *fila de vista* y es
+> el caso de uso para el que está diseñado; no comparte aquella limitación.
+
+### 5.3. Una misma entidad, varias representaciones
+
+Como la vista decide *cómo* se renderiza cada entidad en *su* contexto, una misma entidad puede
+mostrarse de formas distintas en sitios distintos. La misma universidad UAB puede aparecer:
+
+- En la home → una vista la pinta como `ula_uni_card` (tarjeta compacta, pocos campos).
+- En una página de detalle → mostrada con todos sus campos (galería incluida), con otro display.
+
+Por eso, cuando una colección representa una **entidad con vida propia** en el sitio (no solo
+decoración de una página), modelarla como tipo de contenido + nodos la hace **reutilizable** en
+varios contextos, no solo en la página donde aparece primero.
+
+### 5.4. Resumen del patrón
+
+```
+Tipo de contenido  →  define los campos      (el molde: "Universidad")
+        ↓
+Nodos              →  el contenido editable   (las piezas: "UAB", "RTU"…)
+        ↓
+Vista              →  selecciona + ordena los nodos
+        ↓  (vía ui_patterns_views)
+Componente ula_*   →  pinta cada nodo, mapeando campos → props
+```
+
+Crear o editar contenido = trabajar con los **nodos** (en el admin, sin tocar código). La **vista**
+y el **mapeo campos→props** se definen una vez (configuración) y a partir de ahí el contenido fluye
+solo.
+
+---
+
+## 6. Notas técnicas y restricciones del entorno
 
 Esta sección documenta restricciones del entorno y comportamientos no evidentes de Drupal /
 UI Patterns que condicionan cómo se construye y mantiene este tema. No son anécdotas: cada una
 afecta a decisiones concretas y a cómo deben hacerse las ampliaciones futuras. Aplican a
 **todos** los elementos del tema.
 
-### 5.1. Sitio sin gestión de configuración (config/sync)
+### 6.1. Sitio sin gestión de configuración (config/sync)
 
 Drupal separa **contenido** (nodos, textos — siempre en BD) de **configuración** (tipos de
 contenido, campos, vistas, displays, ajustes). La configuración *puede* exportarse a ficheros
@@ -166,7 +252,7 @@ Implicaciones para el mantenimiento:
   fallado por dependencias de módulos (p.ej. `ui_patterns_field_formatters`). Evitar
   `config:import` / `theme:uninstall` globales; preferir cambios quirúrgicos.
 
-### 5.2. Crear campos por código requiere tres pasos, no uno
+### 6.2. Crear campos por código requiere tres pasos, no uno
 
 Cuando se crea un campo desde la **interfaz** de Drupal, este encadena automáticamente tres
 operaciones. Al crearlo **por código** (scripts), hay que hacer las tres explícitamente, o el
@@ -184,7 +270,7 @@ Recomendación adicional: asignar el **`weight`** de cada campo por secciones de
 el formulario queda en orden de creación/alfabético (poco usable con decenas de campos). Ver los
 scripts en `scripts/` como referencia.
 
-### 5.3. Límite de longitud en props de texto (UI Patterns / campos string)
+### 6.3. Límite de longitud en props de texto (UI Patterns / campos string)
 
 Los campos de tipo `string` (texto plano) tienen un límite por defecto de **128 caracteres**.
 Los textos largos (p.ej. las descripciones de la home) superan ese límite, lo que provoca un
@@ -195,7 +281,7 @@ error al guardar ("cannot be longer than 128 characters").
 - Los **campos** de texto largo se crean como `string_long` (texto largo), no `string`.
 - Al añadir nuevas props/campos de texto extenso, aplicar el mismo criterio.
 
-### 5.4. `default` de SDC no se inyecta de forma fiable en runtime
+### 6.4. `default` de SDC no se inyecta de forma fiable en runtime
 
 Los valores `default` declarados en el `.component.yml` se usan para validación y para la
 galería, pero **no se inyectan de forma garantizada** cuando el componente se renderiza vía
@@ -209,7 +295,7 @@ su default.
 - Al añadir props nuevas con valor por defecto, definir el default con `|default()` en el
   `.twig`, no confiar solo en el `.component.yml`.
 
-### 5.5. `position: fixed` y entornos de previsualización
+### 6.5. `position: fixed` y entornos de previsualización
 
 Un elemento `position: fixed` (p.ej. una barra de navegación fija) se ancla a la **ventana del
 navegador**, no a su contenedor. Consecuencias observadas:
@@ -222,7 +308,7 @@ navegador**, no a su contenedor. Consecuencias observadas:
 - **Por eso** los elementos que son páginas completas con navegación fija (como la home) se
   sirven con su propia plantilla de página, sin el chrome del tema base.
 
-### 5.6. Método de trabajo recomendado
+### 6.6. Método de trabajo recomendado
 
 - **Validar la tubería completa con un caso mínimo** antes de replicar a escala (en la home se
   validó la editabilidad con un solo campo antes de crear los 42; se validará una colección
@@ -234,7 +320,7 @@ navegador**, no a su contenedor. Consecuencias observadas:
 
 ---
 
-## 6. Pendientes transversales del tema
+## 7. Pendientes transversales del tema
 
 Los pendientes que afectan a todo el tema están en **`TODO.md`** (raíz del tema): avisos de
 obsolescencia de Gutenberg en la salida de drush, actualización de seguridad de Drupal, errores
@@ -246,7 +332,7 @@ home, en `docs/elements/home/HOME-ARCHITECTURE.md`).
 
 ---
 
-## 7. Estructura de ficheros del tema
+## 8. Estructura de ficheros del tema
 
 ```
 bootstrap_ula_lscm/
@@ -295,7 +381,7 @@ bootstrap_ula_lscm/
 > Los **scripts de configuración** están en `scripts/` (raíz del proyecto, no del tema):
 > `crear-campos-landing.php`, `anadir-campos-formdisplay.php`, `ordenar-campos-landing.php`.
 > Crean y ordenan los campos del tipo `landing`; se conservan como referencia reproducible, ya
-> que la configuración no está en git (§5.1).
+> que la configuración no está en git (§6.1).
 
 > La documentación de cada **elemento** del tema (la home, y las secciones que se desarrollen en
 > el futuro) vive en `docs/elements/<elemento>/`. Este documento (nivel tema) cubre lo común a

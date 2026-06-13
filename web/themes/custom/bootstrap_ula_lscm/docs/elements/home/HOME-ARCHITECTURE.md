@@ -51,7 +51,7 @@ Ubicación: `components/lscm-master-page/`. Es el componente que **ensambla la l
   evitando colisiones de clases genéricas).
 - **[DECISIÓN] Valores por defecto "de fábrica" en el `.twig` del componente** (con `|default()`).
   Motivo: SDC **no inyecta de forma fiable** los `default` del `.component.yml` al renderizar vía
-  `include()` con props parciales (ver [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §5.4).
+  `include()` con props parciales (ver [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §6.4).
   Estos defaults son el contenido "out of the box"; el contenido editable (campos del nodo) los
   sobreescribe. **No es hardcodear contenido:** es el estado de fábrica del componente.
 - **[DECISIÓN] Menú del header = anclas internas** (`#about`, `#journey`…) para navegar dentro de
@@ -90,7 +90,7 @@ La home es un **nodo** del tipo de contenido `landing`, servido con plantillas d
 > Builder ni UI Patterns Blocks. Motivo: UI Patterns 2.x no ofrece "renderizar entidad completa
 > con componente" salvo vía Layout Builder (capa pesada, config en BD). La plantilla Twig es más
 > ligera, va a git, y no mete config crítica en una BD sin gestión de configuración (ver
-> [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §5.1).
+> [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §6.1).
 
 ---
 
@@ -196,5 +196,5 @@ templates/
 
 > Los scripts que crearon el tipo de contenido `landing` y sus 42 campos están en `scripts/`
 > (raíz del proyecto), conservados como referencia reproducible (la configuración no está en git,
-> ver [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §5.1):
+> ver [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §6.1):
 > `crear-campos-landing.php`, `anadir-campos-formdisplay.php`, `ordenar-campos-landing.php`.

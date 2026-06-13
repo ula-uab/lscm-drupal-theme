@@ -34,4 +34,4 @@ completados se archivan en el subdirectorio `archive/` de cada elemento.
 - **¿Mantener o editar el contenido de la home?** → `elements/home/HOME-ARCHITECTURE.md` §4.
 - **¿Entender el design system / crear o tocar componentes?** → `ARCHITECTURE.md` §3 y §4.
 - **¿Hacer cambios de configuración (campos, tipos de contenido, vistas)?** → leer antes
-  `ARCHITECTURE.md` §5 (restricciones del entorno: config/sync, dumps, crear campos por código).
+  `ARCHITECTURE.md` §6 (restricciones del entorno: config/sync, dumps, crear campos por código).
