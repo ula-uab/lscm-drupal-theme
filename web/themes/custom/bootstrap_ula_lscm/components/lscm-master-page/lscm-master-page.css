@@ -31,6 +31,14 @@ nav {
   text-decoration: none;
 }
 
+/* Logo del máster: limitar altura para que encaje en la barra (68px de alto).
+   El SVG original medía 38px; mantenemos esa altura para el logo en imagen. */
+.nav-logo-img {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
 .eu-stars {
   width: 38px;
   height: 38px;

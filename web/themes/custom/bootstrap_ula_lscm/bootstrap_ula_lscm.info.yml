@@ -1,7 +1,7 @@
 name: "Bootstrap ULA LSCM"
 type: theme
-description: "Bootstrap Italia is a Bootstrap 5 theme compliant with the design guidelines for the PA web services"
-package: Italia
+description: "Custom theme for the LSCM European Joint Master, built on Bootstrap and inspired by the Bootstrap Italia theme."
+package: "ULA - LSCM"
 core_version_requirement: ^10.5 || ^11
 base theme: bootstrap_italia
 
@@ -113,6 +113,5 @@ components:
       - components
 
 # Information added by Drupal.org packaging script on 2026-03-31
-version: '2.17.6'
-project: 'bootstrap_italia'
+version: '1.0.0'
 datestamp: 1774971853

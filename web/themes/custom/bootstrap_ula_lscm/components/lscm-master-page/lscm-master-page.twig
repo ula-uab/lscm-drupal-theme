@@ -13,6 +13,56 @@
   para fidelidad; el JS que las activa es el de la maqueta (lscm-master-page.js).
 #}
 
+{# ───────── VALORES POR DEFECTO "DE FÁBRICA" DE LAS PROPS ─────────
+   SDC no inyecta de forma fiable los 'default' del .component.yml al renderizar
+   vía include() con props parciales. Por eso aquí cada prop de texto toma su
+   valor de fábrica con |default() si llega vacía. Esto NO es el contenido
+   editable (ese viene de los campos del nodo, vía node--landing.html.twig y
+   sobreescribe estos valores); son solo los valores "out of the box" del
+   componente, para que se vea completo si no se le pasa nada. #}
+{% set logo_url = logo_url|default('/sites/default/files/2026-06/logo-MASTER-LSCM.png') %}
+{% set brand_top = brand_top|default('LSCM Master') %}
+{% set brand_sub = brand_sub|default('European Joint Programme') %}
+{% set hero_badge_text = hero_badge_text|default("Erasmus+ Joint Master's Programme") %}
+{% set hero_title = hero_title|default('Shape the Future of') %}
+{% set hero_title_highlight = hero_title_highlight|default('European Logistics') %}
+{% set hero_description = hero_description|default("A 120 ECTS joint master's degree taught across three European universities. Study in Barcelona, Riga, and specialise in Germany — all in one programme.") %}
+{% set hero_cta1_text = hero_cta1_text|default('Apply Now') %}
+{% set hero_cta1_url = hero_cta1_url|default('/admission') %}
+{% set hero_cta2_text = hero_cta2_text|default('Explore Programme') %}
+{% set hero_cta2_url = hero_cta2_url|default('/programme') %}
+{% set about_tag = about_tag|default('Master in Logistics & Supply Chain Management') %}
+{% set about_title = about_title|default('Integrated. International. Industry-Ready.') %}
+{% set about_desc = about_desc|default('A programme designed to train professionals capable of making decisions at operational, tactical, and strategic level — from a holistic and interdisciplinary perspective.') %}
+{% set about_cta_text = about_cta_text|default('Learn more about the programme') %}
+{% set about_cta_url = about_cta_url|default('/about') %}
+{% set journey_tag = journey_tag|default('Your academic path') %}
+{% set journey_title = journey_title|default('Four Semesters Across Europe') %}
+{% set journey_desc = journey_desc|default('A carefully structured curriculum that builds from core foundations to deep specialisation, moving across three countries.') %}
+{% set journey_cta_text = journey_cta_text|default('See full curriculum') %}
+{% set journey_cta_url = journey_cta_url|default('/programme') %}
+{% set uni_tag = uni_tag|default('Our partner institutions') %}
+{% set uni_title = uni_title|default('Three Countries. One Programme.') %}
+{% set uni_desc = uni_desc|default('A consortium of established European universities, each contributing their unique expertise and research strengths to the programme.') %}
+{% set uni_cta_text = uni_cta_text|default('Meet the partner universities') %}
+{% set uni_cta_url = uni_cta_url|default('/partners') %}
+{% set spec_tag = spec_tag|default('Choose your track') %}
+{% set spec_title = spec_title|default('Two Specialisations, One Qualification') %}
+{% set spec_desc = spec_desc|default('Your choice of specialisation in year two shapes your career direction. Both lead to the same joint diploma.') %}
+{% set spec_cta_text = spec_cta_text|default('Explore specialisations') %}
+{% set spec_cta_url = spec_cta_url|default('/specialisations') %}
+{% set adm_tag = adm_tag|default('Admissions') %}
+{% set adm_title = adm_title|default('Ready to Apply?') %}
+{% set adm_desc = adm_desc|default('Applications are reviewed on a rolling basis. EU applicants are encouraged to apply as early as possible.') %}
+{% set adm_cta_text = adm_cta_text|default('See full admission details') %}
+{% set adm_cta_url = adm_cta_url|default('/admission') %}
+{% set contact_tag = contact_tag|default('Get in touch') %}
+{% set contact_title = contact_title|default('Still have questions?') %}
+{% set contact_desc = contact_desc|default("Our programme coordinators are happy to help. Reach out before you apply and we'll guide you through the process.") %}
+{% set contact_email = contact_email|default('info@master-lscm.eu') %}
+{% set contact_faq_text = contact_faq_text|default('Read FAQs') %}
+{% set contact_faq_url = contact_faq_url|default('https://master-lscm.eu/faq') %}
+
 {# ───────── DATOS FIJOS DE LAS COLECCIONES (contenido de la maqueta) ───────── #}
 {% set hero_stats = [
   { number: '120', label: 'ECTS Credits' },

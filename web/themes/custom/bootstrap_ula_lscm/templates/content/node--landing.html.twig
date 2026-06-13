@@ -1,0 +1,87 @@
+{#
+/**
+ * @file
+ * node--landing.html.twig — Renderiza un nodo de tipo "landing" con el
+ * componente SDC lscm-master-page.
+ *
+ * NO hardcodea contenido: MAPEA los campos del nodo a las props del componente.
+ * Los textos viven en los campos (editables desde el admin); aquí solo se indica
+ * qué campo alimenta qué prop.
+ *
+ * COMPORTAMIENTO:
+ * - Si un campo tiene valor → se pasa como prop y sobreescribe el default.
+ * - Si un campo está VACÍO → NO se pasa, y el componente usa su valor por
+ *   defecto "de fábrica" (definido en lscm-master-page.twig con |default()).
+ *
+ * Así, el editor solo rellena los campos que quiere cambiar respecto a la maqueta;
+ * los vacíos muestran el contenido por defecto.
+ */
+#}
+{% set props = {} %}
+
+{#
+  Helper: para cada prop, si el campo correspondiente tiene valor, lo añadimos
+  a 'props'. Usamos el .value del campo (string / string_long).
+#}
+
+{# ---- Marca / logo ---- #}
+{% if node.field_logo_url.value %}{% set props = props|merge({ logo_url: node.field_logo_url.value }) %}{% endif %}
+{% if node.field_brand_top.value %}{% set props = props|merge({ brand_top: node.field_brand_top.value }) %}{% endif %}
+{% if node.field_brand_sub.value %}{% set props = props|merge({ brand_sub: node.field_brand_sub.value }) %}{% endif %}
+
+{# ---- Hero ---- #}
+{% if node.field_hero_badge_text.value %}{% set props = props|merge({ hero_badge_text: node.field_hero_badge_text.value }) %}{% endif %}
+{% if node.field_hero_title.value %}{% set props = props|merge({ hero_title: node.field_hero_title.value }) %}{% endif %}
+{% if node.field_hero_title_highlight.value %}{% set props = props|merge({ hero_title_highlight: node.field_hero_title_highlight.value }) %}{% endif %}
+{% if node.field_hero_description.value %}{% set props = props|merge({ hero_description: node.field_hero_description.value }) %}{% endif %}
+{% if node.field_hero_cta1_text.value %}{% set props = props|merge({ hero_cta1_text: node.field_hero_cta1_text.value }) %}{% endif %}
+{% if node.field_hero_cta1_url.value %}{% set props = props|merge({ hero_cta1_url: node.field_hero_cta1_url.value }) %}{% endif %}
+{% if node.field_hero_cta2_text.value %}{% set props = props|merge({ hero_cta2_text: node.field_hero_cta2_text.value }) %}{% endif %}
+{% if node.field_hero_cta2_url.value %}{% set props = props|merge({ hero_cta2_url: node.field_hero_cta2_url.value }) %}{% endif %}
+
+{# ---- About ---- #}
+{% if node.field_about_tag.value %}{% set props = props|merge({ about_tag: node.field_about_tag.value }) %}{% endif %}
+{% if node.field_about_title.value %}{% set props = props|merge({ about_title: node.field_about_title.value }) %}{% endif %}
+{% if node.field_about_desc.value %}{% set props = props|merge({ about_desc: node.field_about_desc.value }) %}{% endif %}
+{% if node.field_about_cta_text.value %}{% set props = props|merge({ about_cta_text: node.field_about_cta_text.value }) %}{% endif %}
+{% if node.field_about_cta_url.value %}{% set props = props|merge({ about_cta_url: node.field_about_cta_url.value }) %}{% endif %}
+
+{# ---- Journey ---- #}
+{% if node.field_journey_tag.value %}{% set props = props|merge({ journey_tag: node.field_journey_tag.value }) %}{% endif %}
+{% if node.field_journey_title.value %}{% set props = props|merge({ journey_title: node.field_journey_title.value }) %}{% endif %}
+{% if node.field_journey_desc.value %}{% set props = props|merge({ journey_desc: node.field_journey_desc.value }) %}{% endif %}
+{% if node.field_journey_cta_text.value %}{% set props = props|merge({ journey_cta_text: node.field_journey_cta_text.value }) %}{% endif %}
+{% if node.field_journey_cta_url.value %}{% set props = props|merge({ journey_cta_url: node.field_journey_cta_url.value }) %}{% endif %}
+
+{# ---- Universities ---- #}
+{% if node.field_uni_tag.value %}{% set props = props|merge({ uni_tag: node.field_uni_tag.value }) %}{% endif %}
+{% if node.field_uni_title.value %}{% set props = props|merge({ uni_title: node.field_uni_title.value }) %}{% endif %}
+{% if node.field_uni_desc.value %}{% set props = props|merge({ uni_desc: node.field_uni_desc.value }) %}{% endif %}
+{% if node.field_uni_cta_text.value %}{% set props = props|merge({ uni_cta_text: node.field_uni_cta_text.value }) %}{% endif %}
+{% if node.field_uni_cta_url.value %}{% set props = props|merge({ uni_cta_url: node.field_uni_cta_url.value }) %}{% endif %}
+
+{# ---- Specializations ---- #}
+{% if node.field_spec_tag.value %}{% set props = props|merge({ spec_tag: node.field_spec_tag.value }) %}{% endif %}
+{% if node.field_spec_title.value %}{% set props = props|merge({ spec_title: node.field_spec_title.value }) %}{% endif %}
+{% if node.field_spec_desc.value %}{% set props = props|merge({ spec_desc: node.field_spec_desc.value }) %}{% endif %}
+{% if node.field_spec_cta_text.value %}{% set props = props|merge({ spec_cta_text: node.field_spec_cta_text.value }) %}{% endif %}
+{% if node.field_spec_cta_url.value %}{% set props = props|merge({ spec_cta_url: node.field_spec_cta_url.value }) %}{% endif %}
+
+{# ---- Admission ---- #}
+{% if node.field_adm_tag.value %}{% set props = props|merge({ adm_tag: node.field_adm_tag.value }) %}{% endif %}
+{% if node.field_adm_title.value %}{% set props = props|merge({ adm_title: node.field_adm_title.value }) %}{% endif %}
+{% if node.field_adm_desc.value %}{% set props = props|merge({ adm_desc: node.field_adm_desc.value }) %}{% endif %}
+{% if node.field_adm_cta_text.value %}{% set props = props|merge({ adm_cta_text: node.field_adm_cta_text.value }) %}{% endif %}
+{% if node.field_adm_cta_url.value %}{% set props = props|merge({ adm_cta_url: node.field_adm_cta_url.value }) %}{% endif %}
+
+{# ---- Get in touch ---- #}
+{% if node.field_contact_tag.value %}{% set props = props|merge({ contact_tag: node.field_contact_tag.value }) %}{% endif %}
+{% if node.field_contact_title.value %}{% set props = props|merge({ contact_title: node.field_contact_title.value }) %}{% endif %}
+{% if node.field_contact_desc.value %}{% set props = props|merge({ contact_desc: node.field_contact_desc.value }) %}{% endif %}
+{% if node.field_contact_email.value %}{% set props = props|merge({ contact_email: node.field_contact_email.value }) %}{% endif %}
+{% if node.field_contact_faq_text.value %}{% set props = props|merge({ contact_faq_text: node.field_contact_faq_text.value }) %}{% endif %}
+{% if node.field_contact_faq_url.value %}{% set props = props|merge({ contact_faq_url: node.field_contact_faq_url.value }) %}{% endif %}
+
+{# Renderiza la landing con el componente, pasando solo las props con valor.
+   Las props sin valor las rellena el componente con sus defaults de fábrica. #}
+{{ include('bootstrap_ula_lscm:lscm-master-page', props) }}

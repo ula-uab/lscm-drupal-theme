@@ -1,0 +1,32 @@
+{#
+/**
+ * @file
+ * page--front.html.twig — Plantilla de PORTADA del tema bootstrap_ula_lscm.
+ *
+ * Sobreescribe la portada de Bootstrap Italia. La home es una landing AUTÓNOMA
+ * (componente lscm-master-page: trae su propia nav, contenido y footer), por lo
+ * que esta plantilla NO incluye el header, las "rows" ni el footer de
+ * Bootstrap Italia. Así la portada queda independiente del tema padre.
+ *
+ * Conserva:
+ * - Los mensajes del sistema (avisos de Drupal), imprescindibles.
+ * - Un <h1> oculto con el nombre del sitio (accesibilidad / SEO).
+ * - La región 'content' (donde se coloca el bloque de la landing).
+ *
+ * El resto del sitio (no-portada) sigue usando las plantillas de Bootstrap Italia.
+ */
+#}
+<div id="lscm-landing-page">
+
+  {# Ancla de contenido principal para accesibilidad (skip-link) + título oculto #}
+  <h1 class="visually-hidden" id="main-content" role="main">{{ site_name|default('LSCM Master') }}</h1>
+
+  {# Mensajes del sistema (errores, avisos). Se conservan siempre. #}
+  {% if page.highlighted %}
+    {{ page.highlighted }}
+  {% endif %}
+
+  {# Contenido principal: aquí se renderiza el bloque de la landing (lscm-master-page). #}
+  {{ page.content }}
+
+</div>

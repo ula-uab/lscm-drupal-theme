@@ -40,6 +40,7 @@ props:
       default: 'European Logistics'
     hero_description:
       type: string
+      maxLength: 1000
       title: Hero · descripción
       default: "A 120 ECTS joint master's degree taught across three European universities. Study in Barcelona, Riga, and specialise in Germany — all in one programme."
     hero_cta1_text:
@@ -69,6 +70,7 @@ props:
       default: 'Integrated. International. Industry-Ready.'
     about_desc:
       type: string
+      maxLength: 1000
       title: About · descripción
       default: 'A programme designed to train professionals capable of making decisions at operational, tactical, and strategic level — from a holistic and interdisciplinary perspective.'
     about_cta_text:
@@ -88,6 +90,7 @@ props:
       default: 'Four Semesters Across Europe'
     journey_desc:
       type: string
+      maxLength: 1000
       default: 'A carefully structured curriculum that builds from core foundations to deep specialisation, moving across three countries.'
     journey_cta_text:
       type: string
@@ -104,6 +107,7 @@ props:
       default: 'Three Countries. One Programme.'
     uni_desc:
       type: string
+      maxLength: 1000
       default: 'A consortium of established European universities, each contributing their unique expertise and research strengths to the programme.'
     uni_cta_text:
       type: string
@@ -120,6 +124,7 @@ props:
       default: 'Two Specialisations, One Qualification'
     spec_desc:
       type: string
+      maxLength: 1000
       default: 'Your choice of specialisation in year two shapes your career direction. Both lead to the same joint diploma.'
     spec_cta_text:
       type: string
@@ -136,6 +141,7 @@ props:
       default: 'Ready to Apply?'
     adm_desc:
       type: string
+      maxLength: 1000
       default: 'Applications are reviewed on a rolling basis. EU applicants are encouraged to apply as early as possible.'
     adm_cta_text:
       type: string
@@ -152,6 +158,7 @@ props:
       default: 'Still have questions?'
     contact_desc:
       type: string
+      maxLength: 1000
       default: "Our programme coordinators are happy to help. Reach out before you apply and we'll guide you through the process."
     contact_email:
       type: string
