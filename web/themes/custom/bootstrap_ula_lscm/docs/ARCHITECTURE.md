@@ -269,9 +269,14 @@ bootstrap_ula_lscm/
 └── docs/
     ├── README.md                        # Índice de la documentación
     ├── ARCHITECTURE.md                  # Este documento (nivel tema)
-    └── elements/
+    ├── elements/                        # Documentación de referencia por elemento
+    │   └── home/
+    │       └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"
+    └── plans/                           # Planes de desarrollo por fases, por elemento
         └── home/
-            └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"
+            ├── plan-colecciones-editables-e-interactividad.md   # Plan activo de la home
+            └── archive/
+                └── plan-landing-parametrizada.md                # Plan histórico (completado)
 ```
 
 > **[CONVENCIÓN] Organización de `templates/` en subcarpetas por tipo.** Las plantillas Twig se

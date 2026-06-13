@@ -19,6 +19,16 @@ Management). Organizada en **dos niveles**:
 > A medida que se desarrollen otras secciones del sitio, cada una tendrá su documentación en
 > `docs/elements/<elemento>/`, referenciando a `ARCHITECTURE.md` para lo común.
 
+## Planes de desarrollo
+
+Los planes de trabajo (hojas de ruta por fases) viven en `docs/plans/<elemento>/`, separados de la
+documentación de referencia. Cada elemento del tema tiene su carpeta de planes; los planes ya
+completados se archivan en el subdirectorio `archive/` de cada elemento.
+
+- **[`plans/home/`](plans/home/)** — planes de la home:
+  - [`plan-colecciones-editables-e-interactividad.md`](plans/home/plan-colecciones-editables-e-interactividad.md) — **activo**: migrar las colecciones a editables, interactividad (hamburguesa, pastillas) y limpieza.
+  - [`archive/plan-landing-parametrizada.md`](plans/home/archive/plan-landing-parametrizada.md) — **histórico**: plan inicial de la landing parametrizada (completado).
+
 ## Por dónde empezar
 
 - **¿Mantener o editar el contenido de la home?** → `elements/home/HOME-ARCHITECTURE.md` §4.
