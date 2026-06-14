@@ -19,6 +19,16 @@ Management). Organizada en **dos niveles**:
 > A medida que se desarrollen otras secciones del sitio, cada una tendrá su documentación en
 > `docs/elements/<elemento>/`, referenciando a `ARCHITECTURE.md` para lo común.
 
+## Análisis e investigación
+
+Antes de rehacer una sección existente del sitio, se documenta su **estado actual** (cómo está hecha
+hoy, heredada de Bootstrap Italia) en `docs/analysis/`. Son hallazgos de investigación que sirven de
+base para el rediseño.
+
+- **[`analysis/about-and-university-entity.md`](analysis/about-and-university-entity.md)** — estado
+  de la página About y de la entidad "Universidad del consorcio" (`ct_about_consortium_university`);
+  cómo se muestra hoy y opciones de diseño para reutilizarla.
+
 ## Planes de desarrollo
 
 Los planes de trabajo (hojas de ruta por fases) viven en `docs/plans/<elemento>/`, separados de la

@@ -221,6 +221,64 @@ Crear o editar contenido = trabajar con los **nodos** (en el admin, sin tocar c�
 y el **mapeo campos→props** se definen una vez (configuración) y a partir de ahí el contenido fluye
 solo.
 
+### 5.5. Implementación en Views: el patrón de dos niveles
+
+Esta subsección recoge el detalle **técnico real** de cómo se configura el patrón en una vista de
+Drupal con `ui_patterns_views`, observado en una vista existente del sitio (la de las universidades
+del consorcio). Sirve de referencia para construir vistas equivalentes en cualquier sección.
+
+Una vista que pinta una colección con componentes usa **dos niveles**, cada uno con su propio
+componente UI Patterns:
+
+**Nivel 1 — el *Format / Style* de la vista (el contenedor).** En la configuración de la vista,
+`Format → Show: Component (UI Patterns)` define un componente que envuelve **todas** las filas.
+Típicamente es un componente de **rejilla** cuyo slot de contenido recibe la fuente especial
+`view_rows` ("todas las filas de la vista"). Ahí se configuran las columnas responsive del grid.
+
+**Nivel 2 — el *Row* (cada entidad individual).** En `Format → Show → Settings` (o el row del
+display), se define el componente que pinta **cada fila**, mapeando los campos de la vista a sus
+slots o props. Cada slot/prop se alimenta con una **fuente** (`source_id`), siendo las más
+habituales:
+
+- `view_field` → el valor de un campo de la vista (p. ej. el slot `card_title` ← campo `title`).
+- `textfield` → un valor literal fijo escrito en la configuración (p. ej. la etiqueta `"+ info"`).
+- `component` → **otro componente anidado** dentro del slot (permite componer; p. ej. un modal
+  dentro del cuerpo de una tarjeta).
+- `view_rows` → todas las filas (se usa en el slot de contenido del contenedor del nivel 1).
+
+**Slots vs props en el mapeo.** Un componente puede exponer *slots* (reciben contenido renderizado,
+HTML — p. ej. `card_title`, `card_text`) y *props* (reciben valores que el componente formatea —
+p. ej. `name`, `country`). El mecanismo de mapeo (`view_field`, etc.) es el mismo; lo que cambia es
+si el destino es un slot o una prop. Los componentes `ula_*` del design system se basan sobre todo
+en **props** (valores), mientras que componentes heredados tipo `card` se basan en **slots**
+(contenido).
+
+**El enlace a la página de la entidad.** Para que un campo enlace a la página del propio nodo
+(`/node/N`), **no se usa un campo de URL ni se almacena nada**: se marca, en la configuración de ese
+campo dentro de la vista, la casilla **"Link this field to the original entity"**
+(`link_to_entity: true`). Es una propiedad del campo **en la vista**, no del tipo de contenido ni del
+nodo. Drupal genera la URL canónica del nodo automáticamente. (Si la entidad tiene página de detalle
+propia, este es el mecanismo para enlazarla desde una tarjeta.)
+
+**Esquema del patrón de dos niveles:**
+
+```
+Vista
+├── Format/Style: Component (UI Patterns)  →  componente CONTENEDOR (rejilla)
+│        slot "content" ← view_rows  (todas las filas)
+│
+└── Row: Component (UI Patterns)            →  componente ÍTEM (tarjeta), por cada fila
+         slot/prop ← view_field (campo del nodo)
+         slot/prop ← textfield  (valor literal)
+         slot/prop ← component  (componente anidado, opcional)
+         [campo con link_to_entity: true → enlaza a /node/N]
+```
+
+> **Nota de independencia.** Una vista heredada puede usar componentes del tema base (rejillas o
+> tarjetas de Bootstrap). Al construir vistas para secciones reescritas en clave propia, se replica
+> **el patrón** (dos niveles, mapeo de fuentes) pero con **componentes propios**: la rejilla y la
+> tarjeta del design system `ula_*`, no las del tema base.
+
 ---
 
 ## 6. Notas técnicas y restricciones del entorno
@@ -355,6 +413,8 @@ bootstrap_ula_lscm/
 └── docs/
     ├── README.md                        # Índice de la documentación
     ├── ARCHITECTURE.md                  # Este documento (nivel tema)
+    ├── analysis/                        # Hallazgos de investigación (secciones existentes a rehacer)
+    │   └── about-and-university-entity.md
     ├── elements/                        # Documentación de referencia por elemento
     │   └── home/
     │       └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"
