@@ -74,6 +74,16 @@ function bootstrap_ula_lscm_preprocess_node(array &$variables): void {
       'description' => fn($n) => $n->get('field_journey_summary')->value ?? '',
     ]
   );
+
+  // Features del programa (nodos ct_programme_feature) → sección About de la home.
+  $variables['about_features_data'] = _bootstrap_ula_lscm_get_collection(
+    'ct_programme_feature',
+    [
+      'icon'        => fn($n) => $n->get('field_feature_icon')->value ?? '',
+      'title'       => fn($n) => $n->label(),
+      'description' => fn($n) => $n->get('field_feature_desc')->value ?? '',
+    ]
+  );
 }
 
 /**

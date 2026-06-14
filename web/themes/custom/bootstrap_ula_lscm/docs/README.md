@@ -40,6 +40,9 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
 - **[`entities/admission-journey-step.md`](entities/admission-journey-step.md)** —
   `ct_admission_journey_step`: las fases del proceso de admisión (resumen para el timeline de la
   home). Distinta del detalle paso-a-paso de la sección Admission.
+- **[`entities/programme-feature.md`](entities/programme-feature.md)** — `ct_programme_feature`: las
+  características/ventajas del programa (acreditación, cohorte internacional…); alimenta la sección
+  About de la home.
 
 ## Planes de desarrollo
 

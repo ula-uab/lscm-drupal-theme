@@ -72,7 +72,7 @@
 ] %}
 {% set hero_stats = hero_stats|default(hero_stats_default) %}
 
-{% set about_features = [
+{% set about_features_default = [
   { icon: '🎓', title: 'Accredited Programme', description: 'Verified by legal bodies in all three countries' },
   { icon: '🌍', title: 'International Cohort', description: 'Study alongside students from across Europe' },
   { icon: '🏭', title: 'Industry Links', description: 'Strong ties with logistics companies & consultancies' },
@@ -80,6 +80,7 @@
   { icon: '💼', title: 'Career-Ready', description: 'Practical projects with real companies' },
   { icon: '📄', title: 'PhD Access', description: 'Eligible to continue to doctoral studies' }
 ] %}
+{% set about_features = about_features|default(about_features_default) %}
 
 {% set journey_semesters = [
   { semester: 'Semester 1', icon: '📐', university: 'UAB · Barcelona', title: 'Foundations of LSCM', variant: '1',

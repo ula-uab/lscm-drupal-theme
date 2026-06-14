@@ -160,10 +160,11 @@ tabla comparativa están en la **ADR-002** (§7).
   (ver [`../../entities/programme-facts.md`](../../entities/programme-facts.md)).
 - ✅ **timeline** (`ula_timeline_item`) — migrada en v1.1.2. Entidad: `ct_admission_journey_step`
   (ver [`../../entities/admission-journey-step.md`](../../entities/admission-journey-step.md)).
-- ⬜ **especializaciones** (`ula_spec_card`), **semestres** (`ula_sem_card`), **requisitos**
-  (`ula_req_card`), **features** (`ula_feature_item`) — pendientes. Triviales con el cargador
-  genérico, salvo especializaciones y semestres que tienen un array anidado (`modules[]`/`subjects[]`)
-  a resolver.
+- ✅ **features** (`ula_feature_item`) — migrada en v1.1.3. Entidad: `ct_programme_feature`
+  (ver [`../../entities/programme-feature.md`](../../entities/programme-feature.md)).
+- ⬜ **requisitos** (`ula_req_card`) — pendiente (investigar si se reutiliza `ct_elegibility_*`).
+- ⬜ **especializaciones** (`ula_spec_card`), **semestres** (`ula_sem_card`) — pendientes; tienen un
+  array anidado (`modules[]`/`subjects[]`), un patrón nuevo aún por resolver.
 
 **Método:** se validó el patrón con un piloto (**universidades**, v1.1.0); con la segunda y tercera
 colección (hero stats y why items, ambas vía `ct_programme_facts`, v1.1.1) se extrajo el **cargador
