@@ -3,14 +3,18 @@
 > Planifica las acciones pendientes de la home descritas en `../../elements/home/HOME-ARCHITECTURE.md` §5.
 > Sigue el método del plan ya completado (`archive/plan-landing-parametrizada.md`): construir de
 > lo simple a lo complejo, validar cada paso antes de seguir, y consolidar en git por hito.
+>
+> **Mecanismo elegido para las colecciones:** preprocess → prop (no vistas). La decisión, las
+> alternativas descartadas y la tabla comparativa están en la **ADR-002** de
+> `../../elements/home/HOME-ARCHITECTURE.md` §7.
 
 ## Objetivo
 
 Llevar la home de su estado actual (editable en **textos**, con las **colecciones** de ítems aún
 fijas en el `.twig` del marco) a un estado en el que:
 
-1. **Las colecciones de ítems sean editables desde el admin** (no hardcodeadas), mediante tipos de
-   contenido + vistas, reutilizando el patrón que el sitio ya usa.
+1. **Las colecciones de ítems sean editables desde el admin** (no hardcodeadas), leyendo los nodos
+   de cada tipo de contenido y pasándolos como prop al marco `lscm-master-page`.
 2. **La navegación móvil funcione** (menú hamburguesa).
 3. **Las pastillas de las tarjetas de universidad sean interactivas** (popover/modal con API nativa).
 4. Quede **eliminada la vista vieja** `page_home`, huérfana desde que la home pasó a ser el nodo `landing`.
@@ -20,22 +24,29 @@ Requisitos transversales (heredados del proyecto):
 - **Fidelidad visual** a la maqueta: ningún cambio debe alterar el aspecto ya validado.
 - **Independencia de frameworks externos** en lo que se añada (interactividad con **API nativa** del
   navegador, sin Bootstrap ni librerías JS de terceros).
-- **No meter configuración pesada en BD** innecesariamente (ver `../../ARCHITECTURE.md` §6.1):
-  la config nueva (tipos de contenido, campos, vistas) vive en BD y se respalda con dumps; se
-  conservan scripts reproducibles cuando aplique.
+- **Todo en git siempre que sea posible** (ver `../../ARCHITECTURE.md` §6.1): el sitio no usa
+  config/sync, así que se prioriza que la lógica de presentación de la home viva en **código**
+  (preprocess + plantillas + componentes), no en configuración de BD. El **contenido** sí vive en
+  la BD (los nodos), y se respalda con dumps.
 
 ---
 
 ## Principios base confirmados por el estado actual
 
-- **El patrón "contenido editable → componente" ya existe en el sitio**: la timeline de Admissions
-  usa nodos `ct_admission_preenrolment_step` listados por una **vista** que los pinta con el
-  componente `timeline_item2` vía `ui_patterns_views`. Es el patrón a replicar para las colecciones
-  de la home, en lugar de inventar uno nuevo.
+- **El contenido de las colecciones vive (o vivirá) en nodos editables.** Para universidades se
+  reutiliza el tipo existente `ct_about_consortium_university`, ampliado con campos nuevos
+  (`field_uni_flag`, `field_uni_country`, `field_uni_abbr`, `field_uni_home_pitch`); ver
+  `../../analysis/about-and-university-entity.md`.
 - **Los 8 componentes `ula_*` ya están listos** para recibir datos por props; hoy los reciben de
-  arrays fijos en el marco. El cambio consiste en que esos datos vengan de **nodos vía vista**, no
-  de arrays.
-- **La decisión de tipos de contenido + vistas (no Paragraphs)** ya está tomada y registrada.
+  arrays fijos en el marco. El cambio consiste en que esos datos vengan de **nodos leídos por una
+  preprocess**, en vez de arrays hardcodeados.
+- **El marco `lscm-master-page` no se toca en su forma de pintar:** sigue componiendo cada colección
+  con su grid propio (`.uni-grid`, etc.) y su componente `ula_*`. Solo cambia el **origen** de los
+  arrays (de hardcodeado a leído de nodos).
+- **Mecanismo: preprocess → prop, no vistas.** El patrón de vistas (`ui_patterns_views`) que usa el
+  resto del sitio (p. ej. About) se descartó para la home por meter configuración en BD y por el
+  riesgo de los wrappers de Views sobre los grids CSS; ver ADR-002. La home es una excepción
+  justificada por su naturaleza monolítica y pixel-perfect.
 - **La interactividad (hamburguesa, pastillas) es funcionalidad nueva**: la maqueta no la tiene
   (los enlaces se ocultan en móvil; las pastillas son estáticas). Se añade con API nativa.
 
@@ -43,12 +54,13 @@ Requisitos transversales (heredados del proyecto):
 
 ## Inventario de las 8 colecciones a migrar
 
-Cada colección pasará a ser un **tipo de contenido** cuyos nodos alimentan una **vista** que los
-pinta con su componente `ula_*`. El orden de migración va de la más rica (piloto) a las más simples.
+Cada colección pasará a leerse de **nodos** de un tipo de contenido, que una **preprocess** del tema
+convertirá en el array que hoy está hardcodeado, para pasarlo como **prop** al marco. El orden de
+migración va de la más rica (piloto) a las más simples.
 
-| # | Colección | Componente destino | Campos previsibles del tipo de contenido | Nº ítems en maqueta |
-|---|-----------|--------------------|------------------------------------------|---------------------|
-| 1 | Universidades (**piloto**) | `ula_uni_card` | flag, country, name, abbr, description, tags[] | 3 |
+| # | Colección | Componente destino | Campos del tipo de contenido | Nº ítems en maqueta |
+|---|-----------|--------------------|------------------------------|---------------------|
+| 1 | Universidades (**piloto**) | `ula_uni_card` | flag, country, abbr, home_pitch (+ title, body, image ya existentes) | 3 |
 | 2 | Especializaciones | `ula_spec_card` | icon, title, university, description, modules[], variant | 2 |
 | 3 | Semestres (journey) | `ula_sem_card` | semester, icon, university, title, subjects[], variant | 4 |
 | 4 | Why-items | `ula_why_item` | number, title, description | 6 |
@@ -58,10 +70,13 @@ pinta con su componente `ula_*`. El orden de migración va de la más rica (pilo
 | 8 | Stats (hero) | `ula_hero_stat` | number, label | 3–4 |
 
 Notas:
-- Los campos con `[]` (tags, modules, subjects) son **multivalor**; decidir por colección si se
-  modelan como campo multivalor simple o requieren estructura adicional.
+- Los campos con `[]` (modules, subjects, tags) son **multivalor** o relaciones; decidir por
+  colección cómo se modelan.
 - Decidir, por colección, si el contenido tendrá **página de detalle propia** en el sitio (lo que
-  refuerza el enfoque nodos+vistas y condiciona qué campos crear).
+  condiciona qué campos crear).
+- **Universidades — pastillas pendientes:** las pastillas de semestre (`tags`) de `ula_uni_card`
+  dependen de una relación universidad↔semestre aún no modelada (ver
+  `../../analysis/about-and-university-entity.md` §3.4). El piloto se hace **sin** pastillas.
 
 ---
 
@@ -73,26 +88,32 @@ Quitar de en medio lo que ya está obsoleto, antes de añadir cosas nuevas.
 - **Validación:** confirmar que `/home2` deja de existir y que la home (`/`) sigue intacta.
 - Dump previo + commit del estado.
 
+> Esta fase quedó **pospuesta** por decisión del usuario; se retomará más adelante.
+
 ### Fase 1 — Piloto de colección editable: **universidades**
-La colección más rica (varios campos + tags), que ejercita el patrón completo. Es el equivalente al
-`eu_hero_stat` del plan anterior: el patrón de referencia que validará el mecanismo para las demás.
-- **1.1 Inspeccionar el patrón existente**: examinar en el Drupal real (con drush) cómo está montada
-  la vista de la timeline de Admissions y el tipo `ct_admission_preenrolment_step`
-  (campos, cómo la vista mapea campos→props de `timeline_item2` vía `ui_patterns_views`).
-- **1.2 Crear el tipo de contenido** para universidades, con sus campos (script reproducible, como
-  en la home — ver `scripts/`).
-- **1.3 Crear los 3 nodos** (las universidades reales).
-- **1.4 Crear la vista** que los lista y los pinta con `ula_uni_card` vía `ui_patterns_views`,
-  mapeando campos→props.
-- **1.5 Integrar la vista en la home**, sustituyendo el array fijo `universities` del marco.
+La colección más rica, que ejercita el patrón completo (lectura de nodos → array → prop → render).
+Es el patrón de referencia que validará el mecanismo para las demás.
+
+- **1.1 Reutilizar el tipo de contenido** `ct_about_consortium_university` (ya existe; las
+  universidades ya son nodos con página propia). **Hecho:** ampliado con `field_uni_flag`,
+  `field_uni_country`, `field_uni_abbr`, `field_uni_home_pitch`.
+- **1.2 Rellenar los nodos** (UAB/13, RTU/14, UASW/15) con los datos de la maqueta. **Hecho.**
+- **1.3 Escribir la preprocess** en el tema que lee los nodos de universidad (ordenados por
+  `field_order`) y construye el array `universities` con la forma que el marco espera (las claves que
+  hoy tiene el array hardcodeado: flag, country, name, abbr, description…).
+- **1.4 Pasar el array como prop** al marco: que `node--landing.html.twig` (o la preprocess del nodo
+  landing) inyecte `universities` leído de nodos, en lugar del array fijo del `.twig` del marco.
+- **1.5 Hacer que el marco use la prop** si llega, y el array de fábrica si no (mismo patrón de
+  `|default()` que los textos): así la home se ve igual, pero alimentada por nodos.
 - **Validación:** la sección de universidades de la home se ve **idéntica** a la actual, pero ahora
-  alimentada por nodos editables. Editar un nodo cambia la tarjeta.
+  editar un nodo de universidad cambia la tarjeta. Las pastillas quedan fuera (pendiente §3.4).
 
 ### Fase 2 — Replicar el patrón al resto de colecciones
 Una vez validado el piloto, aplicar el mismo mecanismo a las 7 restantes, en orden de menos a más
 complejas (stats, why-items, features, requisitos, timeline, semestres, especializaciones).
-- Cada colección: tipo de contenido + campos + nodos + vista + integración en el marco.
-- **Validación por colección:** la sección correspondiente se ve idéntica, alimentada por nodos.
+- Cada colección: tipo de contenido + campos + nodos + entrada en la preprocess + prop al marco.
+- Valorar generalizar la preprocess para que cargue las colecciones de forma uniforme.
+- **Validación por colección:** la sección se ve idéntica, alimentada por nodos.
 - Consolidar en git por colección o por grupos coherentes.
 
 ### Fase 3 — Menú hamburguesa (móvil) — §5.2
@@ -102,15 +123,16 @@ complejas (stats, why-items, features, requisitos, timeline, semestres, especial
   nav se comporta como hasta ahora.
 
 ### Fase 4 — Pastillas interactivas de `ula_uni_card` — §5.3
-- Convertir las pastillas (`tags`, hoy `{label, info}` renderizado solo como `label`) en disparadores
-  de un popover/modal que muestre `info`, usando la **API nativa** (`popover` / `<dialog>`).
-- Requiere que la fase 1 haya definido cómo se editan los `tags` con su `info` desde el nodo.
+- Requiere haber modelado antes la **relación universidad↔semestre** (entidad semestre + entidad de
+  relación con el texto del modal; ver `../../analysis/about-and-university-entity.md` §3.4).
+- Convertir las pastillas (`tags`, `{label, info}`) en disparadores de un popover/modal que muestre
+  `info`, usando la **API nativa** (`popover` / `<dialog>`).
 - **Validación:** al activar una pastilla, aparece su información; sin JS de terceros.
 
 ### Fase 5 — Verificación final y consolidación
 - Revisar que toda la home sigue fiel a la maqueta y que las colecciones son editables.
-- Actualizar `../../elements/home/HOME-ARCHITECTURE.md`: mover las colecciones de "Familia B (en código)" a editables,
-  y marcar los pendientes §5.x como resueltos.
+- Actualizar `../../elements/home/HOME-ARCHITECTURE.md`: mover las colecciones de "Familia B (en
+  código)" a editables, y marcar los pendientes §5.x como resueltos.
 - Subir la versión del tema (§1 de `../../ARCHITECTURE.md`) y registrar el hito.
 
 ---
@@ -118,33 +140,36 @@ complejas (stats, why-items, features, requisitos, timeline, semestres, especial
 ## Método de trabajo (el mismo del proyecto)
 
 - Se migra/añade **una cosa cada vez**, se valida (fidelidad + editabilidad) **antes** de seguir.
-- **Dump de BD antes de cada cambio de configuración** (tipos de contenido, campos, vistas viven en BD).
+- **Dump de BD antes de cada cambio de configuración** (los tipos de contenido y campos viven en BD;
+  la preprocess y el marco viven en git).
 - Nada se da por bueno sin verlo renderizado.
 - Cada hito se consolida en git (commit + push), verificando la sincronización con el clon de trabajo.
 - Los scripts de creación de campos/tipos se conservan en `scripts/` como referencia reproducible.
 
 ---
 
-## Cuestiones abiertas a decidir al arrancar
+## Cuestiones abiertas a decidir al arrancar (o por colección)
 
 1. **Páginas de detalle:** ¿qué colecciones tendrán página de detalle propia (universidades,
-   especializaciones…)? Condiciona qué campos crear y refuerza el enfoque nodos+vistas.
-2. **Campos multivalor estructurados:** cómo modelar `tags` (con su `info` para el popover),
-   `modules` y `subjects`. ¿Campo multivalor simple, o estructura más rica?
-3. **Orden de las vistas en la página:** cómo se integran las vistas en el marco `lscm-master-page`
-   (¿el marco embebe las vistas, o la plantilla del nodo las orquesta?). Decisión técnica a validar
-   en el piloto.
-4. **Agrupación de la migración:** ¿consolidar en git colección por colección, o por grupos?
-5. **Tipos de contenido vs. vocabulario/taxonomía** para las colecciones más simples (p. ej. stats):
-   valorar si algún caso encaja mejor como taxonomía que como tipo de contenido.
+   especializaciones…)? Condiciona qué campos crear.
+2. **Campos multivalor / relaciones:** cómo modelar `modules`, `subjects` y, en universidades, la
+   relación con semestres (`tags`, ver `../../analysis/about-and-university-entity.md` §3.4).
+3. **Dónde vive la preprocess:** decidir si la carga de nodos va en una *preprocess* del nodo landing
+   (`hook_preprocess_node`), en una función auxiliar del `.theme`, o en otro punto. Decisión técnica
+   a fijar en el piloto (1.3).
+4. **Enlace de la tarjeta de universidad:** ¿debe `ula_uni_card` enlazar a la página de detalle del
+   nodo? Si sí, decidir si se añade una prop de URL al componente o cómo se resuelve el enlace.
+5. **Agrupación de la migración:** ¿consolidar en git colección por colección, o por grupos?
 
 ---
 
 ## Resumen
 
-Se migran las **8 colecciones** de la home de arrays fijos en el `.twig` a **contenido editable**
-(tipos de contenido + vistas que pintan los componentes `ula_*` vía `ui_patterns_views`), validando
-primero con un **piloto (universidades)** antes de replicar. Después se añade la **interactividad**
-pendiente (menú hamburguesa y pastillas con API nativa) y se **elimina la vista vieja** `page_home`.
-Todo siguiendo el método del proyecto: de simple a complejo, validando fidelidad en cada paso, con
-dump previo y consolidación en git por hito.
+Se hacen **editables** las 8 colecciones de la home leyendo sus datos de **nodos** (tipos de
+contenido) mediante una **preprocess** del tema que construye los arrays y los pasa como **prop** al
+marco `lscm-master-page` — que sigue pintándolas con sus grids propios y los componentes `ula_*`,
+con fidelidad garantizada e independencia total de Bootstrap, y con todo el código en git (ver
+ADR-002). Se valida primero con un **piloto (universidades)** antes de replicar. Después se añade la
+**interactividad** pendiente (menú hamburguesa y pastillas con API nativa) y se **elimina la vista
+vieja** `page_home`. Todo siguiendo el método del proyecto: de simple a complejo, validando fidelidad
+en cada paso, con dump previo y consolidación en git por hito.

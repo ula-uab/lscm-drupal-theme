@@ -123,8 +123,9 @@ why-items, pasos de la timeline de admisión, requisitos, features del about y s
 `components/lscm-master-page/lscm-master-page.twig` (bloques `{% set universities = [...] %}`,
 etc.). Cambiarlas requiere editar ese fichero (código → git → `ddev drush cr`).
 
-> **IMPORTANTE:** este estado es **provisional**. La §5 describe el plan para hacer estas
-> colecciones editables desde el admin mediante tipos de contenido + vistas.
+> **IMPORTANTE:** este estado es **provisional**. La §5.1 describe el plan para hacer estas
+> colecciones editables desde el admin leyendo los nodos y pasándolos como prop al marco
+> (mecanismo **preprocess → prop**, ver ADR-002 en §7).
 
 ---
 
@@ -133,28 +134,31 @@ etc.). Cambiarlas requiere editar ese fichero (código → git → `ddev drush c
 Pendientes específicos de la home. (Los pendientes transversales del tema están en `TODO.md` en
 la raíz del tema.)
 
-### 5.1. Colecciones editables (tipos de contenido + vistas) — EN CURSO
+### 5.1. Colecciones editables (preprocess → prop) — EN CURSO
 
 **Estado:** las 8 colecciones están hoy como datos fijos en el `.twig` del marco (decisión
-**provisional** para desbloquear la home). Plan acordado: migrarlas a **tipos de contenido +
-vistas**, reutilizando el patrón que el sitio ya usa (la timeline de Admissions: nodos
-`ct_admission_preenrolment_step` listados por una vista y pintados con `timeline_item2` vía
-`ui_patterns_views`).
+**provisional** para desbloquear la home). Plan acordado: hacerlas **editables desde el admin**
+leyendo los nodos y pasándolos como prop al marco. El mecanismo elegido es **preprocess → prop**, no
+vistas; la justificación, las alternativas descartadas (vista embebida, sección fuera del marco) y la
+tabla comparativa están en la **ADR-002** (§7).
 
 **Mecanismo por colección:**
-1. Un **tipo de contenido** con los campos del ítem.
+1. Un **tipo de contenido** con los campos del ítem (editable en el admin). Para universidades se
+   reutiliza el existente `ct_about_consortium_university`, ampliado con campos nuevos (ver
+   [`../../analysis/about-and-university-entity.md`](../../analysis/about-and-university-entity.md)).
 2. **Nodos** (el contenido editable).
-3. Una **vista** que los lista y los pinta con el componente `ula_*` correspondiente (vía
-   `ui_patterns_views`, mapeando campos → props).
-4. Integrar la vista en la home en lugar de la colección fija.
+3. Una **preprocess** del tema lee esos nodos (ordenados) y construye el array de la colección.
+4. El array se pasa como **prop** al marco `lscm-master-page`, que lo pinta con el componente `ula_*`
+   correspondiente y su grid propio — igual que hoy, pero con datos de nodos en vez de hardcodeados.
 
 **Colecciones a migrar:** universidades (`ula_uni_card`), especializaciones (`ula_spec_card`),
 semestres (`ula_sem_card`), why-items (`ula_why_item`), timeline (`ula_timeline_item`),
 requisitos (`ula_req_card`), features (`ula_feature_item`), stats del hero (`ula_hero_stat`).
 
-**Método previsto:** validar el patrón con una colección piloto (probablemente **universidades**)
-antes de replicar a las demás. Decidir, por colección, si el contenido tendrá página de detalle
-propia (reutilizable) — lo que refuerza el enfoque nodos+vistas.
+**Método previsto:** validar el patrón con una colección piloto (**universidades**) antes de
+replicar a las demás. Decidir, por colección, si el contenido tendrá página de detalle propia
+(reutilizable).
+
 
 ### 5.2. Menú hamburguesa (móvil)
 
@@ -208,3 +212,134 @@ templates/
 > (raíz del proyecto), conservados como referencia reproducible (la configuración no está en git,
 > ver [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §6.1):
 > `crear-campos-landing.php`, `anadir-campos-formdisplay.php`, `ordenar-campos-landing.php`.
+
+---
+
+## 7. Registros de decisiones de arquitectura (ADRs)
+
+> Esta sección recoge decisiones de arquitectura significativas de la home, en formato ADR
+> (Architecture Decision Record), de forma **autocontenida** para poder extraerla en el futuro a
+> `docs/decisions/` sin reescribirla. Cada ADR registra el contexto, la decisión, las alternativas
+> consideradas y las consecuencias, para poder reconsiderarla con conocimiento de causa más adelante.
+
+---
+
+### ADR-001 — La home se sirve como nodo + plantilla Twig (no Layout Builder ni UI Patterns Blocks)
+
+**Estado:** aceptada · **Fecha:** 2026-06 · **Ámbito:** home
+
+**Contexto.** La home debía renderizarse con el componente-marco `lscm-master-page`, con sus textos
+editables desde el admin, sin hardcodear contenido. Se buscaba el mecanismo de Drupal/UI Patterns
+para "renderizar una entidad (nodo) completa con un componente, mapeando campos a props".
+
+**Decisión.** Servir la home como un **nodo** del tipo `landing`, con una **plantilla Twig**
+(`node--landing.html.twig`) que mapea los campos del nodo a las props del marco, más una plantilla
+de portada (`page--front.html.twig`) que la sirve a pantalla completa sin el chrome del tema base.
+
+**Alternativas consideradas y descartadas:**
+
+- **Layout Builder.** Permite asignar un componente como layout de la entidad, pero: (a) es una capa
+  pesada; (b) su configuración se guarda en la BD, y este sitio **no usa config/sync** (ver
+  [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §6.1), por lo que esa config crítica no se
+  versionaría; (c) su modelo de "componer un layout arrastrando bloques" no encaja con una landing
+  que **ya trae su propio layout** en el componente. Al activarlo, la pantalla "editar el layout de
+  todos los Landing" evidenció el choque conceptual: no queremos *componer* un layout, sino *delegar*
+  en un componente que ya lo trae.
+- **UI Patterns Blocks (`ui_patterns_blocks`).** Permite usar un componente como bloque colocable,
+  pero los textos se editarían en la configuración del bloque (en BD), no como contenido; y UI
+  Patterns 2.x **no ofrece** "renderizar la entidad completa con un componente" salvo vía Layout
+  Builder. Se exploró y se descartó.
+
+**Consecuencias.**
+- (+) Mecanismo **ligero**, en **código** (va a git), sin meter configuración crítica en una BD sin
+  config/sync. Bajo control total en el tema.
+- (+) El mapeo campo→prop es explícito y versionado en `node--landing.html.twig`.
+- (−) El mapeo se escribe en código (no por interfaz); ampliar campos implica editar el Twig.
+- Nota: SDC no inyecta de forma fiable los `default` del `.component.yml` vía `include()` con props
+  parciales; por eso los valores de fábrica se definen en el `.twig` del marco con `|default()`
+  (ver [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §6.4).
+
+---
+
+### ADR-002 — Las colecciones de la home se alimentan por preprocess→prop (no por vistas)
+
+**Estado:** aceptada · **Fecha:** 2026-06 · **Ámbito:** home (aplica a las 8 colecciones)
+
+**Contexto.** Las 8 colecciones de la home (universidades, especializaciones, semestres, why-items,
+timeline, requisitos, features, stats) están hoy como **arrays fijos** dentro del componente
+monolítico `lscm-master-page`, cada una embebida en una `<section>` con su propio grid CSS
+(`.uni-grid`, `.spec-grid`, etc.). Se quería hacerlas **editables desde el admin** sin perder
+fidelidad visual ni independencia de Bootstrap. El nudo: la colección **no es una página autónoma**,
+sino una sección embebida dentro de un componente que pinta toda la landing de una pieza.
+
+El sitio, en general, usa el patrón **tipos de contenido + vistas** (ver
+[`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §5; p. ej. About lista las universidades con una
+vista `ui_patterns_views`). La pregunta era si replicar ese patrón en la home.
+
+**Decisión.** Para la home, **cargar los nodos en una *preprocess* del tema y pasarlos como prop** al
+marco `lscm-master-page` (que sigue pintando cada colección con su grid propio y sus componentes
+`ula_*`). Los **datos siguen viviendo en los nodos** (editables en el admin, p. ej. el tipo
+`ct_about_consortium_university`); lo único que cambia respecto al estado actual es que el array deja
+de estar hardcodeado y se construye leyendo los nodos. Esta decisión aplica a **las 8 colecciones**,
+no solo a universidades.
+
+**Flujo de datos (mecanismo elegido):**
+
+```
+NODOS (datos editables)
+   ↓   ← la Opción 3 decidió: una PREPROCESS lee los nodos (en vez de una vista)
+array de datos
+   ↓   ← se pasa como PROP al marco
+lscm-master-page (el marco)
+   ↓   ← el marco itera el array y, por cada ítem, llama a:
+ula_uni_card   ← PINTA cada tarjeta   ◄── el componente de presentación, imprescindible
+```
+
+Solo cambia el **primer eslabón** (cómo se leen los datos: preprocess en vez de array hardcodeado o
+vista). El **componente** (`ula_uni_card` y, para las demás colecciones, su `ula_*` correspondiente)
+y el **marco** mantienen su papel: el marco orquesta e itera; el componente pinta cada ítem. La
+*preprocess* se ocupa de los **datos**; el *componente* se ocupa de la **presentación** — separación
+que permite cambiar la fuente de datos sin tocar el componente, y viceversa.
+
+**Alternativas consideradas:**
+
+1. **Vista embebida en el marco** (`drupal_view()` donde hoy está el array). Es el patrón de About.
+2. **Sacar la sección fuera del marco** y mostrarla como vista independiente.
+3. **Preprocess → prop** (la elegida).
+
+**Tabla comparativa:**
+
+| Criterio | Op.1 Vista embebida | Op.2 Sección fuera del marco | Op.3 Preprocess→prop (elegida) |
+|---|---|---|---|
+| Independencia de Bootstrap | Media (wrappers de Views se interponen) | Media | **Total** (markup idéntico al actual) |
+| Mantenibilidad | Media-baja (acopla el SDC a una vista; config en BD) | Baja (rompe la unidad del marco) | Media-alta (marco intacto; carga de datos en el tema) |
+| Editabilidad del contenido | Excelente | Excelente | Excelente |
+| Fidelidad visual | Riesgo (wrappers rompen el `display:grid`) | Riesgo alto | **Garantizada** (mismo Twig) |
+| Coherencia con el resto del sitio | Alta (patrón de About) | Media | Baja (mecanismo propio de la home) |
+| Todo en git | No (config de vista en BD) | No (config en BD) | **Sí** (todo en código) |
+| Escala a las 8 colecciones | 8 vistas en BD | romper el marco 8 veces | 1 preprocess uniforme |
+
+**Razón de la elección.** La tensión de fondo es que **no se puede optimizar a la vez "todo en git"
+y "coherencia con el patrón de vistas"**: las vistas son configuración y viven en la BD, que este
+sitio no versiona. La home ya tomó conscientemente (ADR-001) el camino "todo en código, nada de
+config pesada en BD". La Opción 3 es coherente con esa identidad: fidelidad garantizada (mismo
+markup), independencia total (sin wrappers de Views ni rejillas Bootstrap), y todo versionado en
+git. Además **escala mejor**: las 8 colecciones se resuelven con un patrón uniforme en código (una
+preprocess), en vez de 8 vistas que vivirían en la BD.
+
+**Consecuencias.**
+- (+) Fidelidad visual garantizada: el marco pinta igual que hoy; solo cambia el origen de los datos.
+- (+) Independencia total de Bootstrap; sin wrappers de Views.
+- (+) Todo en git: la home es reconstruible desde el repo (salvo el contenido, que son los nodos).
+- (+) Patrón uniforme y de bajo coste para las 8 colecciones.
+- (−) **Diverge del patrón de vistas** del resto del sitio (la home es una excepción justificada por
+  su naturaleza monolítica y pixel-perfect; no es incoherencia, es adecuación).
+- (−) Requiere una *preprocess* en PHP (un hook en un `.theme`) o equivalente: introduce una pizca de
+  lógica de datos en el tema.
+- (−) El **mapeo y el orden** de las colecciones viven en código (no configurables por interfaz). El
+  **contenido** (los nodos) sí es editable desde el admin. Si en el futuro se necesitara configurar
+  la *presentación* (orden, filtros) desde la interfaz, habría que reconsiderar hacia vistas (Op.1).
+
+**Reconsideración.** Si cambiara la prioridad —p. ej. que un editor no técnico deba configurar la
+presentación de las colecciones desde la interfaz, o que se quiera homogeneizar con el patrón de
+vistas del resto del sitio aceptando config en BD— esta decisión debería revisarse hacia la Opción 1.
