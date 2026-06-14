@@ -126,12 +126,13 @@
 ] %}
 {% set why_items = why_items|default(why_items_default) %}
 
-{% set timeline_items = [
+{% set timeline_items_default = [
   { title: '1. Pre-enrolment opens', description: 'January – September each year. Rolling review of applications.' },
   { title: '2. Document submission', description: 'Upload required documents via the UAB online portal. Obtain your student NIA number first if not yet a UAB student.' },
   { title: '3. Admissions committee review', description: 'Decision communicated within 20 days of application submission.' },
   { title: '4. Enrolment & start of studies', description: 'Follow UAB enrolment procedures. Programme begins in September.' }
 ] %}
+{% set timeline_items = timeline_items|default(timeline_items_default) %}
 
 {% set requirements_cards = [
   { icon: '🎓', title: 'Academic Background', description: "Bachelor's degree in engineering, technology, business, or a related field from a recognised institution." },

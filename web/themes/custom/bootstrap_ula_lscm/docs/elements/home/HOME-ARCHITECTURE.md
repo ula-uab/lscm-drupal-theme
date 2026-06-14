@@ -158,9 +158,12 @@ tabla comparativa están en la **ADR-002** (§7).
 - ✅ **stats del hero** (`ula_hero_stat`) — migrada en v1.1.1. Entidad: `ct_programme_facts`.
 - ✅ **why-items** (`ula_why_item`) — migrada en v1.1.1. Entidad: `ct_programme_facts`
   (ver [`../../entities/programme-facts.md`](../../entities/programme-facts.md)).
-- ⬜ **especializaciones** (`ula_spec_card`), **semestres** (`ula_sem_card`), **timeline**
-  (`ula_timeline_item`), **requisitos** (`ula_req_card`), **features** (`ula_feature_item`) —
-  pendientes. Triviales con el cargador genérico ya extraído (ADR-002).
+- ✅ **timeline** (`ula_timeline_item`) — migrada en v1.1.2. Entidad: `ct_admission_journey_step`
+  (ver [`../../entities/admission-journey-step.md`](../../entities/admission-journey-step.md)).
+- ⬜ **especializaciones** (`ula_spec_card`), **semestres** (`ula_sem_card`), **requisitos**
+  (`ula_req_card`), **features** (`ula_feature_item`) — pendientes. Triviales con el cargador
+  genérico, salvo especializaciones y semestres que tienen un array anidado (`modules[]`/`subjects[]`)
+  a resolver.
 
 **Método:** se validó el patrón con un piloto (**universidades**, v1.1.0); con la segunda y tercera
 colección (hero stats y why items, ambas vía `ct_programme_facts`, v1.1.1) se extrajo el **cargador

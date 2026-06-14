@@ -64,6 +64,16 @@ function bootstrap_ula_lscm_preprocess_node(array &$variables): void {
     ],
     'field_show_in_why'
   );
+
+  // Timeline-resumen del proceso de admisión (nodos ct_admission_journey_step).
+  // Una entrada por fase; show_line lo calcula el marco (not loop.last).
+  $variables['timeline_items_data'] = _bootstrap_ula_lscm_get_collection(
+    'ct_admission_journey_step',
+    [
+      'title'       => fn($n) => $n->label(),
+      'description' => fn($n) => $n->get('field_journey_summary')->value ?? '',
+    ]
+  );
 }
 
 /**

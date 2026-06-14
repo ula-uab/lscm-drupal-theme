@@ -37,6 +37,9 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
 - **[`entities/programme-facts.md`](entities/programme-facts.md)** — `ct_programme_facts`: los hechos
   /cifras del programa (ECTS, universidades, idioma…). Una entidad, varias representaciones (alimenta
   hero stats y why items de la home).
+- **[`entities/admission-journey-step.md`](entities/admission-journey-step.md)** —
+  `ct_admission_journey_step`: las fases del proceso de admisión (resumen para el timeline de la
+  home). Distinta del detalle paso-a-paso de la sección Admission.
 
 ## Planes de desarrollo
 

@@ -95,6 +95,9 @@
 {% if why_items_data is defined and why_items_data is not empty %}
   {% set props = props|merge({ why_items: why_items_data }) %}
 {% endif %}
+{% if timeline_items_data is defined and timeline_items_data is not empty %}
+  {% set props = props|merge({ timeline_items: timeline_items_data }) %}
+{% endif %}
 
 {# Renderiza la landing con el componente, pasando solo las props con valor.
    Las props sin valor las rellena el componente con sus defaults de fábrica. #}
