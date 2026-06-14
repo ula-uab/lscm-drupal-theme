@@ -2,40 +2,26 @@ $schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schem
 name: ULA Spec Card
 status: experimental
 description: >
-  Tarjeta de especialización: cabecera de color (icono + título + universidad) y
-  cuerpo (descripción + lista de módulos). Componente autónomo del design system ULA.
-  Se compone dentro del slot 'specializations'. El contenedor en rejilla (.spec-grid)
-  lo aporta la sección, no este componente.
+  Tarjeta de especialización: cabecera con imagen de fondo (overlay + título +
+  ubicación superpuestos) y cuerpo con descripción enriquecida (HTML: párrafos y
+  listas). Componente autónomo del design system ULA. Se compone dentro del slot
+  'specializations'. El contenedor en rejilla (.spec-grid) lo aporta la sección.
 props:
   type: object
   properties:
-    icon:
-      type: string
-      title: Icon
-      description: 'Icono (emoji o carácter), p. ej. "📊".'
     title:
       type: string
       title: Title
-      description: 'Nombre de la especialización.'
-    university:
+      description: 'Nombre de la especialización (se superpone sobre la imagen).'
+    location:
       type: string
-      title: University
-      description: 'Universidad y país (p. ej. "Riga Technical University · Latvia").'
+      title: Location
+      description: 'Ubicación: universidad y país (p. ej. "Riga Technical University · Latvia"). Se superpone sobre la imagen.'
+    image:
+      type: string
+      title: Image URL
+      description: 'URL de la imagen de fondo de la cabecera. Si está vacía, la cabecera usa un fondo de color de respaldo.'
     description:
       type: string
-      title: Description
-      description: 'Texto descriptivo de la especialización.'
-    modules:
-      type: array
-      title: Modules
-      description: 'Lista de módulos (textos simples).'
-      items:
-        type: string
-    variant:
-      type: string
-      title: Variant
-      description: 'Variante de color de la cabecera.'
-      enum:
-        - primary
-        - secondary
-      default: primary
+      title: Description (HTML)
+      description: 'Descripción enriquecida (HTML ya saneado: párrafos y listas). Se renderiza sin escapar.'

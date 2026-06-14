@@ -108,14 +108,13 @@
    si no, el array de fábrica de arriba. #}
 {% set universities = universities|default(universities_default) %}
 
-{% set specializations = [
-  { icon: '📊', title: 'Logistics Information Systems', university: 'Riga Technical University · Latvia', variant: 'primary',
-    description: 'Focus on how integrated IT solutions support and optimise logistics and supply chain management. Ideal for those interested in digitalisation, data-driven decision-making and smart logistics.',
-    modules: ['Logistics IT Systems & Architecture','Digital Transformation in SCM','Data Analytics & Business Intelligence','ERP & WMS Systems','IoT & Smart Logistics'] },
-  { icon: '🏗️', title: 'Logistics Systems Engineering', university: 'University of Applied Sciences Wildau · Germany', variant: 'secondary',
-    description: 'Focus on analysis, design, evaluation and implementation of materials handling, transport, and logistics management and control systems. Hands-on and engineering-oriented.',
-    modules: ['Materials Handling Systems','Warehouse Design & Automation','Transport Network Optimisation','Simulation & Modelling','Logistics Control Systems'] }
+{% set specializations_default = [
+  { title: 'Logistics Information Systems', location: 'Riga Technical University · Latvia', image: '',
+    description: '<p>Focus on how integrated IT solutions support and optimise logistics and supply chain management. Ideal for those interested in digitalisation, data-driven decision-making and smart logistics.</p><ul><li>Logistics IT Systems &amp; Architecture</li><li>Digital Transformation in SCM</li><li>Data Analytics &amp; Business Intelligence</li><li>ERP &amp; WMS Systems</li><li>IoT &amp; Smart Logistics</li></ul>' },
+  { title: 'Logistics Systems Engineering', location: 'University of Applied Sciences Wildau · Germany', image: '',
+    description: '<p>Focus on analysis, design, evaluation and implementation of materials handling, transport, and logistics management and control systems. Hands-on and engineering-oriented.</p><ul><li>Materials Handling Systems</li><li>Warehouse Design &amp; Automation</li><li>Transport Network Optimisation</li><li>Simulation &amp; Modelling</li><li>Logistics Control Systems</li></ul>' }
 ] %}
+{% set specializations = specializations|default(specializations_default) %}
 
 {% set why_items_default = [
   { number: '3', title: 'Countries, one degree', description: 'Live, study and build your network in Spain, Latvia, and Germany — with one joint diploma at the end.' },
@@ -280,8 +279,8 @@
     <div class="spec-grid">
       {% for spec in specializations %}
         {{ include('bootstrap_ula_lscm:ula_spec_card', {
-          icon: spec.icon, title: spec.title, university: spec.university,
-          description: spec.description, modules: spec.modules, variant: spec.variant
+          title: spec.title, location: spec.location,
+          image: spec.image, description: spec.description
         }) }}
       {% endfor %}
     </div>

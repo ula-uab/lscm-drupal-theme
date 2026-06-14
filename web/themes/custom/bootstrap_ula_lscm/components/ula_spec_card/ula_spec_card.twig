@@ -1,22 +1,27 @@
 {#
-  ula_spec_card — tarjeta de especialización.
-  Props: icon, title, university, description, modules (array), variant (primary|secondary).
-  Markup y clases idénticos a la maqueta. La variante 'secondary' añade .spec-top-2.
+  ula_spec_card — tarjeta de especialización (rediseñada).
+  Props:
+    - title       : nombre de la especialización (sobre la imagen).
+    - location    : universidad · país (sobre la imagen).
+    - image       : URL de la imagen de fondo de la cabecera (opcional).
+    - description : HTML enriquecido (párrafos/listas), ya saneado por Basic HTML.
+
+  La cabecera lleva la imagen como background inline (URL dinámica) + un overlay
+  oscuro (definido en CSS) para legibilidad del texto blanco. Si no hay imagen, la
+  clase .spec-top sin --spec-image usa el color de respaldo.
+  La descripción se renderiza con |raw porque es HTML saneado (Basic HTML no admite
+  clases ni scripts), no texto plano.
 #}
 <div class="spec-card">
-  <div class="spec-top{{ variant == 'secondary' ? ' spec-top-2' : '' }}">
-    <div class="spec-icon">{{ icon }}</div>
-    <h3>{{ title }}</h3>
-    <div class="spec-uni">{{ university }}</div>
+  <div class="spec-top{{ image ? ' spec-top--has-image' : '' }}"
+       {% if image %}style="background-image: url('{{ image }}');"{% endif %}>
+    <div class="spec-top__overlay"></div>
+    <div class="spec-top__content">
+      <h3>{{ title }}</h3>
+      {% if location %}<div class="spec-uni">{{ location }}</div>{% endif %}
+    </div>
   </div>
   <div class="spec-body">
-    <p>{{ description }}</p>
-    {% if modules is not empty %}
-      <ul class="spec-modules">
-        {% for module in modules %}
-          <li>{{ module }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+    {{ description|raw }}
   </div>
 </div>

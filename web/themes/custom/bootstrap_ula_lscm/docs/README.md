@@ -46,6 +46,9 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
 - **[`entities/admission-requirement.md`](entities/admission-requirement.md)** —
   `ct_admission_requirement`: los requisitos de admisión (resumen visual de la home). Distinto del
   detalle normativo de la sección Eligibility.
+- **[`entities/programme-specialisation.md`](entities/programme-specialisation.md)** —
+  `ct_programme_specialisation`: las especializaciones del máster (descripción rich text + imagen de
+  Media). Conllevó el rediseño del componente `ula_spec_card`.
 
 ## Planes de desarrollo
 

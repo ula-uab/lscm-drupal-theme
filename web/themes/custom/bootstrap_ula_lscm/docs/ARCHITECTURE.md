@@ -33,6 +33,7 @@ sino que referencian la versión del tema en la que se introdujo o modificó cad
 | 1.1.2 | 2026-06-14 | Home: 4ª colección editable — **timeline** del proceso de admisión, alimentada por la entidad nueva **`ct_admission_journey_step`** (una fase por nodo; resumen, distinto del detalle de la sección Admission). Sin numeración en los títulos. |
 | 1.1.3 | 2026-06-14 | Home: 5ª colección editable — **features** del programa (sección About), alimentada por la entidad nueva **`ct_programme_feature`** (icono emoji + título + descripción). |
 | 1.1.4 | 2026-06-14 | Home: 6ª colección editable — **requisitos** de admisión, alimentada por la entidad nueva **`ct_admission_requirement`** (resumen visual; distinto del detalle de la sección Eligibility). |
+| 1.1.5 | 2026-06-14 | Home: 7ª colección editable — **especializaciones**, entidad nueva **`ct_programme_specialisation`** con descripción **rich text** (Basic HTML) e **imagen de Media**. Se **rediseña el componente `ula_spec_card`** (cabecera con imagen + overlay). Se añaden auxiliares reutilizables en el tema: render de rich text y resolución de URL de imagen de Media. |
 
 > **Mantenimiento:** al introducir cambios estructurales (nuevos componentes, cambios de
 > arquitectura, nuevos elementos, colecciones editables), subir la versión del tema en
@@ -424,7 +425,8 @@ bootstrap_ula_lscm/
     │   ├── programme-facts.md
     │   ├── admission-journey-step.md
     │   ├── programme-feature.md
-    │   └── admission-requirement.md
+    │   ├── admission-requirement.md
+    │   └── programme-specialisation.md
     ├── elements/                        # Documentación de referencia por elemento
     │   └── home/
     │       └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"

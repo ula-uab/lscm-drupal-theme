@@ -164,8 +164,12 @@ tabla comparativa están en la **ADR-002** (§7).
   (ver [`../../entities/programme-feature.md`](../../entities/programme-feature.md)).
 - ✅ **requisitos** (`ula_req_card`) — migrada en v1.1.4. Entidad: `ct_admission_requirement`
   (ver [`../../entities/admission-requirement.md`](../../entities/admission-requirement.md)).
-- ⬜ **especializaciones** (`ula_spec_card`), **semestres** (`ula_sem_card`) — pendientes; tienen un
-  array anidado (`modules[]`/`subjects[]`), un patrón nuevo aún por resolver.
+- ✅ **especializaciones** (`ula_spec_card`) — migrada en v1.1.5. Entidad: `ct_programme_specialisation`
+  (rich text + imagen de Media; rediseño del componente). Ver
+  [`../../entities/programme-specialisation.md`](../../entities/programme-specialisation.md). El
+  antiguo `modules[]` se redacta ahora dentro de la descripción enriquecida.
+- ⬜ **semestres** (`ula_sem_card`) — pendiente. Última colección; tiene un array anidado
+  (`subjects[]`) que decidir cómo modelar.
 
 **Método:** se validó el patrón con un piloto (**universidades**, v1.1.0); con la segunda y tercera
 colección (hero stats y why items, ambas vía `ct_programme_facts`, v1.1.1) se extrajo el **cargador
@@ -380,9 +384,21 @@ implementación sigue la **regla de tres**:
    entidad con dos representaciones**: los mismos nodos alimentan el hero (mapeo `number`/`label`,
    filtro `field_show_in_hero`) y la sección why (mapeo `number`/`title`/`description`, filtro
    `field_show_in_why`) — dos llamadas al genérico con distinto mapa y filtro.
-3. **Colecciones restantes — pendientes.** Triviales: una llamada al genérico con su `$bundle`,
+3. **Colecciones restantes — en curso.** Triviales: una llamada al genérico con su `$bundle`,
    `$map` y, si aplica, `$bool_filter`. El genérico queda como **infraestructura del tema**,
-   reutilizable también fuera de la home.
+   reutilizable también fuera de la home. Migradas así: why items, hero stats, timeline, features,
+   requisitos y especializaciones.
+
+   El mapa `$map` admite **resolvers arbitrarios** (callbacks), lo que permitió cubrir campos que no
+   son texto plano sin tocar el genérico. Para las especializaciones (v1.1.5) se añadieron dos
+   funciones auxiliares **reutilizables** usadas como resolvers:
+   - `_bootstrap_ula_lscm_text_value($node, $field)` — renderiza un campo **rich text** (aplica
+     `check_markup`, devuelve HTML saneado para imprimir con `|raw`).
+   - `_bootstrap_ula_lscm_media_image_url($node, $field)` — resuelve la **URL** de una imagen
+     referenciada de la biblioteca de **Media** (campo → media → archivo → URL).
+
+   Demuestra que el diseño del genérico (mapa de callbacks) escala a tipos de campo nuevos sin
+   reescribirlo: basta añadir un resolver.
 
 El refactor de extraer el genérico (paso 2) se hizo con dos casos reales en la mano, como estaba
 previsto: bajo riesgo y con conocimiento real en lugar de adivinando.

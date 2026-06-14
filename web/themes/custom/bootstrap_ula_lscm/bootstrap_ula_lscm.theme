@@ -94,6 +94,19 @@ function bootstrap_ula_lscm_preprocess_node(array &$variables): void {
       'description' => fn($n) => $n->get('field_req_desc')->value ?? '',
     ]
   );
+
+  // Especializaciones (nodos ct_programme_specialisation) → sección de especializaciones.
+  // Caso especial: la descripción es rich text (se renderiza a HTML) y la imagen es
+  // una referencia a Media (hay que resolver su URL de archivo).
+  $variables['specializations_data'] = _bootstrap_ula_lscm_get_collection(
+    'ct_programme_specialisation',
+    [
+      'title'       => fn($n) => $n->label(),
+      'location'    => fn($n) => $n->get('field_spec_location')->value ?? '',
+      'description' => fn($n) => _bootstrap_ula_lscm_text_value($n, 'field_spec_description'),
+      'image'       => fn($n) => _bootstrap_ula_lscm_media_image_url($n, 'field_spec_image'),
+    ]
+  );
 }
 
 /**
@@ -143,6 +156,64 @@ function _bootstrap_ula_lscm_get_collection(string $bundle, array $map, ?string 
     $items[] = $item;
   }
   return $items;
+}
+
+/**
+ * Devuelve el HTML renderizado de un campo de texto con formato (rich text).
+ *
+ * Para campos text_long/text_with_summary: aplica el formato de texto (p. ej.
+ * Basic HTML) y devuelve el HTML resultante como string seguro para imprimir con
+ * |raw en Twig. Si el campo está vacío, devuelve ''.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ * @param string $field
+ *
+ * @return string
+ */
+function _bootstrap_ula_lscm_text_value($node, string $field): string {
+  if ($node->get($field)->isEmpty()) {
+    return '';
+  }
+  $item = $node->get($field)->first();
+  $value = $item->value ?? '';
+  $format = $item->format ?? 'basic_html';
+  if ($value === '') {
+    return '';
+  }
+  // check_markup aplica los filtros del formato y devuelve HTML saneado.
+  return (string) check_markup($value, $format);
+}
+
+/**
+ * Resuelve la URL del archivo de imagen de un campo entity_reference a Media.
+ *
+ * Sigue: campo → entidad media → campo de imagen del media → archivo → URL.
+ * Devuelve '' si no hay media, no es imagen, o falta el archivo.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ * @param string $field
+ *
+ * @return string
+ */
+function _bootstrap_ula_lscm_media_image_url($node, string $field): string {
+  if ($node->get($field)->isEmpty()) {
+    return '';
+  }
+  $media = $node->get($field)->entity;
+  if (!$media) {
+    return '';
+  }
+  // El campo de imagen estándar del bundle de media 'image' es field_media_image.
+  $source_field = 'field_media_image';
+  if (!$media->hasField($source_field) || $media->get($source_field)->isEmpty()) {
+    return '';
+  }
+  $file = $media->get($source_field)->entity;
+  if (!$file) {
+    return '';
+  }
+  $uri = $file->getFileUri();
+  return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
 }
 
 /**
