@@ -29,6 +29,15 @@ base para el rediseño.
   de la página About y de la entidad "Universidad del consorcio" (`ct_about_consortium_university`);
   cómo se muestra hoy y opciones de diseño para reutilizarla.
 
+## Diseño de entidades propias
+
+Las **entidades propias** del tema (tipos de contenido diseñados en este proyecto, no heredados) se
+documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de diseño.
+
+- **[`entities/programme-facts.md`](entities/programme-facts.md)** — `ct_programme_facts`: los hechos
+  /cifras del programa (ECTS, universidades, idioma…). Una entidad, varias representaciones (alimenta
+  hero stats y why items de la home).
+
 ## Planes de desarrollo
 
 Los planes de trabajo (hojas de ruta por fases) viven en `docs/plans/<elemento>/`, separados de la

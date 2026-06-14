@@ -39,16 +39,89 @@ function bootstrap_ula_lscm_preprocess_node(array &$variables): void {
   if (!$node || $node->bundle() !== 'landing') {
     return;
   }
-  // Colección de universidades, leída de nodos ct_about_consortium_university.
+
+  // Colección de universidades (nodos ct_about_consortium_university).
   $variables['universities_data'] = _bootstrap_ula_lscm_get_universities();
+
+  // Hechos del programa (nodos ct_programme_facts), en sus dos representaciones:
+  // - hero_stats_data: los marcados para el hero (number + label).
+  // - why_items_data:  los marcados para la sección "why" (number + title + description).
+  // Una misma entidad (programme_facts), dos representaciones según la sección.
+  $variables['hero_stats_data'] = _bootstrap_ula_lscm_get_collection(
+    'ct_programme_facts',
+    [
+      'number' => fn($n) => $n->get('field_fact_value')->value ?? '',
+      'label'  => fn($n) => $n->get('field_fact_hero_label')->value ?? '',
+    ],
+    'field_show_in_hero'
+  );
+  $variables['why_items_data'] = _bootstrap_ula_lscm_get_collection(
+    'ct_programme_facts',
+    [
+      'number'      => fn($n) => $n->get('field_fact_value')->value ?? '',
+      'title'       => fn($n) => $n->get('field_fact_why_title')->value ?? '',
+      'description' => fn($n) => $n->get('field_fact_why_desc')->value ?? '',
+    ],
+    'field_show_in_why'
+  );
+}
+
+/**
+ * Cargador genérico de colecciones de la home (mecanismo preprocess → prop).
+ *
+ * Lee los nodos publicados de un tipo de contenido, ordenados por field_order,
+ * opcionalmente filtrados por un campo booleano, y mapea cada nodo a un array
+ * según el mapa de claves → callbacks recibido.
+ *
+ * Patrón extraído del caso de universidades al añadir el segundo caso
+ * (programme_facts), según la "regla de tres" (ver HOME-ARCHITECTURE.md ADR-002).
+ *
+ * @param string $bundle
+ *   El tipo de contenido (p. ej. 'ct_programme_facts').
+ * @param array<string, callable> $map
+ *   Mapa clave_de_salida => callback($node): mixed. Cada callback extrae de un
+ *   nodo el valor de esa clave del array de salida.
+ * @param string|null $bool_filter
+ *   (Opcional) nombre de un campo booleano; solo se incluyen los nodos que lo
+ *   tengan a TRUE. Si es NULL, se incluyen todos los publicados.
+ *
+ * @return array<int, array<string, mixed>>
+ *   Lista de ítems mapeados, o [] si no hay nodos.
+ */
+function _bootstrap_ula_lscm_get_collection(string $bundle, array $map, ?string $bool_filter = NULL): array {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $query = $storage->getQuery()
+    ->accessCheck(TRUE)
+    ->condition('type', $bundle)
+    ->condition('status', 1)
+    ->sort('field_order', 'ASC');
+  if ($bool_filter !== NULL) {
+    $query->condition($bool_filter, 1);
+  }
+  $ids = $query->execute();
+
+  if (empty($ids)) {
+    return [];
+  }
+
+  $items = [];
+  foreach ($storage->loadMultiple($ids) as $node) {
+    $item = [];
+    foreach ($map as $key => $resolver) {
+      $item[$key] = $resolver($node);
+    }
+    $items[] = $item;
+  }
+  return $items;
 }
 
 /**
  * Carga las universidades del consorcio como array para el marco de la home.
  *
- * Lee los nodos publicados de tipo "ct_about_consortium_university", ordenados
- * por field_order, y los mapea a la forma que espera la prop "universities" del
- * componente lscm-master-page (claves: flag, country, name, abbr, description, tags).
+ * Usa el cargador genérico _bootstrap_ula_lscm_get_collection(). Lee los nodos
+ * publicados de tipo "ct_about_consortium_university", ordenados por field_order,
+ * y los mapea a la forma que espera la prop "universities" del componente
+ * lscm-master-page (claves: flag, country, name, abbr, description, tags).
  *
  * NOTA: "tags" (pastillas de semestre) se deja vacío de momento; depende de la
  * relación universidad↔semestre aún no modelada (ver docs/analysis/
@@ -58,29 +131,13 @@ function bootstrap_ula_lscm_preprocess_node(array &$variables): void {
  *   Lista de universidades mapeadas, o [] si no hay nodos.
  */
 function _bootstrap_ula_lscm_get_universities(): array {
-  $storage = \Drupal::entityTypeManager()->getStorage('node');
-  $ids = $storage->getQuery()
-    ->accessCheck(TRUE)
-    ->condition('type', 'ct_about_consortium_university')
-    ->condition('status', 1)
-    ->sort('field_order', 'ASC')
-    ->execute();
-
-  if (empty($ids)) {
-    return [];
-  }
-
-  $items = [];
-  foreach ($storage->loadMultiple($ids) as $node) {
-    $items[] = [
-      'flag'        => $node->get('field_uni_flag')->value ?? '',
-      'country'     => $node->get('field_uni_country')->value ?? '',
-      'name'        => $node->label(),
-      'abbr'        => $node->get('field_uni_abbr')->value ?? '',
-      'description' => $node->get('field_uni_home_pitch')->value ?? '',
-      // 'tags' pendiente (relación universidad↔semestre, §3.4). Sin pastillas por ahora.
-      'tags'        => [],
-    ];
-  }
-  return $items;
+  return _bootstrap_ula_lscm_get_collection('ct_about_consortium_university', [
+    'flag'        => fn($n) => $n->get('field_uni_flag')->value ?? '',
+    'country'     => fn($n) => $n->get('field_uni_country')->value ?? '',
+    'name'        => fn($n) => $n->label(),
+    'abbr'        => fn($n) => $n->get('field_uni_abbr')->value ?? '',
+    'description' => fn($n) => $n->get('field_uni_home_pitch')->value ?? '',
+    // 'tags' pendiente (relación universidad↔semestre, §3.4). Sin pastillas por ahora.
+    'tags'        => fn($n) => [],
+  ]);
 }

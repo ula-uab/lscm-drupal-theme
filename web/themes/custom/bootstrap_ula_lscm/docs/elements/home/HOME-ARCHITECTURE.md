@@ -151,13 +151,21 @@ tabla comparativa están en la **ADR-002** (§7).
 4. El array se pasa como **prop** al marco `lscm-master-page`, que lo pinta con el componente `ula_*`
    correspondiente y su grid propio — igual que hoy, pero con datos de nodos en vez de hardcodeados.
 
-**Colecciones a migrar:** universidades (`ula_uni_card`), especializaciones (`ula_spec_card`),
-semestres (`ula_sem_card`), why-items (`ula_why_item`), timeline (`ula_timeline_item`),
-requisitos (`ula_req_card`), features (`ula_feature_item`), stats del hero (`ula_hero_stat`).
+**Colecciones — estado de migración:**
 
-**Método previsto:** validar el patrón con una colección piloto (**universidades**) antes de
-replicar a las demás. Decidir, por colección, si el contenido tendrá página de detalle propia
-(reutilizable).
+- ✅ **universidades** (`ula_uni_card`) — migrada en v1.1.0. Entidad: `ct_about_consortium_university`
+  (ver [`../../analysis/about-and-university-entity.md`](../../analysis/about-and-university-entity.md)).
+- ✅ **stats del hero** (`ula_hero_stat`) — migrada en v1.1.1. Entidad: `ct_programme_facts`.
+- ✅ **why-items** (`ula_why_item`) — migrada en v1.1.1. Entidad: `ct_programme_facts`
+  (ver [`../../entities/programme-facts.md`](../../entities/programme-facts.md)).
+- ⬜ **especializaciones** (`ula_spec_card`), **semestres** (`ula_sem_card`), **timeline**
+  (`ula_timeline_item`), **requisitos** (`ula_req_card`), **features** (`ula_feature_item`) —
+  pendientes. Triviales con el cargador genérico ya extraído (ADR-002).
+
+**Método:** se validó el patrón con un piloto (**universidades**, v1.1.0); con la segunda y tercera
+colección (hero stats y why items, ambas vía `ct_programme_facts`, v1.1.1) se extrajo el **cargador
+genérico** `_bootstrap_ula_lscm_get_collection()` (regla de tres, ver ADR-002). Las restantes
+reutilizan ese genérico. Decidir, por colección, si el contenido tendrá página de detalle propia.
 
 
 ### 5.2. Menú hamburguesa (móvil)
@@ -351,14 +359,25 @@ vistas del resto del sitio aceptando config en BD— esta decisión debería rev
 caso, imaginando los otros siete) ni en copy-paste (8 bloques de carga casi iguales), la
 implementación sigue la **regla de tres**:
 
-1. **Piloto (universidades):** la carga de datos se escribe en una **función propia y separada** del
-   `.theme` (p. ej. `_bootstrap_ula_lscm_get_universities()`), invocada desde la preprocess —
-   limpia, pero **sin generalizar todavía**. Se valida el patrón con un caso real.
-2. **Segunda colección:** con **dos casos reales** delante, se extrae la parte común a una **función
-   genérica** (p. ej. `_bootstrap_ula_lscm_get_collection($type, $mapping, ...)`). Generalizar con
-   dos ejemplos reales es seguro; con uno imaginado, no.
-3. **Colecciones restantes:** triviales, reutilizando el genérico. Este queda como **infraestructura
-   del tema**, reutilizable también fuera de la home.
+1. **Piloto (universidades) — HECHO (v1.1.0).** La carga se escribió en una **función propia y
+   separada** del `.theme` (`_bootstrap_ula_lscm_get_universities()`), invocada desde la preprocess —
+   limpia, pero **sin generalizar todavía**. Validó el patrón con un caso real.
+2. **Segunda colección (hero stats + why items, vía `ct_programme_facts`) — HECHO (v1.1.1).** Con
+   **dos casos reales** delante, se extrajo la parte común a la **función genérica**
+   `_bootstrap_ula_lscm_get_collection(string $bundle, array $map, ?string $bool_filter)`:
+   - `$bundle`: el tipo de contenido a leer.
+   - `$map`: mapa `clave_de_salida => callback($node)`, que resuelve cada clave del array de salida
+     a partir del nodo (permite mapeos arbitrarios: un campo, el `label()`, un valor fijo…).
+   - `$bool_filter`: campo booleano opcional para filtrar (p. ej. `field_show_in_hero`).
 
-Implica un pequeño **refactor** al abordar la segunda colección (extraer el genérico), que es trabajo
-sano y de bajo riesgo, hecho con conocimiento real en lugar de adivinando.
+   `_bootstrap_ula_lscm_get_universities()` se reescribió para usar el genérico (el caso 1 quedó
+   también sobre la infraestructura común). `ct_programme_facts` aportó además el caso de **una
+   entidad con dos representaciones**: los mismos nodos alimentan el hero (mapeo `number`/`label`,
+   filtro `field_show_in_hero`) y la sección why (mapeo `number`/`title`/`description`, filtro
+   `field_show_in_why`) — dos llamadas al genérico con distinto mapa y filtro.
+3. **Colecciones restantes — pendientes.** Triviales: una llamada al genérico con su `$bundle`,
+   `$map` y, si aplica, `$bool_filter`. El genérico queda como **infraestructura del tema**,
+   reutilizable también fuera de la home.
+
+El refactor de extraer el genérico (paso 2) se hizo con dos casos reales en la mano, como estaba
+previsto: bajo riesgo y con conocimiento real en lugar de adivinando.

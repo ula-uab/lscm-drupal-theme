@@ -64,10 +64,13 @@
 {% set contact_faq_url = contact_faq_url|default('https://master-lscm.eu/faq') %}
 
 {# ───────── DATOS FIJOS DE LAS COLECCIONES (contenido de la maqueta) ───────── #}
-{% set hero_stats = [
+{% set hero_stats_default = [
   { number: '120', label: 'ECTS Credits' },
-  { number: '3', label: 'Partner Universities' }
+  { number: '3', label: 'Partner Universities' },
+  { number: '🇪🇸 🇱🇻 🇩🇪', label: 'Partner Countries' },
+  { number: '2', label: 'Specialisations' }
 ] %}
+{% set hero_stats = hero_stats|default(hero_stats_default) %}
 
 {% set about_features = [
   { icon: '🎓', title: 'Accredited Programme', description: 'Verified by legal bodies in all three countries' },
@@ -113,7 +116,7 @@
     modules: ['Materials Handling Systems','Warehouse Design & Automation','Transport Network Optimisation','Simulation & Modelling','Logistics Control Systems'] }
 ] %}
 
-{% set why_items = [
+{% set why_items_default = [
   { number: '3', title: 'Countries, one degree', description: 'Live, study and build your network in Spain, Latvia, and Germany — with one joint diploma at the end.' },
   { number: '120', title: "ECTS — full master's", description: 'A complete two-year programme that qualifies you for PhD programmes in logistics and engineering.' },
   { number: '2', title: 'Focused specialisations', description: 'Choose a track aligned with your career goals — digital IT systems or engineering implementation.' },
@@ -121,6 +124,7 @@
   { number: 'EN', title: 'Fully in English', description: 'All courses are taught in English, designed for an international and multicultural student body.' },
   { number: '🇪🇺', title: 'EU accredited', description: 'An officially verified joint programme compliant with European higher education standards.' }
 ] %}
+{% set why_items = why_items|default(why_items_default) %}
 
 {% set timeline_items = [
   { title: '1. Pre-enrolment opens', description: 'January – September each year. Rolling review of applications.' },
@@ -170,12 +174,6 @@
     {% for stat in hero_stats %}
       {{ include('bootstrap_ula_lscm:ula_hero_stat', { number: stat.number, label: stat.label }) }}
     {% endfor %}
-    {# Stat especial (banderas), fiel a la maqueta: orden invertido + tamaños propios #}
-    <div class="hero-stat">
-      <span class="hero-stat-label" style="font-size:10px;margin-top:0;">STUDY IN</span>
-      <span class="hero-stat-num" style="font-size:1.5rem;">🇪🇸 🇱🇻 🇩🇪</span>
-    </div>
-    {{ include('bootstrap_ula_lscm:ula_hero_stat', { number: '2', label: 'Specialisations' }) }}
   </div>
   <div class="hero-scroll"><div class="scroll-arrow"></div></div>
 </section>
