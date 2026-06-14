@@ -32,6 +32,7 @@ sino que referencian la versión del tema en la que se introdujo o modificó cad
 | 1.1.1 | 2026-06-14 | Home: 2ª y 3ª colecciones editables — **hero stats** y **why items**, ambas alimentadas por una entidad nueva **`ct_programme_facts`** (hechos del programa; una entidad, dos representaciones). Se extrae el **cargador genérico** `_bootstrap_ula_lscm_get_collection()` (regla de tres). Se eliminan los stats hardcodeados del hero. |
 | 1.1.2 | 2026-06-14 | Home: 4ª colección editable — **timeline** del proceso de admisión, alimentada por la entidad nueva **`ct_admission_journey_step`** (una fase por nodo; resumen, distinto del detalle de la sección Admission). Sin numeración en los títulos. |
 | 1.1.3 | 2026-06-14 | Home: 5ª colección editable — **features** del programa (sección About), alimentada por la entidad nueva **`ct_programme_feature`** (icono emoji + título + descripción). |
+| 1.1.4 | 2026-06-14 | Home: 6ª colección editable — **requisitos** de admisión, alimentada por la entidad nueva **`ct_admission_requirement`** (resumen visual; distinto del detalle de la sección Eligibility). |
 
 > **Mantenimiento:** al introducir cambios estructurales (nuevos componentes, cambios de
 > arquitectura, nuevos elementos, colecciones editables), subir la versión del tema en
@@ -422,7 +423,8 @@ bootstrap_ula_lscm/
     ├── entities/                        # Diseño de entidades propias del tema (no heredadas)
     │   ├── programme-facts.md
     │   ├── admission-journey-step.md
-    │   └── programme-feature.md
+    │   ├── programme-feature.md
+    │   └── admission-requirement.md
     ├── elements/                        # Documentación de referencia por elemento
     │   └── home/
     │       └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"

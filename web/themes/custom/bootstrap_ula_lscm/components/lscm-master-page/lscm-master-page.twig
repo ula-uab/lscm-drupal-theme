@@ -135,12 +135,13 @@
 ] %}
 {% set timeline_items = timeline_items|default(timeline_items_default) %}
 
-{% set requirements_cards = [
+{% set requirements_cards_default = [
   { icon: '🎓', title: 'Academic Background', description: "Bachelor's degree in engineering, technology, business, or a related field from a recognised institution." },
   { icon: '🌐', title: 'English Proficiency', description: 'TOEFL 90+ (internet-based) or equivalent B2 level according to the CEFR framework.' },
   { icon: '📋', title: 'Documents', description: 'CV, motivation letter, academic transcripts, degree certificate, and language certificate.' },
   { icon: '🌍', title: 'Open to EU & non-EU', description: "International students outside the EU are supported through UAB's International Support Service for visa applications." }
 ] %}
+{% set requirements_cards = requirements_cards|default(requirements_cards_default) %}
 
 {# ───────────────────────────── NAV ───────────────────────────── #}
 <nav>

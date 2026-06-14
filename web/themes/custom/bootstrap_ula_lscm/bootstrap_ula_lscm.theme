@@ -84,6 +84,16 @@ function bootstrap_ula_lscm_preprocess_node(array &$variables): void {
       'description' => fn($n) => $n->get('field_feature_desc')->value ?? '',
     ]
   );
+
+  // Requisitos de admisión (nodos ct_admission_requirement) → sección requisitos de la home.
+  $variables['requirements_cards_data'] = _bootstrap_ula_lscm_get_collection(
+    'ct_admission_requirement',
+    [
+      'icon'        => fn($n) => $n->get('field_req_icon')->value ?? '',
+      'title'       => fn($n) => $n->label(),
+      'description' => fn($n) => $n->get('field_req_desc')->value ?? '',
+    ]
+  );
 }
 
 /**

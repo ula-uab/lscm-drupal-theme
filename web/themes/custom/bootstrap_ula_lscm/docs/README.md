@@ -43,6 +43,9 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
 - **[`entities/programme-feature.md`](entities/programme-feature.md)** — `ct_programme_feature`: las
   características/ventajas del programa (acreditación, cohorte internacional…); alimenta la sección
   About de la home.
+- **[`entities/admission-requirement.md`](entities/admission-requirement.md)** —
+  `ct_admission_requirement`: los requisitos de admisión (resumen visual de la home). Distinto del
+  detalle normativo de la sección Eligibility.
 
 ## Planes de desarrollo
 

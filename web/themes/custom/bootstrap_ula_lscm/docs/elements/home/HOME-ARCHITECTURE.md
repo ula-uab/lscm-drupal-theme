@@ -162,7 +162,8 @@ tabla comparativa están en la **ADR-002** (§7).
   (ver [`../../entities/admission-journey-step.md`](../../entities/admission-journey-step.md)).
 - ✅ **features** (`ula_feature_item`) — migrada en v1.1.3. Entidad: `ct_programme_feature`
   (ver [`../../entities/programme-feature.md`](../../entities/programme-feature.md)).
-- ⬜ **requisitos** (`ula_req_card`) — pendiente (investigar si se reutiliza `ct_elegibility_*`).
+- ✅ **requisitos** (`ula_req_card`) — migrada en v1.1.4. Entidad: `ct_admission_requirement`
+  (ver [`../../entities/admission-requirement.md`](../../entities/admission-requirement.md)).
 - ⬜ **especializaciones** (`ula_spec_card`), **semestres** (`ula_sem_card`) — pendientes; tienen un
   array anidado (`modules[]`/`subjects[]`), un patrón nuevo aún por resolver.
 

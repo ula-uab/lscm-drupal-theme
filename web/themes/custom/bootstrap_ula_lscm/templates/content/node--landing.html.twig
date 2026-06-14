@@ -101,6 +101,9 @@
 {% if about_features_data is defined and about_features_data is not empty %}
   {% set props = props|merge({ about_features: about_features_data }) %}
 {% endif %}
+{% if requirements_cards_data is defined and requirements_cards_data is not empty %}
+  {% set props = props|merge({ requirements_cards: requirements_cards_data }) %}
+{% endif %}
 
 {# Renderiza la landing con el componente, pasando solo las props con valor.
    Las props sin valor las rellena el componente con sus defaults de fábrica. #}
