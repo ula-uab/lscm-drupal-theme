@@ -89,7 +89,7 @@
     subjects: ['Research Methods','Thesis','Defence'] }
 ] %}
 
-{% set universities = [
+{% set universities_default = [
   { flag: '🇪🇸', country: 'Spain · Barcelona', name: 'Universitat Autònoma de Barcelona', abbr: 'UAB',
     description: "The lead institution of the LSCM consortium. A top public research university located in the Barcelona metropolitan area — one of Europe's leading logistics hubs. All admissions and enrolment are handled by UAB.",
     tags: [ { label: 'Semester 1' }, { label: 'Lead Partner' } ] },
@@ -100,6 +100,9 @@
     description: 'Located near Berlin, UASW is renowned for its applied research in logistics systems engineering. Strong industry connections and a hands-on approach to learning make it ideal for students seeking practical expertise.',
     tags: [ { label: 'Semester 3 & 4 (option)' } ] }
 ] %}
+{# Si llega la prop "universities" (del nodo vía preprocess, ADR-002), se usa;
+   si no, el array de fábrica de arriba. #}
+{% set universities = universities|default(universities_default) %}
 
 {% set specializations = [
   { icon: '📊', title: 'Logistics Information Systems', university: 'Riga Technical University · Latvia', variant: 'primary',

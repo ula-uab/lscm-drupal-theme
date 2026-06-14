@@ -17,7 +17,7 @@ El tema `bootstrap_ula_lscm` usa **versionado semántico propio** (`MAYOR.MENOR.
 declarado en `bootstrap_ula_lscm.info.yml`:
 
 - **MAYOR**: cambios grandes de arquitectura (p.ej. completar la independencia del tema base → `2.0.0`).
-- **MENOR**: nuevas funcionalidades o nuevos elementos del tema (p.ej. una nueva sección, las colecciones editables → incremento menor).
+- **MENOR**: nuevas funcionalidades o nuevos elementos del tema (p.ej. una nueva sección). Una misma funcionalidad aplicada de forma incremental puede agruparse bajo un MENOR y sus refinamientos como PARCHE (p.ej. las 8 colecciones editables de la home: el mecanismo entró en `1.1.0` con el piloto de universidades, y las colecciones siguientes son refinamientos `1.1.x`).
 - **PARCHE**: correcciones y ajustes menores.
 
 **Cualquier cambio en cualquier elemento del tema** (la home u otros que se desarrollen) se
@@ -28,6 +28,7 @@ sino que referencian la versión del tema en la que se introdujo o modificó cad
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 1.0.0 | 2026-06-11 | Primera versión con identidad y versionado propios. Design system `ula_*` (8 componentes + tokens + base CSS en tres capas). Elemento **home**: marco `lscm-master-page`, servido como nodo `landing` con plantillas dedicadas (`page--front`, `node--landing`) y textos editables desde el admin. Documentación reorganizada en dos niveles (tema / elementos). |
+| 1.1.0 | 2026-06-13 | Home: **colecciones editables** (mecanismo preprocess → prop, ADR-002). Piloto **universidades**: el tipo `ct_about_consortium_university` se amplía con campos para la tarjeta de la home y se alimenta la sección vía preprocess que lee los nodos. Las siguientes colecciones de la home, al usar el mismo mecanismo, se versionarán como refinamientos (`1.1.x`). |
 
 > **Mantenimiento:** al introducir cambios estructurales (nuevos componentes, cambios de
 > arquitectura, nuevos elementos, colecciones editables), subir la versión del tema en

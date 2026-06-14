@@ -343,3 +343,22 @@ preprocess), en vez de 8 vistas que vivirían en la BD.
 **Reconsideración.** Si cambiara la prioridad —p. ej. que un editor no técnico deba configurar la
 presentación de las colecciones desde la interfaz, o que se quiera homogeneizar con el patrón de
 vistas del resto del sitio aceptando config en BD— esta decisión debería revisarse hacia la Opción 1.
+
+**Estrategia de implementación (regla de tres).** Las 8 colecciones comparten el mismo patrón
+(leer nodos de un tipo → mapear campos a un array → pasarlo como prop), pero **no son idénticas**
+(universidades tiene `tags`/relación pendiente; especializaciones tiene `modules[]`; semestres tiene
+`subjects[]` y variantes; etc.). Para no caer en sobre-ingeniería prematura (generalizar con un solo
+caso, imaginando los otros siete) ni en copy-paste (8 bloques de carga casi iguales), la
+implementación sigue la **regla de tres**:
+
+1. **Piloto (universidades):** la carga de datos se escribe en una **función propia y separada** del
+   `.theme` (p. ej. `_bootstrap_ula_lscm_get_universities()`), invocada desde la preprocess —
+   limpia, pero **sin generalizar todavía**. Se valida el patrón con un caso real.
+2. **Segunda colección:** con **dos casos reales** delante, se extrae la parte común a una **función
+   genérica** (p. ej. `_bootstrap_ula_lscm_get_collection($type, $mapping, ...)`). Generalizar con
+   dos ejemplos reales es seguro; con uno imaginado, no.
+3. **Colecciones restantes:** triviales, reutilizando el genérico. Este queda como **infraestructura
+   del tema**, reutilizable también fuera de la home.
+
+Implica un pequeño **refactor** al abordar la segunda colección (extraer el genérico), que es trabajo
+sano y de bajo riesgo, hecho con conocimiento real en lugar de adivinando.

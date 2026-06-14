@@ -18,3 +18,69 @@ function bootstrap_ula_lscm_library_info_alter(array &$libraries): void {
     Libraries::setLibraries($libraries);
   }
 }
+
+/**
+ * Implements hook_preprocess_HOOK() for node templates.
+ *
+ * Para el nodo de tipo "landing" (la home), inyecta las COLECCIONES editables
+ * leídas de nodos, como variables disponibles en node--landing.html.twig.
+ *
+ * Mecanismo: preprocess → prop (ver docs/elements/home/HOME-ARCHITECTURE.md, ADR-002).
+ * Aquí se cargan los DATOS; la plantilla los pasa como prop al marco lscm-master-page,
+ * que los PINTA con los componentes ula_*. Los datos viven en los nodos (editables);
+ * esta función solo los lee y les da la forma que el marco espera.
+ *
+ * Estrategia "regla de tres": de momento la carga es específica de universidades
+ * (función propia _bootstrap_ula_lscm_get_universities). Al abordar la 2ª colección
+ * se extraerá un cargador genérico.
+ */
+function bootstrap_ula_lscm_preprocess_node(array &$variables): void {
+  $node = $variables['node'] ?? NULL;
+  if (!$node || $node->bundle() !== 'landing') {
+    return;
+  }
+  // Colección de universidades, leída de nodos ct_about_consortium_university.
+  $variables['universities_data'] = _bootstrap_ula_lscm_get_universities();
+}
+
+/**
+ * Carga las universidades del consorcio como array para el marco de la home.
+ *
+ * Lee los nodos publicados de tipo "ct_about_consortium_university", ordenados
+ * por field_order, y los mapea a la forma que espera la prop "universities" del
+ * componente lscm-master-page (claves: flag, country, name, abbr, description, tags).
+ *
+ * NOTA: "tags" (pastillas de semestre) se deja vacío de momento; depende de la
+ * relación universidad↔semestre aún no modelada (ver docs/analysis/
+ * about-and-university-entity.md §3.4).
+ *
+ * @return array<int, array<string, mixed>>
+ *   Lista de universidades mapeadas, o [] si no hay nodos.
+ */
+function _bootstrap_ula_lscm_get_universities(): array {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $ids = $storage->getQuery()
+    ->accessCheck(TRUE)
+    ->condition('type', 'ct_about_consortium_university')
+    ->condition('status', 1)
+    ->sort('field_order', 'ASC')
+    ->execute();
+
+  if (empty($ids)) {
+    return [];
+  }
+
+  $items = [];
+  foreach ($storage->loadMultiple($ids) as $node) {
+    $items[] = [
+      'flag'        => $node->get('field_uni_flag')->value ?? '',
+      'country'     => $node->get('field_uni_country')->value ?? '',
+      'name'        => $node->label(),
+      'abbr'        => $node->get('field_uni_abbr')->value ?? '',
+      'description' => $node->get('field_uni_home_pitch')->value ?? '',
+      // 'tags' pendiente (relación universidad↔semestre, §3.4). Sin pastillas por ahora.
+      'tags'        => [],
+    ];
+  }
+  return $items;
+}

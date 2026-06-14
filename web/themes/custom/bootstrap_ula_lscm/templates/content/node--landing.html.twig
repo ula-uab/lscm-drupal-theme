@@ -82,6 +82,14 @@
 {% if node.field_contact_faq_text.value %}{% set props = props|merge({ contact_faq_text: node.field_contact_faq_text.value }) %}{% endif %}
 {% if node.field_contact_faq_url.value %}{% set props = props|merge({ contact_faq_url: node.field_contact_faq_url.value }) %}{% endif %}
 
+{# ---- COLECCIONES (mecanismo preprocess → prop, ADR-002) ----
+   Las colecciones se cargan de nodos en bootstrap_ula_lscm.theme y llegan aquí
+   como variables (p. ej. universities_data). Se pasan como prop al marco solo si
+   traen contenido; si no, el marco usa su array de fábrica (|default). #}
+{% if universities_data is defined and universities_data is not empty %}
+  {% set props = props|merge({ universities: universities_data }) %}
+{% endif %}
+
 {# Renderiza la landing con el componente, pasando solo las props con valor.
    Las props sin valor las rellena el componente con sus defaults de fábrica. #}
 {{ include('bootstrap_ula_lscm:lscm-master-page', props) }}

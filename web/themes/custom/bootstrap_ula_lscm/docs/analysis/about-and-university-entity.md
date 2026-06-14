@@ -158,6 +158,24 @@ componente**; solo, en el futuro, alimentar esos `tags` desde la relación. La i
 modal/popover en sí es el pendiente §5.3 de la home (`../elements/home/HOME-ARCHITECTURE.md`), a
 resolver con **API nativa** del navegador (`popover`/`<dialog>`), sin Bootstrap.
 
+**Valores exactos de las pastillas en la maqueta (a reproducir cuando se modele la relación).**
+Al migrar las universidades a editables (Opción 3) las pastillas se dejaron vacías (`tags: []`), pero
+el array de fábrica de la maqueta contenía estos valores, que son el punto de partida de lo que la
+relación universidad↔semestre debe acabar generando:
+
+| Universidad | Pastillas (`label`) en la maqueta |
+|---|---|
+| UAB (🇪🇸) | `Semester 1` · `Lead Partner` |
+| RTU (🇱🇻) | `Semester 2` · `Semester 3 & 4 (option)` |
+| UASW (🇩🇪) | `Semester 3 & 4 (option)` |
+
+> Obsérvese que estas pastillas mezclan dos cosas distintas: **semestres** ("Semester 1", "Semester 2",
+> "Semester 3 & 4 (option)") y un **rol** ("Lead Partner"). Esto confirma que la relación
+> universidad↔semestre lleva datos propios (el rol, el carácter opcional de un semestre, y el texto
+> del modal), reforzando que es una **entidad de relación** y no un simple campo multivalor. El
+> "info" de cada pastilla (el texto del modal) aún no existía en la maqueta; se añadirá al modelar
+> la relación.
+
 **Por qué no se hace en el piloto.** La "info" del modal aún no existe como contenido y depende de un
 modelo (semestres + relación) que se diseñará en su momento. Modelarlo ahora agrandaría el piloto
 mucho más allá de su propósito (validar el mecanismo tipo de contenido → vista → componente). Se
