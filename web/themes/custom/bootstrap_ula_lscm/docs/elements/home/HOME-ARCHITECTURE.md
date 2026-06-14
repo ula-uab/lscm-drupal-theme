@@ -170,6 +170,16 @@ hoy se renderizan estáticas (solo `label`). Pendiente: convertirlas en botones 
 popover/modal con el contenido de `info`, usando la **API nativa** del navegador
 (`popover` / `<dialog>`), sin frameworks externos.
 
+> **Dependencia de modelado.** El contenido de estas pastillas (qué semestres y el texto de su
+> modal) depende de una **relación universidad↔semestre** que aún no está modelada: el texto del
+> modal depende de la combinación universidad × semestre. Su diseño previsto (entidad "semestre" +
+> entidad de relación con el texto del modal) está documentado en
+> [`../../analysis/about-and-university-entity.md`](../../analysis/about-and-university-entity.md)
+> §3.4. Por eso, en el piloto de colecciones editables (§5.1) las tarjetas de universidad se
+> construyen **sin** pastillas; estas se completarán cuando se modele la relación. El componente
+> `ula_uni_card` ya soporta `tags: {label, info}`, así que no requiere cambios.
+
+
 ### 5.4. Limpieza: eliminar la vista vieja `page_home`
 
 Al cambiar la front page al nodo `landing` (`/node/55`), la vista `page_home` (antigua home, ruta

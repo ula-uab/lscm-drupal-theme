@@ -81,46 +81,87 @@ Decidido ya que las universidades son **una entidad única reutilizable** (las m
 home — ver `../ARCHITECTURE.md` §5.3), estas son las opciones y cuestiones de diseño abiertas para
 ampliarla sin romper su uso actual.
 
-### 3.1. Campos a añadir (para alimentar `ula_uni_card` en la home)
+### 3.1. Campos a añadir (DECIDIDO) — para alimentar `ula_uni_card` en la home
 
-`ula_uni_card` necesita: `name`, `description`, `flag`, `country`, `abbr`, `tags`. Frente a lo que
-ya hay:
+`ula_uni_card` necesita: `name`, `description`, `flag`, `country`, `abbr`, `tags`. Decisiones tomadas
+(2026-06-13):
 
-| Prop de `ula_uni_card` | Origen | ¿Acción? |
+| Prop de `ula_uni_card` | Origen | Decisión |
 |---|---|---|
-| `name` | `title` | Ya existe. |
-| `description` | `body` (¿encaja en tarjeta compacta?) | Decidir: reutilizar `body` o crear descripción corta propia. |
-| `flag` | — | **Decidir:** ¿emoji (texto) o imagen? Si emoji → nuevo campo de texto. |
-| `country` | — | **Añadir** campo de texto corto. |
-| `abbr` | — | **Añadir** campo de texto corto. |
-| `tags` (semestres) | — | **Diseñar:** ¿campo multivalor en la universidad, o relación con los semestres? (El más complejo.) |
+| `name` | `title` | Ya existe (sin cambios). |
+| `flag` | nuevo `field_uni_flag` (texto corto) | **Emoji** de bandera (🇪🇸🇱🇻🇩🇪). Campo de texto. |
+| `country` | nuevo `field_uni_country` (texto corto) | **Añadir.** |
+| `abbr` | nuevo `field_uni_abbr` (texto corto) | **Añadir.** |
+| `description` | nuevo `field_uni_home_pitch` (string_long) | **Campo propio**, NO se reutiliza `body`: mensaje *engaging* para la tarjeta de la home (el `body` es la descripción formal de About). |
+| `tags` (semestres) | (pendiente — ver §3.4) | **No se implementa ahora.** Previsto como relación universidad↔semestre. La tarjeta del piloto se renderiza sin tags. |
 | (enlace a `/node/N`) | URL canónica del nodo | No requiere campo; se enlaza en la vista con `link_to_entity`. |
 
 **Principio:** **añadir** campos, no modificar ni borrar los existentes, para no afectar a la página
 About que ya los usa.
 
-### 3.2. Representaciones futuras de la entidad
+**Machine names de los campos nuevos:** `field_uni_flag`, `field_uni_country`, `field_uni_abbr`,
+`field_uni_home_pitch`.
 
-La universidad podría tener (algunas ya, otras a futuro):
+### 3.2. Representaciones de la entidad
+
+La universidad tiene (algunas ya, otras a futuro):
 
 1. **Tarjeta en About** — existe (a rehacer en clave propia al independizar About).
-2. **Tarjeta en la home** (`ula_uni_card`) — a construir ahora (piloto de colecciones editables).
+2. **Tarjeta en la home** (`ula_uni_card`) — en construcción (piloto de colecciones editables).
 3. **Página de detalle propia** (`/node/N`) — hoy sin diseñar; a rehacer.
 
 Cada representación es una **vista o display distinto** sobre la misma entidad. Conviene tenerlas
 todas en mente al decidir los campos, para que la entidad sirva a las tres sin duplicar datos.
 
-### 3.3. Cuestiones abiertas
+### 3.3. Cuestiones abiertas (actualizadas)
 
-- **`flag`:** emoji vs imagen (la maqueta de la home sugiere emoji 🇪🇸🇱🇻🇩🇪; confirmar).
-- **`description`:** ¿reutilizar `body` o texto corto propio para la tarjeta de la home?
-- **`tags`/semestres:** cómo se modela la relación universidad ↔ semestres en los que se estudia.
 - **Enlace de la tarjeta de la home:** ¿debe `ula_uni_card` enlazar a la página de detalle? Si sí,
-  hay que **añadir una prop de URL** al componente (hoy no la tiene) — decisión sobre el componente,
-  registrar en la doc de la home.
-- **Página de detalle sin diseñar:** pendiente de rehacer (no urge para la home, pero queda anotado).
+  decidir si se **añade una prop de URL** al componente (hoy no la tiene) o si el enlace envuelve la
+  tarjeta desde la vista. Se resolverá al construir la vista del piloto.
+- **Página de detalle sin diseñar:** la página `/node/N` muestra los campos en crudo; pendiente de
+  rehacer (no urge para la home, pero queda anotado).
 - **Formato BI del campo modal:** `field_about_conuni_modal_text` arrastra Bootstrap Italia; resolver
   al independizar About.
+- *(Resueltas: `flag` → emoji; `description` → campo propio `field_uni_home_pitch`; `tags` → ver §3.4.)*
+
+### 3.4. PENDIENTE DE MODELAR — Relación universidad↔semestre (las pastillas `tags`)
+
+> **Estado:** diseño previsto, **no implementado**. Se abordará cuando se modele la entidad
+> "semestre" (probablemente al rehacer la sección de contenidos/semestres, que ya tiene entidades
+> `ct_contents_subject` y vistas `page_contents_*`). El piloto de universidades (fase 1) se completa
+> **sin** las pastillas.
+
+**Qué son las pastillas.** En la tarjeta `ula_uni_card`, las pastillas (`tags`) indican los
+**semestres en los que se estudia en esa universidad**. Cada pastilla tiene una etiqueta (p. ej.
+"Semester 1") y, al pulsarla, mostrará un **modal/popover** con información.
+
+**El dato clave (lo que condiciona el modelo).** El texto que se muestra en el modal **no es un
+atributo de la universidad ni del semestre por separado**: depende de la **combinación** universidad
+× semestre (y del rol de *lead partner*). Es decir, "la UAB en el Semestre 1" tiene un texto, y "la
+RTU en el Semestre 3" tiene otro. Una información que depende de la combinación de dos entidades es
+el signo de que **la combinación misma es una entidad** (una *entidad de relación* o "through
+entity").
+
+**Diseño previsto (a confirmar al implementar):**
+
+- Una entidad **"Semestre"** (tipo de contenido propio), ya que la relación universidad↔semestre será
+  relevante en otras partes del sitio (no solo en la tarjeta de la home).
+- Una **entidad de relación universidad↔semestre** que represente "esta universidad EN este semestre",
+  con sus campos propios — principalmente el **texto del modal** (dependiente de la combinación) y, en
+  su caso, el rol de *lead partner*.
+- La tarjeta de la home alimentaría sus `tags` (`{label, info}`) desde esa relación: `label` = el
+  semestre; `info` = el texto del modal de esa combinación concreta.
+
+**El componente ya está preparado.** `ula_uni_card` define `tags` como un array de objetos
+`{label, info}` — exactamente "etiqueta de semestre + info para el modal". **No hay que tocar el
+componente**; solo, en el futuro, alimentar esos `tags` desde la relación. La interactividad del
+modal/popover en sí es el pendiente §5.3 de la home (`../elements/home/HOME-ARCHITECTURE.md`), a
+resolver con **API nativa** del navegador (`popover`/`<dialog>`), sin Bootstrap.
+
+**Por qué no se hace en el piloto.** La "info" del modal aún no existe como contenido y depende de un
+modelo (semestres + relación) que se diseñará en su momento. Modelarlo ahora agrandaría el piloto
+mucho más allá de su propósito (validar el mecanismo tipo de contenido → vista → componente). Se
+prioriza cerrar el piloto con los campos 1-4 y dejar las pastillas previstas.
 
 ---
 
