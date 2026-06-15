@@ -40,6 +40,16 @@ home: `avatar_fixed`, `modal_fixed`, `timeline_fixed`. Revisar si son restos de 
 si se confirma que no se usan en ninguna parte, eliminarlos para no dejar deuda.
 **Prioridad:** baja (limpieza).
 
+### 6. Eliminar la vista heredada `page_home`
+Vista de Drupal heredada que servía la home antigua, hoy sustituida por la home como nodo +
+plantilla Twig (ADR-001). Era la **Fase 0** del plan de colecciones editables (ya completado y
+archivado); se reconvirtió en este TO-DO transversal. **Condición:** ejecutarla cuando se haya
+**avanzado en la independencia de Bootstrap Italia**, ya que es una limpieza de configuración
+heredada que encaja en ese trabajo de desvinculación. **Antes de tocarla:** dump de BD (la vista
+es configuración, vive solo en BD) y verificar qué se pierde. Análisis original en
+`docs/elements/home/HOME-ARCHITECTURE.md` §5.4.
+**Prioridad:** baja (condicionada al avance de independencia de BI).
+
 ## Resueltos
 
 - **Reparto del CSS monolítico (21 KB) al trocear en componentes SDC.** Resuelto con el

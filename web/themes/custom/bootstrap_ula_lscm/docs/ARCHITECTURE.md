@@ -38,6 +38,7 @@ sino que referencian la versión del tema en la que se introdujo o modificó cad
 | 1.2.0 | 2026-06-15 | Home: **interactividad** — menú **hamburguesa** en el header (Fase 3 del plan). Despliega un menú de Drupal propio **`home_header`** (editable en el admin), con acceso directo a las páginas del sitio; convive con las anclas internas. Toggle con **API nativa** (accesible). Incremento MENOR: funcionalidad nueva. Ver ADR-003. |
 | 1.3.0 | 2026-06-15 | Home: **relación universidad↔semestre** (Fase 4, Sub-hito 4a). Entidad de relación nueva **`ct_university_semester`** (universidad × semestre + texto de modal) + campos de **Lead Partner** en la universidad. Las **pastillas** de `ula_uni_card` se alimentan de datos reales (estáticas; el modal es 4b). Mecanismo de entidad de relación en §5.6; ver ADR-004. |
 | 1.3.1 | 2026-06-15 | Home: **interactividad de las pastillas** (Fase 4, Sub-hito 4b). Las pastillas con contenido se vuelven botones que abren un **modal** (`<dialog>` nativo único, accesible) con el texto del cruce universidad×semestre / Lead Partner. **Fase 4 completa.** Ver ADR-004. |
+| 1.3.2 | 2026-06-15 | Cierre del **plan de colecciones editables e interactividad** (Fase 5). Documentación: §4 de HOME-ARCHITECTURE reescrita como **guía de edición** (textos por sección, colecciones, menú, pastillas); §5.x marcados resueltos; plan archivado; Fase 0 (`page_home`) reconvertida en TO-DO transversal. Solo documentación. |
 
 > **Mantenimiento:** al introducir cambios estructurales (nuevos componentes, cambios de
 > arquitectura, nuevos elementos, colecciones editables), subir la versión del tema en
@@ -446,11 +447,16 @@ home, en `docs/elements/home/HOME-ARCHITECTURE.md`).
 bootstrap_ula_lscm/
 ├── bootstrap_ula_lscm.info.yml          # Identidad, versión propia, carga ula_tokens global
 ├── bootstrap_ula_lscm.libraries.yml     # Define ula_tokens y ula_landing_base
+├── bootstrap_ula_lscm.theme             # Lógica del tema: preprocess de la home (carga de las 8
+│                                        # colecciones, menú de la hamburguesa, pastillas de
+│                                        # universidad) y funciones auxiliares de carga
 ├── TODO.md                              # Pendientes transversales del tema
 ├── css/
 │   ├── ula-tokens.css                   # Capa 1: variables globales
 │   └── ula-landing-base.css             # Capa 2: base de estilos
-├── components/
+├── components/                          # (Solo se listan los componentes PROPIOS del tema. Conviven
+│   │                                    #  en esta carpeta con componentes heredados de Bootstrap
+│   │                                    #  Italia / anteriores a los ula_*, que NO se listan aquí.)
 │   ├── ula_hero_stat/  ula_why_item/  ula_feature_item/  ula_req_card/
 │   ├── ula_spec_card/  ula_sem_card/  ula_timeline_item/  ula_uni_card/   # Design system (§3)
 │   ├── lscm-master-page/                # Marco de la home (ver doc del elemento home)
@@ -479,10 +485,18 @@ bootstrap_ula_lscm/
     │       └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"
     └── plans/                           # Planes de desarrollo por fases, por elemento
         └── home/
-            ├── plan-colecciones-editables-e-interactividad.md   # Plan activo de la home
-            └── archive/
-                └── plan-landing-parametrizada.md                # Plan histórico (completado)
+            └── archive/                 # Planes completados (se conservan como referencia histórica)
+                ├── plan-colecciones-editables-e-interactividad.md   # Plan de colecciones e interactividad (completado)
+                └── plan-landing-parametrizada.md                    # Plan inicial de la landing (completado)
 ```
+
+> **Nota sobre la carpeta del tema.** El árbol recoge **lo que construimos en el tema** (código y
+> documentación propios). No se listan: los **componentes heredados** de Bootstrap Italia o anteriores
+> a los `ula_*` (conviven en `components/` pero no son del design system propio); ni las carpetas de
+> **andamiaje heredado o generado** —`config/` (configuración de instalación heredada de BI), `src/`
+> (fuentes SCSS/fuentes de BI), `modules/` (submódulos heredados) y `dist/` (salida del build de
+> Webpack, generada en local)—, que no forman parte de lo que diseñamos y se reconstruyen o vienen del
+> tema base.
 
 > **[CONVENCIÓN] Organización de `templates/` en subcarpetas por tipo.** Las plantillas Twig se
 > organizan en subcarpetas según el tipo de elemento de Drupal que sobreescriben, para mantener
@@ -496,11 +510,6 @@ bootstrap_ula_lscm/
 > en `templates/` y subcarpetas), por lo que esta organización es puramente para claridad y no
 > afecta a la funcionalidad. Tras mover una plantilla, ejecutar `ddev drush cr` para que Drupal
 > reindexe el registro de plantillas.
-
-> Los **scripts de configuración** están en `scripts/` (raíz del proyecto, no del tema):
-> `crear-campos-landing.php`, `anadir-campos-formdisplay.php`, `ordenar-campos-landing.php`.
-> Crean y ordenan los campos del tipo `landing`; se conservan como referencia reproducible, ya
-> que la configuración no está en git (§6.1).
 
 > La documentación de cada **elemento** del tema (la home, y las secciones que se desarrollen en
 > el futuro) vive en `docs/elements/<elemento>/`. Este documento (nivel tema) cubre lo común a

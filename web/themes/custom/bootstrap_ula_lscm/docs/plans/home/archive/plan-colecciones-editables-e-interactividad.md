@@ -1,5 +1,11 @@
 # Plan de desarrollo — Colecciones editables e interactividad de la home
 
+> **✅ PLAN COMPLETADO (2026-06-15).** Todas las fases de contenido (1-5) están implementadas,
+> validadas y consolidadas (v1.1.0 → v1.3.1). La Fase 0 (eliminar la vista vieja `page_home`) se
+> **reconvirtió en un TO-DO transversal** (`TODO.md`), a ejecutar cuando se avance en la independencia
+> de Bootstrap Italia. El detalle del cierre está en la sección **"Cierre del plan"** al final de este
+> documento. Este plan se conserva archivado como referencia histórica.
+
 > Planifica las acciones pendientes de la home descritas en `../../elements/home/HOME-ARCHITECTURE.md` §5.
 > Sigue el método del plan ya completado (`archive/plan-landing-parametrizada.md`): construir de
 > lo simple a lo complejo, validar cada paso antes de seguir, y consolidar en git por hito.
@@ -173,3 +179,50 @@ ADR-002). Se valida primero con un **piloto (universidades)** antes de replicar.
 **interactividad** pendiente (menú hamburguesa y pastillas con API nativa) y se **elimina la vista
 vieja** `page_home`. Todo siguiendo el método del proyecto: de simple a complejo, validando fidelidad
 en cada paso, con dump previo y consolidación en git por hito.
+
+---
+
+## Cierre del plan (2026-06-15)
+
+El plan se completó siguiendo el orden y el método previstos. Resumen de lo entregado, por fase y
+versión del tema:
+
+| Fase | Qué se hizo | Versión(es) | Estado |
+|---|---|---|---|
+| **0** | Limpieza previa (eliminar la vista vieja `page_home`) | — | **Reconvertida en TO-DO transversal** (ver abajo) |
+| **1** | Piloto de colección editable: universidades (`ula_uni_card` ← `ct_about_consortium_university`) | v1.1.0 | ✅ |
+| **2** | Replicar el patrón a las 7 colecciones restantes; extracción del cargador genérico (regla de tres) | v1.1.1 → v1.1.6 | ✅ |
+| **3** | Menú hamburguesa del header (menú de Drupal propio `home_header`, toggle con API nativa) | v1.2.0 | ✅ |
+| **4** | Relación universidad↔semestre (entidad `ct_university_semester`) + pastillas + modal `<dialog>` | v1.3.0 (4a) · v1.3.1 (4b) | ✅ |
+| **5** | Verificación final: home fiel a la maqueta y editable; §4 reescrita como guía del editor; §5.x resueltos; versión y cierre | v1.3.1 | ✅ |
+
+**Resultado.** La home pasó de tener las colecciones fijas en el `.twig` del marco a un estado en el
+que **todo el contenido decidido como editable se gestiona desde el admin sin tocar código**: los
+textos del nodo (A), las 8 colecciones de tarjetas/ítems como nodos (B), el menú de la hamburguesa
+(C) y las pastillas de universidad (D). La guía de edición para quien mantiene el sitio es la §4 de
+`../../elements/home/HOME-ARCHITECTURE.md`.
+
+**Mecanismos y entidades resultantes** (documentados en `../../ARCHITECTURE.md` y en `../../entities/`):
+- Cargador genérico de colecciones `preprocess → prop` (ADR-002), ampliado con resolvers de rich text
+  e imágenes de Media.
+- Menú de Drupal propio `home_header` para la navegación de sitio desde la home (ADR-003).
+- Primera **entidad de relación** del tema, `ct_university_semester` (cruce universidad × semestre),
+  con "Lead Partner" como atributo de la universidad (ADR-004); mecanismo de entidades de relación en
+  `../../ARCHITECTURE.md` §5.6.
+- Dos componentes rediseñados (`ula_spec_card`, `ula_sem_card`) y dos piezas de interactividad con API
+  nativa (hamburguesa y modal de pastillas), sin frameworks, en línea con la independencia de
+  Bootstrap Italia.
+
+**Sobre la Fase 0 (no ejecutada).** La eliminación de la vista heredada `page_home` se pospuso
+deliberadamente y se **reconvirtió en un TO-DO transversal** del tema (`TODO.md`), condicionado a
+**avanzar antes en la independencia de Bootstrap Italia**. Razón: es una limpieza de configuración
+heredada cuyo momento idóneo es el trabajo futuro de desvinculación del framework, no el cierre de
+este plan. Su análisis original queda en `../../elements/home/HOME-ARCHITECTURE.md` §5.4.
+
+**Pendientes de contenido (no de código).** Quedan textos provisionales por afinar por parte de la
+edición del sitio: los *summaries* de la timeline de admisión y los textos de los modales de las
+pastillas (cruces universidad × semestre y el de "Lead Partner" de la UAB). No son tareas de
+desarrollo: se editan desde el admin cuando se disponga del contenido real.
+
+Este documento se archiva en `archive/` como referencia histórica, según la convención de
+`docs/plans/`.

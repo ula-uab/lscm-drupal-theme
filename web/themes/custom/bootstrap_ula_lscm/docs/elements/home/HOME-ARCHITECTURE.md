@@ -96,38 +96,168 @@ La home es un **nodo** del tipo de contenido `landing`, servido con plantillas d
 
 ## 4. EDICIÓN DE CONTENIDO — guía para quien mantiene el sitio
 
-> **Esta es la sección más importante para el mantenimiento diario de la home.**
+> **Esta es la sección de referencia para el mantenimiento diario de la home.** Describe, para cada
+> tipo de contenido editable, **qué es, dónde aparece en la página, dónde se edita en el admin de
+> Drupal, y qué campos participan**. Todo lo que aquí se describe se edita **sin tocar código**.
 
-El contenido de la home se divide en dos familias que se editan en **sitios distintos**:
+El contenido editable de la home se agrupa en cuatro bloques, según **dónde y cómo** se edita:
 
-### Familia A — Textos simples → editables en el ADMIN (sin tocar código)
+- **A. Textos de la página** — los textos de cada sección (tags, títulos, descripciones, botones).
+  Se editan en el nodo de la home.
+- **B. Colecciones de tarjetas e ítems** — los conjuntos de tarjetas repetidas (universidades,
+  especializaciones, etc.). Cada ítem es un nodo propio.
+- **C. Menú de navegación del header** — los enlaces de la hamburguesa. Se editan en el gestor de
+  menús.
+- **D. Pastillas de las universidades** — las etiquetas de semestre y "Lead Partner" de cada
+  universidad. Se editan en nodos de relación + un atributo de la universidad.
 
-**Dónde:** editando el nodo de la home → `/node/55/edit` (o Content → "Home Master LSCM" → Edit).
+---
 
-**Qué incluye:** logo (URL), marca, y por cada sección: tag, título, descripción, y textos+URLs
-de los botones de salto; además email y FAQ de contacto.
+### A. Textos de la página → se editan en el nodo de la home
 
-**Cómo funciona:**
-- Campo **con valor** → se muestra ese valor.
-- Campo **vacío** → se muestra el **texto por defecto de fábrica** (el de la maqueta).
+**Dónde se edita:** el nodo de la home → *Content → "Home Master LSCM" → Edit* (ruta `/node/55/edit`).
 
-Es decir, **solo hace falta rellenar los campos que se quieran cambiar** respecto a la maqueta.
-Los vacíos muestran el contenido por defecto. No hay que rellenarlos todos.
+**Cómo funciona el valor por defecto:** cada campo de texto tiene un **valor "de fábrica"** (el de la
+maqueta). Si el campo se deja **vacío**, la página muestra ese valor de fábrica; si se **rellena**,
+muestra lo que se haya escrito. Por eso **solo hace falta rellenar los campos que se quieran cambiar**
+respecto a la maqueta — los vacíos no salen en blanco, salen con su texto de fábrica.
 
-### Familia B — Colecciones de ítems → HOY en código (ver §5, en migración a editable)
+> En las tablas siguientes, la columna **"Valor de fábrica"** es, precisamente, lo que se ve hoy en la
+> home (ya que los campos del nodo están vacíos y actúa el valor por defecto). Sirve de ejemplo de qué
+> controla cada campo y dónde aparece.
 
-**Qué incluye:** las tarjetas de universidades, especializaciones, semestres del journey,
-why-items, pasos de la timeline de admisión, requisitos, features del about y stats del hero.
+Las tablas siguen el **orden en que las secciones aparecen al recorrer la página** de arriba a abajo.
 
-**Dónde (estado actual, provisional):** definidas como arrays al inicio de
-`components/lscm-master-page/lscm-master-page.twig` (bloques `{% set universities = [...] %}`,
-etc.). Cambiarlas requiere editar ese fichero (código → git → `ddev drush cr`).
+#### Header (barra superior fija)
 
-> **IMPORTANTE:** este estado es **provisional**. La §5.1 describe el plan para hacer estas
-> colecciones editables desde el admin leyendo los nodos y pasándolos como prop al marco
-> (mecanismo **preprocess → prop**, ver ADR-002 en §7).
+| Etiqueta en Drupal | Campo | Valor de fábrica (ejemplo) |
+|---|---|---|
+| Logo URL | `field_logo_url` | `/sites/default/files/2026-06/logo-MASTER-LSCM.png` |
+| Brand top | `field_brand_top` | LSCM Master |
+| Brand sub | `field_brand_sub` | European Joint Programme |
 
-### Familia C — Menú de la hamburguesa del header → editable en el ADMIN (menú de Drupal)
+#### Hero (cabecera grande de bienvenida)
+
+| Etiqueta en Drupal | Campo | Valor de fábrica (ejemplo) |
+|---|---|---|
+| Hero badge | `field_hero_badge_text` | Erasmus+ Joint Master's Programme |
+| Hero · title | `field_hero_title` | Shape the Future of |
+| Hero title highlight | `field_hero_title_highlight` | European Logistics |
+| Hero description | `field_hero_description` | A 120 ECTS joint master's degree taught across three European universities… |
+| Hero CTA1 text | `field_hero_cta1_text` | Apply Now |
+| Hero CTA1 URL | `field_hero_cta1_url` | /admission |
+| Hero CTA2 text | `field_hero_cta2_text` | Explore Programme |
+| Hero CTA2 URL | `field_hero_cta2_url` | /programme |
+
+#### About (sección "qué es el programa")
+
+| Etiqueta en Drupal | Campo | Valor de fábrica (ejemplo) |
+|---|---|---|
+| About tag | `field_about_tag` | Master in Logistics & Supply Chain Management |
+| About title | `field_about_title` | Integrated. International. Industry-Ready. |
+| About description | `field_about_desc` | A programme designed to train professionals capable of making decisions… |
+| About CTA text | `field_about_cta_text` | Learn more about the programme |
+| About CTA URL | `field_about_cta_url` | /about |
+
+#### Journey (sección "Four Semesters Across Europe")
+
+| Etiqueta en Drupal | Campo | Valor de fábrica (ejemplo) |
+|---|---|---|
+| Journey tag | `field_journey_tag` | Your academic path |
+| Journey title | `field_journey_title` | Four Semesters Across Europe |
+| Journey description | `field_journey_desc` | A carefully structured curriculum that builds from core foundations… |
+| Journey CTA text | `field_journey_cta_text` | See full curriculum |
+| Journey CTA URL | `field_journey_cta_url` | /programme |
+
+#### Universities / Partners (sección de universidades socias)
+
+| Etiqueta en Drupal | Campo | Valor de fábrica (ejemplo) |
+|---|---|---|
+| Uni tag | `field_uni_tag` | Our partner institutions |
+| Uni title | `field_uni_title` | Three Countries. One Programme. |
+| Uni description | `field_uni_desc` | A consortium of established European universities… |
+| Uni CTA text | `field_uni_cta_text` | Meet the partner universities |
+| Uni CTA URL | `field_uni_cta_url` | /partners |
+
+> Las **tarjetas** de cada universidad (no estos textos de cabecera) son una colección editable
+> aparte: ver **B. Colecciones**. Las **pastillas** de cada tarjeta: ver **D. Pastillas**.
+
+#### Specialisations (sección "Two Specialisations, One Qualification")
+
+| Etiqueta en Drupal | Campo | Valor de fábrica (ejemplo) |
+|---|---|---|
+| Spec tag | `field_spec_tag` | Choose your track |
+| Spec title | `field_spec_title` | Two Specialisations, One Qualification |
+| Spec description | `field_spec_desc` | Your choice of specialisation in year two shapes your career direction… |
+| Spec CTA text | `field_spec_cta_text` | Explore specialisations |
+| Spec CTA URL | `field_spec_cta_url` | /specialisations |
+
+#### Admission (sección "Ready to Apply?")
+
+| Etiqueta en Drupal | Campo | Valor de fábrica (ejemplo) |
+|---|---|---|
+| Adm tag | `field_adm_tag` | Admissions |
+| Adm title | `field_adm_title` | Ready to Apply? |
+| Adm description | `field_adm_desc` | Applications are reviewed on a rolling basis… |
+| Adm CTA text | `field_adm_cta_text` | See full admission details |
+| Adm CTA URL | `field_adm_cta_url` | /admission |
+
+#### Contact / Get in touch (sección final de contacto)
+
+| Etiqueta en Drupal | Campo | Valor de fábrica (ejemplo) |
+|---|---|---|
+| Contact tag | `field_contact_tag` | Get in touch |
+| Contact title | `field_contact_title` | Still have questions? |
+| Contact description | `field_contact_desc` | Our programme coordinators are happy to help… |
+| Contact email | `field_contact_email` | info@master-lscm.eu |
+| Contact FAQ text | `field_contact_faq_text` | Read FAQs |
+| Contact FAQ URL | `field_contact_faq_url` | https://master-lscm.eu/faq |
+
+> **Nota sobre las URLs de los CTA.** Algunos enlaces de botón apuntan a páginas internas del sitio
+> (`/about`, `/programme`…) y otros pueden ser **externos** (la FAQ, por ejemplo). Son los campos más
+> susceptibles de cambiar; se editan aquí, en el nodo de la home, sin tocar código.
+
+---
+
+### B. Colecciones de tarjetas e ítems → se editan como contenido (nodos)
+
+**Qué son:** los conjuntos de elementos repetidos de la home — las tarjetas de universidades, las de
+especializaciones, los semestres del journey, los why-items, los pasos de la timeline de admisión,
+los requisitos, las features del about y las stats del hero. **Cada ítem de una colección es un nodo
+propio**, de un tipo de contenido específico.
+
+**Dónde se editan:** en *Content* (`/admin/content`), filtrando por el tipo de contenido
+correspondiente. Añadir un ítem = crear un nodo de ese tipo; reordenar = el campo *Order* de cada
+nodo; quitar = despublicar o borrar el nodo. **Los cambios aparecen en la home automáticamente, sin
+tocar código.**
+
+Cada colección, su tipo de contenido y dónde aparece en la página:
+
+| Colección (dónde aparece) | Tipo de contenido a editar | Componente |
+|---|---|---|
+| **Stats del hero** (cifras bajo la cabecera) | `ct_programme_facts` (con *show in hero*) | `ula_hero_stat` |
+| **Why-items** (motivos, en el About) | `ct_programme_facts` (con *show in why*) | `ula_why_item` |
+| **Features del About** (lista de rasgos) | `ct_programme_feature` | `ula_feature_item` |
+| **Tarjetas de universidad** (Partners) | `ct_about_consortium_university` | `ula_uni_card` |
+| **Semestres del Journey** | `ct_programme_semester` | `ula_sem_card` |
+| **Tarjetas de especialización** | `ct_programme_specialisation` | `ula_spec_card` |
+| **Pasos de la timeline** (Admission) | `ct_admission_journey_step` | `ula_timeline_item` |
+| **Requisitos** (Admission) | `ct_admission_requirement` | `ula_req_card` |
+
+> **Detalle de cada tipo de contenido** (sus campos, decisiones de diseño y cómo se consume): ver las
+> fichas en [`../../entities/`](../../entities/). Cada documento describe el modelo de campos de una
+> entidad. El **mecanismo** por el que estos nodos llegan a la página (preprocess → prop) está en
+> [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §5 y en el ADR-002 (§7).
+
+> **Dos detalles útiles para el editor:**
+> - `ct_programme_facts` alimenta **dos** colecciones distintas (stats del hero y why-items); cada
+>   nodo elige en cuál aparece mediante sendas casillas (*show in hero* / *show in why*).
+> - Las tarjetas de **especialización** y de **semestre** admiten **texto enriquecido** (rich text) e
+>   **imágenes/logos** de la biblioteca de Media, no solo texto plano.
+
+---
+
+### C. Menú de navegación del header (hamburguesa) → se edita en el gestor de menús
 
 **Qué incluye:** los enlaces del **menú desplegable (hamburguesa)** del header de la home, que dan
 acceso directo a las secciones/páginas reales del sitio (About, Contents, Elegibility, Admission,
@@ -162,7 +292,9 @@ secciones-resumen de la home; la hamburguesa lleva a las páginas reales del sit
 > funcionalmente distintos, y no deben compartir menú para no acoplarse. Ver §5.2 y el ADR
 > correspondiente.
 
-### Familia D — Pastillas de las tarjetas de universidad → editable en el ADMIN (nodos)
+---
+
+### D. Pastillas de las tarjetas de universidad → se editan en nodos + atributo de la universidad
 
 **Qué incluye:** las **pastillas** que aparecen en cada tarjeta de universidad (sección Partners):
 las de **semestre** ("Semester 1", "Semester 2"…) y la de **"Lead Partner"** (solo en la universidad
@@ -211,7 +343,7 @@ ADR-004 (§7).
 Pendientes específicos de la home. (Los pendientes transversales del tema están en `TODO.md` en
 la raíz del tema.)
 
-### 5.1. Colecciones editables (preprocess → prop) — EN CURSO
+### 5.1. Colecciones editables (preprocess → prop) — ✅ RESUELTO (v1.1.0 → v1.1.6)
 
 **Estado:** las 8 colecciones están hoy como datos fijos en el `.twig` del marco (decisión
 **provisional** para desbloquear la home). Plan acordado: hacerlas **editables desde el admin**
@@ -270,7 +402,7 @@ se añadió al header una **hamburguesa** que despliega los enlaces de un menú 
 `home_header` (editable en el admin), dando acceso directo a las páginas reales del sitio. Convive
 con las anclas internas de la landing. Toggle con **API nativa** (sin frameworks), accesible
 (`aria-expanded`, cierre con Escape / clic fuera / al navegar). El detalle de gestión y la decisión
-del menú propio están en §4 (Familia C) y en el ADR-003 (§7).
+del menú propio están en §4.C y en el ADR-003 (§7).
 
 La hamburguesa es visible en escritorio y móvil; en móvil (<600px), donde las anclas se ocultan, es
 la navegación principal.
@@ -284,7 +416,7 @@ universidad↔semestre. Fase 4 completa:
   `ct_university_semester` (universidad × semestre + texto del modal) + campos de "Lead Partner" en la
   universidad. La carga del tema combina ambas fuentes y alimenta los `tags`. Ver ADR-004 (§7),
   `../../entities/university-semester.md`, `../../ARCHITECTURE.md` §5.6, guía de edición en §4
-  (Familia D).
+  §4.D.
 - ✅ **Sub-hito 4b — interactividad (v1.3.1).** Las pastillas con `info` se renderizan como **botones**
   que abren un **modal** (`<dialog>` nativo, único y compartido, en el marco) con el contenido de
   `info`. API nativa, sin frameworks: `showModal()` (foco atrapado, Escape), más cierre por botón × y
@@ -458,7 +590,7 @@ vistas del resto del sitio aceptando config en BD— esta decisión debería rev
 
 **Estrategia de implementación (regla de tres).** Las 8 colecciones comparten el mismo patrón
 (leer nodos de un tipo → mapear campos a un array → pasarlo como prop), pero **no son idénticas**
-(universidades tiene `tags`/relación pendiente; especializaciones tiene `modules[]`; semestres tiene
+(universidades tiene `tags`/relación con semestre; especializaciones tiene `modules[]`; semestres tiene
 `subjects[]` y variantes; etc.). Para no caer en sobre-ingeniería prematura (generalizar con un solo
 caso, imaginando los otros siete) ni en copy-paste (8 bloques de carga casi iguales), la
 implementación sigue la **regla de tres**:
@@ -525,7 +657,7 @@ las anclas internas, que se mantienen.
 **Consecuencias.**
 - Añadir/quitar/reordenar enlaces de la hamburguesa se hace **desde el admin** (no toca código): cada
   página nueva → su enlace en `home_header` → aparece en la hamburguesa. Mecanismo de mantenimiento
-  documentado en §4 (Familia C).
+  documentado en §4.C.
 - `home_header` es **configuración** (vive en BD; red de seguridad: dump). El código que lo renderiza
   vive en git.
 - **Coste asumido:** cuando se rehagan las páginas internas, si se quiere que home y páginas compartan
@@ -572,7 +704,7 @@ Consortium tratará 3º y 4º como semestres distintos (con su propio contenido)
 **Consecuencias.**
 - Añadir/editar pastillas de semestre = crear/editar nodos `ct_university_semester` en el admin (sin
   tocar código). La de "Lead Partner" = marcar el booleano en la universidad. Guía para editores en §4
-  (Familia D).
+  §4.D.
 - La relación es **configuración/contenido** (BD; red de seguridad: dump). El código que la combina y
   pinta vive en git.
 - La taxonomía `semester` se **referencia sin alterarse** (solo se lee); mantiene su uso por las

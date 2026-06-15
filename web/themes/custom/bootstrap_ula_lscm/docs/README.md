@@ -66,7 +66,7 @@ documentación de referencia. Cada elemento del tema tiene su carpeta de planes;
 completados se archivan en el subdirectorio `archive/` de cada elemento.
 
 - **[`plans/home/`](plans/home/)** — planes de la home:
-  - [`plan-colecciones-editables-e-interactividad.md`](plans/home/plan-colecciones-editables-e-interactividad.md) — **activo**: migrar las colecciones a editables, interactividad (hamburguesa, pastillas) y limpieza.
+  - [`archive/plan-colecciones-editables-e-interactividad.md`](plans/home/archive/plan-colecciones-editables-e-interactividad.md) — **completado** (v1.1.0 → v1.3.1): migración de las 8 colecciones a editables, interactividad (hamburguesa, pastillas con modal) y relación universidad↔semestre. La Fase 0 (limpieza de `page_home`) se reconvirtió en TO-DO transversal.
   - [`archive/plan-landing-parametrizada.md`](plans/home/archive/plan-landing-parametrizada.md) — **histórico**: plan inicial de la landing parametrizada (completado).
 
 ## Por dónde empezar
