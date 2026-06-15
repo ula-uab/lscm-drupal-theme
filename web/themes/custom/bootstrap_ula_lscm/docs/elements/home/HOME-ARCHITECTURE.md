@@ -162,6 +162,48 @@ secciones-resumen de la home; la hamburguesa lleva a las páginas reales del sit
 > funcionalmente distintos, y no deben compartir menú para no acoplarse. Ver §5.2 y el ADR
 > correspondiente.
 
+### Familia D — Pastillas de las tarjetas de universidad → editable en el ADMIN (nodos)
+
+**Qué incluye:** las **pastillas** que aparecen en cada tarjeta de universidad (sección Partners):
+las de **semestre** ("Semester 1", "Semester 2"…) y la de **"Lead Partner"** (solo en la universidad
+líder). Al pulsarlas mostrarán un modal con información (interactividad: ver §5.3).
+
+**Dónde y cómo se editan** (hay **dos** orígenes distintos, importante entenderlo):
+
+1. **Pastillas de semestre** → contenido de tipo **"University–Semester"**
+   (`/admin/content?type=ct_university_semester`). Cada nodo es **una pastilla de una universidad en
+   un semestre**. Para añadir/editar una pastilla de semestre:
+   - *University:* se elige la universidad (de las del consorcio).
+   - *Semester:* se elige el semestre (de la taxonomía de semestres del sitio).
+   - *Pill label:* el texto que se ve en la pastilla (p. ej. "Semester 3"). Puede no coincidir con el
+     nombre largo del semestre.
+   - *Modal text:* el texto que se mostrará al pulsar la pastilla (admite párrafos y listas; formato
+     Basic HTML). Aquí se explica, por ejemplo, que el 3º/4º semestre es opcional según la universidad.
+   - *Order:* el orden de esa pastilla dentro de la universidad.
+   - **Añadir una pastilla de semestre a una universidad = crear un nodo de este tipo.** Aparece
+     automáticamente en la tarjeta, sin tocar código.
+
+2. **Pastilla "Lead Partner"** → es un **atributo de la universidad**, no un semestre. Se edita en el
+   propio nodo de la universidad (`ct_about_consortium_university`):
+   - *Is lead partner* (casilla): márcala en la universidad líder (solo una).
+   - *Lead partner modal text:* el texto del modal de esa pastilla (Basic HTML).
+   - La etiqueta "Lead Partner" es **fija**: no se edita; solo se controla si aparece (la casilla) y
+     qué dice su modal.
+
+**Cómo se construye la tarjeta:** el tema reúne, para cada universidad, sus pastillas de semestre (los
+nodos University–Semester que la referencian, por orden) y, si está marcada como líder, añade al final
+la pastilla "Lead Partner". El detalle del mecanismo está en `../../ARCHITECTURE.md` §5.6 y en el
+ADR-004 (§7).
+
+> **Fuente de verdad.** Tanto los nodos University–Semester como los campos de la universidad son
+> **contenido/configuración** que vive en la **BD**; su red de seguridad es el **dump**. El código que
+> los combina y los pinta vive en git.
+
+> **Por qué dos orígenes.** Las pastillas de semestre dependen del cruce universidad × semestre (y esa
+> relación se reutilizará en la futura página Consortium), por eso son una entidad propia. "Lead
+> Partner" no es un semestre, sino un rol de la universidad, por eso vive en la universidad. Ver
+> ADR-004.
+
 ---
 
 ## 5. Pendientes de la home
@@ -233,21 +275,27 @@ del menú propio están en §4 (Familia C) y en el ADR-003 (§7).
 La hamburguesa es visible en escritorio y móvil; en móvil (<600px), donde las anclas se ocultan, es
 la navegación principal.
 
-### 5.3. Pastillas interactivas de `ula_uni_card`
+### 5.3. Pastillas interactivas de `ula_uni_card` — 🟡 4a HECHO (v1.3.0), 4b pendiente
 
-Las pastillas (`tags`) de las tarjetas de universidad están preparadas como `{label, info}` pero
-hoy se renderizan estáticas (solo `label`). Pendiente: convertirlas en botones que abran un
-popover/modal con el contenido de `info`, usando la **API nativa** del navegador
-(`popover` / `<dialog>`), sin frameworks externos.
+Las pastillas (`tags`) de las tarjetas de universidad son `{label, info}`. Su contenido depende de la
+relación universidad↔semestre, que se modeló en el **Sub-hito 4a** (v1.3.0). Estado:
 
-> **Dependencia de modelado.** El contenido de estas pastillas (qué semestres y el texto de su
-> modal) depende de una **relación universidad↔semestre** que aún no está modelada: el texto del
-> modal depende de la combinación universidad × semestre. Su diseño previsto (entidad "semestre" +
-> entidad de relación con el texto del modal) está documentado en
+- ✅ **Sub-hito 4a — relación y pastillas visibles (v1.3.0).** Se creó la entidad de relación
+  `ct_university_semester` (universidad × semestre, con el texto del modal) y los campos de "Lead
+  Partner" en la universidad. La carga del tema combina ambas fuentes y alimenta los `tags`. Las
+  pastillas **se ven** en las tarjetas (Semester 1/2/3/4 según universidad + Lead Partner en UAB),
+  con su contenido real y editable. Ver ADR-004 (§7), `../../entities/university-semester.md`,
+  `../../ARCHITECTURE.md` §5.6 y la guía de edición en §4 (Familia D).
+- ⬜ **Sub-hito 4b — interactividad (pendiente).** Convertir las pastillas en botones que abran un
+  **popover/modal** con el contenido de `info`, usando la **API nativa** del navegador
+  (`popover` / `<dialog>`), sin frameworks. El `info` (texto del modal) **ya se carga** en cada
+  pastilla; 4b solo lo mostrará. Hoy las pastillas se renderizan estáticas (solo `label`).
+
+> **Modelado resuelto (4a).** La relación universidad↔semestre que esta sección anticipaba como
+> pendiente ya está modelada: entidad de relación propia para los semestres + atributo de universidad
+> para "Lead Partner". El análisis previo está en
 > [`../../analysis/about-and-university-entity.md`](../../analysis/about-and-university-entity.md)
-> §3.4. Por eso, en el piloto de colecciones editables (§5.1) las tarjetas de universidad se
-> construyen **sin** pastillas; estas se completarán cuando se modele la relación. El componente
-> `ula_uni_card` ya soporta `tags: {label, info}`, así que no requiere cambios.
+> §3.4; el diseño final, en el ADR-004.
 
 
 ### 5.4. Limpieza: eliminar la vista vieja `page_home`
@@ -487,3 +535,52 @@ las anclas internas, que se mantienen.
   buscada entre ambos headers.
 - **Interactividad con API nativa**, sin frameworks (coherente con la independencia de Bootstrap
   Italia): toggle con `aria-expanded`, cierre con Escape / clic fuera / al navegar.
+
+### ADR-004 — Relación universidad↔semestre: entidad de relación propia + "Lead Partner" como atributo
+
+**Contexto.** Las tarjetas de universidad (`ula_uni_card`) muestran pastillas: semestres ("Semester
+1", "Semester 2"…) y, en la universidad líder, "Lead Partner". Al pulsarlas mostrarán un modal cuyo
+contenido, en el caso de los semestres, **depende de la combinación universidad × semestre** ("RTU en
+el Semestre 3" dice algo distinto de "TH Wildau en el Semestre 3"). Había que modelar esa relación.
+
+**Decisión.**
+- Las **pastillas de semestre** se modelan con una **entidad de relación** propia,
+  `ct_university_semester` (Sub-hito 4a, v1.3.0): cada nodo es un cruce universidad × semestre, con
+  dos `entity_reference` (universidad → nodo; semestre → término de la taxonomía `semester`
+  existente), una etiqueta de pastilla y el texto del modal. Ver `../../entities/university-semester.md`
+  y el mecanismo en `../../ARCHITECTURE.md` §5.6.
+- La pastilla **"Lead Partner"** NO es un semestre, sino un **atributo de la universidad**: se modela
+  con `field_uni_is_lead` (boolean) + `field_uni_lead_modal_text` (Basic HTML) en
+  `ct_about_consortium_university`. Etiqueta fija "Lead Partner". La tarjeta combina ambas fuentes.
+
+**Alternativas consideradas.**
+- *Campo de pastillas dentro de la universidad* (todas las pastillas como campo multivalor de la
+  universidad). Descartada para los semestres: el dato quedaría atrapado en la universidad y solo
+  serviría para una dirección de consulta. La relación universidad↔semestre tendrá **más de un
+  consumidor** —las pastillas de la home ahora y la futura página **Consortium** ("qué hace cada
+  universidad en cada semestre")—, y una entidad de relación se consulta desde cualquier ángulo.
+- *Apoyar las pastillas en la taxonomía `semester`* (añadiéndole campos). Descartada: esa taxonomía
+  tiene su propio propósito (agrupar las asignaturas) y no debe alterarse; el texto del modal no es un
+  atributo del semestre, sino del cruce.
+- *Meter "Lead Partner" en la entidad de relación* (con el semestre opcional). Descartada: "Lead
+  Partner" no es un semestre; forzarlo ensuciaría la relación, que debe quedar **pura** (solo
+  semestres) para que Consortium la consuma bien. Es un rol de la universidad → vive en la universidad.
+
+**Granularidad de las pastillas 3º/4º.** La maqueta agrupaba "Semester 3 & 4 (option)". Se decidió
+**una pastilla por semestre individual** (Semester 3, Semester 4 por separado), porque la página
+Consortium tratará 3º y 4º como semestres distintos (con su propio contenido). La opcionalidad
+(elección RTU vs TH Wildau) se explica en el texto del modal, no en la etiqueta.
+
+**Consecuencias.**
+- Añadir/editar pastillas de semestre = crear/editar nodos `ct_university_semester` en el admin (sin
+  tocar código). La de "Lead Partner" = marcar el booleano en la universidad. Guía para editores en §4
+  (Familia D).
+- La relación es **configuración/contenido** (BD; red de seguridad: dump). El código que la combina y
+  pinta vive en git.
+- La taxonomía `semester` se **referencia sin alterarse** (solo se lee); mantiene su uso por las
+  asignaturas.
+- **Unicidad del líder** ("solo una universidad"): la garantiza el editor (marcar el booleano en una
+  sola), no se fuerza a nivel de datos — innecesario para 3 universidades.
+- **Sub-hitos:** 4a (v1.3.0) crea la relación, los campos de lead y muestra las pastillas (estáticas).
+  4b implementará la interactividad (modal/popover al pulsar, API nativa). El componente `ula_uni_card`
+  ya carga el `info` de cada pastilla; 4b solo lo mostrará.

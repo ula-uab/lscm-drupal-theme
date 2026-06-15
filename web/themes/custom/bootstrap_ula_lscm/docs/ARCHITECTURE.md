@@ -36,6 +36,7 @@ sino que referencian la versión del tema en la que se introdujo o modificó cad
 | 1.1.5 | 2026-06-14 | Home: 7ª colección editable — **especializaciones**, entidad nueva **`ct_programme_specialisation`** con descripción **rich text** (Basic HTML) e **imagen de Media**. Se **rediseña el componente `ula_spec_card`** (cabecera con imagen + overlay). Se añaden auxiliares reutilizables en el tema: render de rich text y resolución de URL de imagen de Media. |
 | 1.1.6 | 2026-06-15 | Home: 8ª y última colección editable — **semestres** del journey, entidad nueva **`ct_programme_semester`** (rich text + **logos multivalor** de Media, 1-2). Se **rediseña `ula_sem_card`** (logos normalizados en vez de icono; cajas de igual altura vía `align-items: stretch`). Auxiliar nuevo: resolución de URLs de imágenes de Media multivalor. **Las 8 colecciones de la home quedan editables.** Doc extra: análisis de la entidad preexistente `ct_contents_subject`. |
 | 1.2.0 | 2026-06-15 | Home: **interactividad** — menú **hamburguesa** en el header (Fase 3 del plan). Despliega un menú de Drupal propio **`home_header`** (editable en el admin), con acceso directo a las páginas del sitio; convive con las anclas internas. Toggle con **API nativa** (accesible). Incremento MENOR: funcionalidad nueva. Ver ADR-003. |
+| 1.3.0 | 2026-06-15 | Home: **relación universidad↔semestre** (Fase 4, Sub-hito 4a). Entidad de relación nueva **`ct_university_semester`** (universidad × semestre + texto de modal) + campos de **Lead Partner** en la universidad. Las **pastillas** de `ula_uni_card` se alimentan de datos reales (estáticas; el modal es 4b). Mecanismo de entidad de relación en §5.6; ver ADR-004. |
 
 > **Mantenimiento:** al introducir cambios estructurales (nuevos componentes, cambios de
 > arquitectura, nuevos elementos, colecciones editables), subir la versión del tema en
@@ -287,6 +288,46 @@ Vista
 > **el patrón** (dos niveles, mapeo de fuentes) pero con **componentes propios**: la rejilla y la
 > tarjeta del design system `ula_*`, no las del tema base.
 
+### 5.6. Entidades de relación (cruces entre dos entidades)
+
+Algunos datos no pertenecen a una entidad ni a otra, sino a la **combinación de dos**. Cuando la
+información depende del cruce de dos entidades (y no es atributo de ninguna por separado), ese cruce
+**es en sí mismo una entidad** — una *entidad de relación* o "through entity".
+
+**Caso de referencia:** la relación **universidad × semestre** (`ct_university_semester`, v1.3.0). El
+texto que se muestra al pulsar la pastilla de un semestre en la tarjeta de una universidad depende de
+**qué universidad y qué semestre** se cruzan ("RTU en el Semestre 3" ≠ "TH Wildau en el Semestre 3").
+Por eso se modela como una entidad cuyos nodos son cada uno un cruce, con **dos `entity_reference`**:
+una al **nodo** universidad y otra al **término de taxonomía** semestre.
+
+**Cómo funciona el mecanismo:**
+
+1. **La entidad de relación** tiene una referencia a cada lado del cruce (`field_us_university` →
+   nodo; `field_us_semester` → término de taxonomía) más los datos propios del cruce
+   (`field_us_pill_label`, `field_us_modal_text`).
+2. **Consulta "hacia atrás":** para construir las pastillas de una universidad, el tema consulta los
+   nodos de relación que **referencian** esa universidad
+   (`entityQuery` con `condition('field_us_university', $nid)`), ordenados por `field_order`. Cada
+   nodo de relación aporta una pastilla `{label, info}`.
+3. **Combinación con atributos propios:** a esas pastillas de relación se les puede **añadir** las que
+   provienen de atributos de la entidad consultada (p. ej. la pastilla "Lead Partner", que es un campo
+   booleano de la universidad, no un cruce con semestre). La función de carga combina ambas fuentes.
+
+**Por qué una entidad de relación y no un campo:**
+- Un dato que depende de la combinación de dos entidades, metido como campo en una de ellas, queda
+  "atrapado" en ese lado y solo sirve para una dirección de consulta.
+- La entidad de relación se consulta **desde cualquier ángulo**: "los semestres de esta universidad"
+  (para las pastillas) o "las universidades de este semestre" (para una futura página comparativa).
+  Esto la hace apta para **varios consumidores** (ver ADR-004 en HOME-ARCHITECTURE: la home ahora, la
+  página Consortium en el futuro).
+- Las referencias son por **ID**, no por texto: renombrar un término de semestre no rompe las
+  relaciones que lo apuntan.
+
+> **Independencia respecto a la taxonomía referenciada.** Referenciar un vocabulario existente (aquí,
+> `semester`) **no lo altera**: la entidad de relación solo lo lee. La taxonomía mantiene su propio
+> uso (agrupar las asignaturas, ver `analysis/contents-subject-entity.md`); la relación se apoya en
+> ella sin interferir.
+
 ---
 
 ## 6. Notas técnicas y restricciones del entorno
@@ -430,7 +471,8 @@ bootstrap_ula_lscm/
     │   ├── programme-feature.md
     │   ├── admission-requirement.md
     │   ├── programme-specialisation.md
-    │   └── programme-semester.md
+    │   ├── programme-semester.md
+    │   └── university-semester.md
     ├── elements/                        # Documentación de referencia por elemento
     │   └── home/
     │       └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"

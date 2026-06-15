@@ -321,7 +321,56 @@ function _bootstrap_ula_lscm_get_universities(): array {
     'name'        => fn($n) => $n->label(),
     'abbr'        => fn($n) => $n->get('field_uni_abbr')->value ?? '',
     'description' => fn($n) => $n->get('field_uni_home_pitch')->value ?? '',
-    // 'tags' pendiente (relación universidad↔semestre, §3.4). Sin pastillas por ahora.
-    'tags'        => fn($n) => [],
+    // Pastillas: semestres (relación ct_university_semester) + Lead Partner (atributo).
+    'tags'        => fn($n) => _bootstrap_ula_lscm_get_university_pills($n),
   ]);
+}
+
+/**
+ * Construye las pastillas (`tags`) de una universidad para ula_uni_card.
+ *
+ * Combina dos fuentes (ver ADR-004 en HOME-ARCHITECTURE):
+ *   1. Pastillas de SEMESTRE: nodos ct_university_semester que referencian esta
+ *      universidad (field_us_university), ordenados por field_order. De cada uno se
+ *      toma {label: field_us_pill_label, info: field_us_modal_text (rich text)}.
+ *   2. Pastilla "Lead Partner": si la universidad tiene field_uni_is_lead = true, se
+ *      AÑADE al final una pastilla con label fijo "Lead Partner" e info =
+ *      field_uni_lead_modal_text. La etiqueta es fija (no editable).
+ *
+ * Cada pastilla es {label, info} — exactamente lo que ula_uni_card espera en `tags`.
+ *
+ * @param \Drupal\node\NodeInterface $university
+ *
+ * @return array<int, array{label: string, info: string}>
+ */
+function _bootstrap_ula_lscm_get_university_pills($university): array {
+  $pills = [];
+
+  // 1. Pastillas de semestre (nodos de relación que referencian esta universidad).
+  $rel_ids = \Drupal::entityQuery('node')
+    ->accessCheck(TRUE)
+    ->condition('type', 'ct_university_semester')
+    ->condition('status', 1)
+    ->condition('field_us_university', $university->id())
+    ->sort('field_order', 'ASC')
+    ->execute();
+
+  foreach (\Drupal\node\Entity\Node::loadMultiple($rel_ids) as $rel) {
+    $pills[] = [
+      'label' => $rel->get('field_us_pill_label')->value ?? '',
+      'info'  => _bootstrap_ula_lscm_text_value($rel, 'field_us_modal_text'),
+    ];
+  }
+
+  // 2. Pastilla "Lead Partner" (atributo de la universidad), si aplica.
+  if ($university->hasField('field_uni_is_lead')
+      && !$university->get('field_uni_is_lead')->isEmpty()
+      && (bool) $university->get('field_uni_is_lead')->value) {
+    $pills[] = [
+      'label' => 'Lead Partner',
+      'info'  => _bootstrap_ula_lscm_text_value($university, 'field_uni_lead_modal_text'),
+    ];
+  }
+
+  return $pills;
 }

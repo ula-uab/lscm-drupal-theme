@@ -55,6 +55,9 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
 - **[`entities/programme-semester.md`](entities/programme-semester.md)** — `ct_programme_semester`:
   los semestres del journey (rich text + logos multivalor de Media). Conllevó el rediseño de
   `ula_sem_card` (logos + cajas de igual altura). Última de las 8 colecciones de la home.
+- **[`entities/university-semester.md`](entities/university-semester.md)** — `ct_university_semester`:
+  **entidad de relación** universidad × semestre (alimenta las pastillas de `ula_uni_card` y, a
+  futuro, la página Consortium). Primer cruce entre dos entidades del tema.
 
 ## Planes de desarrollo
 
