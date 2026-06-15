@@ -107,6 +107,20 @@ function bootstrap_ula_lscm_preprocess_node(array &$variables): void {
       'image'       => fn($n) => _bootstrap_ula_lscm_media_image_url($n, 'field_spec_image'),
     ]
   );
+
+  // Semestres del journey (nodos ct_programme_semester).
+  // logos: campo multivalor (hasta 2) a Media → array de URLs; description: rich text.
+  $variables['journey_semesters_data'] = _bootstrap_ula_lscm_get_collection(
+    'ct_programme_semester',
+    [
+      'semester'    => fn($n) => $n->get('field_sem_label')->value ?? '',
+      'logos'       => fn($n) => _bootstrap_ula_lscm_media_image_urls($n, 'field_sem_logos'),
+      'university'  => fn($n) => $n->get('field_sem_university')->value ?? '',
+      'title'       => fn($n) => $n->label(),
+      'description' => fn($n) => _bootstrap_ula_lscm_text_value($n, 'field_sem_description'),
+      'variant'     => fn($n) => $n->get('field_sem_variant')->value ?? '1',
+    ]
+  );
 }
 
 /**
@@ -214,6 +228,36 @@ function _bootstrap_ula_lscm_media_image_url($node, string $field): string {
   }
   $uri = $file->getFileUri();
   return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+}
+
+/**
+ * Como _bootstrap_ula_lscm_media_image_url() pero para campos MULTIVALOR.
+ *
+ * Devuelve un array con las URLs de todas las imágenes referenciadas (en orden),
+ * omitiendo las que no se puedan resolver. Array vacío si no hay ninguna.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ * @param string $field
+ *
+ * @return array<int, string>
+ */
+function _bootstrap_ula_lscm_media_image_urls($node, string $field): array {
+  if ($node->get($field)->isEmpty()) {
+    return [];
+  }
+  $urls = [];
+  $source_field = 'field_media_image';
+  foreach ($node->get($field)->referencedEntities() as $media) {
+    if (!$media->hasField($source_field) || $media->get($source_field)->isEmpty()) {
+      continue;
+    }
+    $file = $media->get($source_field)->entity;
+    if (!$file) {
+      continue;
+    }
+    $urls[] = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+  }
+  return $urls;
 }
 
 /**

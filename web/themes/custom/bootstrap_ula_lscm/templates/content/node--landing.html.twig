@@ -107,6 +107,9 @@
 {% if specializations_data is defined and specializations_data is not empty %}
   {% set props = props|merge({ specializations: specializations_data }) %}
 {% endif %}
+{% if journey_semesters_data is defined and journey_semesters_data is not empty %}
+  {% set props = props|merge({ journey_semesters: journey_semesters_data }) %}
+{% endif %}
 
 {# Renderiza la landing con el componente, pasando solo las props con valor.
    Las props sin valor las rellena el componente con sus defaults de fábrica. #}

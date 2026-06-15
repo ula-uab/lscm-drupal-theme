@@ -28,6 +28,9 @@ base para el rediseño.
 - **[`analysis/about-and-university-entity.md`](analysis/about-and-university-entity.md)** — estado
   de la página About y de la entidad "Universidad del consorcio" (`ct_about_consortium_university`);
   cómo se muestra hoy y opciones de diseño para reutilizarla.
+- **[`analysis/contents-subject-entity.md`](analysis/contents-subject-entity.md)** — entidad
+  preexistente `ct_contents_subject` (las 15 asignaturas reales del máster) y su relación estructurada
+  con los semestres; documentada de cara a la fase futura de adaptación del sitio.
 
 ## Diseño de entidades propias
 
@@ -49,6 +52,9 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
 - **[`entities/programme-specialisation.md`](entities/programme-specialisation.md)** —
   `ct_programme_specialisation`: las especializaciones del máster (descripción rich text + imagen de
   Media). Conllevó el rediseño del componente `ula_spec_card`.
+- **[`entities/programme-semester.md`](entities/programme-semester.md)** — `ct_programme_semester`:
+  los semestres del journey (rich text + logos multivalor de Media). Conllevó el rediseño de
+  `ula_sem_card` (logos + cajas de igual altura). Última de las 8 colecciones de la home.
 
 ## Planes de desarrollo
 

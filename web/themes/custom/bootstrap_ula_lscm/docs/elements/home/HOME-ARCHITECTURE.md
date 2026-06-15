@@ -168,13 +168,22 @@ tabla comparativa están en la **ADR-002** (§7).
   (rich text + imagen de Media; rediseño del componente). Ver
   [`../../entities/programme-specialisation.md`](../../entities/programme-specialisation.md). El
   antiguo `modules[]` se redacta ahora dentro de la descripción enriquecida.
-- ⬜ **semestres** (`ula_sem_card`) — pendiente. Última colección; tiene un array anidado
-  (`subjects[]`) que decidir cómo modelar.
+- ✅ **semestres** (`ula_sem_card`) — migrada en v1.1.6. Entidad: `ct_programme_semester`
+  (rich text + **logos multivalor** de Media; rediseño del componente con cajas de igual altura). Ver
+  [`../../entities/programme-semester.md`](../../entities/programme-semester.md). El antiguo
+  `subjects[]` se redacta ahora dentro de la descripción enriquecida.
+
+> **✅ Las 8 colecciones de la home están migradas a editables (v1.1.0 → v1.1.6).** Todo el contenido
+> de la home se gestiona desde nodos editables, vía el cargador genérico y el mecanismo
+> preprocess → prop (ADR-002). El array de fábrica de cada colección permanece como respaldo
+> (`|default`) si no hay nodos.
 
 **Método:** se validó el patrón con un piloto (**universidades**, v1.1.0); con la segunda y tercera
 colección (hero stats y why items, ambas vía `ct_programme_facts`, v1.1.1) se extrajo el **cargador
 genérico** `_bootstrap_ula_lscm_get_collection()` (regla de tres, ver ADR-002). Las restantes
-reutilizan ese genérico. Decidir, por colección, si el contenido tendrá página de detalle propia.
+reutilizan ese genérico, ampliado con resolvers para rich text e imágenes de Media (singular y
+multivalor). Dos colecciones (especializaciones y semestres) conllevaron además **rediseñar su
+componente** (`ula_spec_card`, `ula_sem_card`).
 
 
 ### 5.2. Menú hamburguesa (móvil)

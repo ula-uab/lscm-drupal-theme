@@ -1,19 +1,32 @@
 {#
-  ula_sem_card — tarjeta de semestre del recorrido académico.
-  Props: semester, icon, university, title, subjects (array), variant (1|2|3|4).
-  Markup y clases idénticos a la maqueta. La variante aplica sem-icon-N y sem-uni-N
-  (la variante '1' usa el color base de .sem-uni, sin sufijo).
+  ula_sem_card — tarjeta de semestre (rediseñada).
+  Props:
+    - semester    : etiqueta ("Semester 1").
+    - logos       : array de 1-2 URLs de logo de universidad (altura normalizada por CSS).
+    - university  : universidad · ciudad (texto, pastilla).
+    - title       : título temático.
+    - description : HTML enriquecido (asignaturas como lista), saneado por Basic HTML.
+    - variant     : '1'..'4' (color de la caja de logos y de la pastilla).
+
+  Estructura para IGUALAR ALTURA entre tarjetas: .sem-card es flex column; el bloque de
+  descripción (.sem-body) crece (flex:1) para que todas las tarjetas, estiradas por la
+  rejilla a la altura de la más alta, repartan bien el espacio.
+  La descripción se imprime con |raw (HTML saneado, no texto).
 #}
 <div class="sem-card">
   <div class="sem-num">{{ semester }}</div>
-  <div class="sem-icon sem-icon-{{ variant }}">{{ icon }}</div>
-  <span class="sem-uni{{ variant != '1' ? ' sem-uni-' ~ variant : '' }}">{{ university }}</span>
-  <h3>{{ title }}</h3>
-  {% if subjects is not empty %}
-    <ul class="sem-subjects">
-      {% for subject in subjects %}
-        <li>{{ subject }}</li>
+  {% if logos is not empty %}
+    <div class="sem-logos sem-logos-{{ variant }}">
+      {% for logo in logos %}
+        {% if logo %}<img src="{{ logo }}" alt="" class="sem-logo">{% endif %}
       {% endfor %}
-    </ul>
+    </div>
+  {% endif %}
+  {% if university %}
+    <span class="sem-uni{{ variant != '1' ? ' sem-uni-' ~ variant : '' }}">{{ university }}</span>
+  {% endif %}
+  <h3>{{ title }}</h3>
+  {% if description %}
+    <div class="sem-body">{{ description|raw }}</div>
   {% endif %}
 </div>

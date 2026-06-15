@@ -2,10 +2,12 @@ $schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schem
 name: ULA Sem Card
 status: experimental
 description: >
-  Tarjeta de semestre del recorrido académico: etiqueta de semestre, icono, pastilla de
-  universidad, título y lista de asignaturas. Componente autónomo del design system ULA.
-  Se compone dentro del slot 'journey_semesters'. El contenedor (.journey-track) y los
-  conectores entre tarjetas (.journey-connector) los aporta la sección, no este componente.
+  Tarjeta de semestre del recorrido académico: etiqueta de semestre, uno o dos logos
+  de universidad, pastilla de universidad (texto), título y descripción enriquecida
+  (HTML: las asignaturas como lista). Componente autónomo del design system ULA. Se
+  compone dentro del slot 'journey_semesters'. El contenedor (.journey-track) y los
+  conectores (.journey-connector) los aporta la sección. Todas las tarjetas igualan su
+  altura a la más alta (la rejilla las estira; el cuerpo crece y el footer queda abajo).
 props:
   type: object
   properties:
@@ -13,28 +15,28 @@ props:
       type: string
       title: Semester
       description: 'Etiqueta del semestre (p. ej. "Semester 1").'
-    icon:
-      type: string
-      title: Icon
-      description: 'Icono (emoji o carácter), p. ej. "📐".'
+    logos:
+      type: array
+      title: Logos
+      description: 'Una o dos URLs de logo de universidad. Se muestran con altura normalizada.'
+      items:
+        type: string
     university:
       type: string
       title: University
-      description: 'Universidad y ciudad (p. ej. "UAB · Barcelona").'
+      description: 'Universidad y ciudad (p. ej. "UAB · Barcelona"), como texto.'
     title:
       type: string
       title: Title
       description: 'Título temático del semestre.'
-    subjects:
-      type: array
-      title: Subjects
-      description: 'Lista de asignaturas (textos simples).'
-      items:
-        type: string
+    description:
+      type: string
+      title: Description (HTML)
+      description: 'Descripción enriquecida (HTML saneado): las asignaturas como lista. Se renderiza sin escapar.'
     variant:
       type: string
       title: Variant
-      description: 'Variante de color (icono y pastilla de universidad) según el semestre.'
+      description: 'Variante de color (logos y pastilla de universidad) según el semestre.'
       enum:
         - '1'
         - '2'

@@ -82,16 +82,17 @@
 ] %}
 {% set about_features = about_features|default(about_features_default) %}
 
-{% set journey_semesters = [
-  { semester: 'Semester 1', icon: '📐', university: 'UAB · Barcelona', title: 'Foundations of LSCM', variant: '1',
-    subjects: ['Supply Chain Management','Operations Management','Logistics Systems','Quantitative Methods','Information Systems','Project Management'] },
-  { semester: 'Semester 2', icon: '🔗', university: 'RTU · Riga', title: 'Advanced Logistics', variant: '2',
-    subjects: ['Transport & Distribution','Warehousing','Procurement','Supply Chain Analytics','Lean Management'] },
-  { semester: 'Semester 3', icon: '⚙️', university: 'RTU or UASW', title: 'Specialisation', variant: '3',
-    subjects: ['Specialisation Track','Electives','Applied Projects'] },
-  { semester: 'Semester 4', icon: '📝', university: 'RTU or UASW', title: "Master's Thesis", variant: '4',
-    subjects: ['Research Methods','Thesis','Defence'] }
+{% set journey_semesters_default = [
+  { semester: 'Semester 1', logos: [], university: 'UAB · Barcelona', title: 'Foundations of LSCM', variant: '1',
+    description: '<ul><li>Supply Chain Management</li><li>Operations Management</li><li>Logistics Systems</li><li>Quantitative Methods</li><li>Information Systems</li><li>Project Management</li></ul>' },
+  { semester: 'Semester 2', logos: [], university: 'RTU · Riga', title: 'Advanced Logistics', variant: '2',
+    description: '<ul><li>Transport &amp; Distribution</li><li>Warehousing</li><li>Procurement</li><li>Supply Chain Analytics</li><li>Lean Management</li></ul>' },
+  { semester: 'Semester 3', logos: [], university: 'RTU or UASW', title: 'Specialisation', variant: '3',
+    description: '<ul><li>Specialisation Track</li><li>Electives</li><li>Applied Projects</li></ul>' },
+  { semester: 'Semester 4', logos: [], university: 'RTU or UASW', title: "Master's Thesis", variant: '4',
+    description: '<ul><li>Research Methods</li><li>Thesis</li><li>Defence</li></ul>' }
 ] %}
+{% set journey_semesters = journey_semesters|default(journey_semesters_default) %}
 
 {% set universities_default = [
   { flag: '🇪🇸', country: 'Spain · Barcelona', name: 'Universitat Autònoma de Barcelona', abbr: 'UAB',
@@ -224,8 +225,8 @@
     <div class="journey-track">
       {% for sem in journey_semesters %}
         {{ include('bootstrap_ula_lscm:ula_sem_card', {
-          semester: sem.semester, icon: sem.icon, university: sem.university,
-          title: sem.title, variant: sem.variant, subjects: sem.subjects
+          semester: sem.semester, logos: sem.logos, university: sem.university,
+          title: sem.title, variant: sem.variant, description: sem.description
         }) }}
         {# Conector decorativo entre tarjetas (no tras la última) — decisión: es del layout #}
         {% if not loop.last %}

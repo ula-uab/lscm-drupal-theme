@@ -1,7 +1,9 @@
 /**
- * ula_sem_card — estilos propios del patrón sem-card.
- * Extraídos SIN CAMBIOS de la maqueta. Consumen tokens de ula_tokens.
- * El contenedor .journey-track y los .journey-connector NO están aquí: son de la sección.
+ * ula_sem_card — estilos propios del patrón sem-card (rediseñado).
+ * Logos de universidad (1-2, altura normalizada) + descripción rich text.
+ * Cajas de igual altura: la tarjeta es flex column y .sem-body crece (flex:1),
+ * de modo que al estirar la rejilla todas igualan a la más alta.
+ * Consume tokens de ula_tokens. El contenedor .journey-track es de la sección.
  */
 .sem-card {
   background: var(--white);
@@ -10,6 +12,12 @@
   padding: 2rem 1.5rem;
   text-align: center;
   transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  /* Igualar altura: la tarjeta es flex column y .sem-body crece. La rejilla
+     (.journey-track) estira las tarjetas a la altura de la más alta vía
+     align-items: stretch (defecto en grid/flex). No se usa height:100% para no
+     depender de que el padre tenga altura definida (evita deformarse en aislado). */
+  display: flex;
+  flex-direction: column;
 }
 .sem-card:hover {
   transform: translateY(-6px);
@@ -24,20 +32,34 @@
   color: var(--text-light);
   margin-bottom: 0.8rem;
 }
-.sem-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
+
+/* ── Logos de universidad (sustituyen al icono emoji) ── */
+.sem-logos {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  gap: 12px;
+  min-height: 56px;            /* misma "altura visual" que tenía la caja de icono */
+  border-radius: 14px;
+  padding: 0.6rem 1rem;
   margin: 0 auto 1rem;
+  width: fit-content;
 }
-.sem-icon-1 { background: rgba(0,51,153,0.08); }
-.sem-icon-2 { background: rgba(255,204,0,0.15); }
-.sem-icon-3 { background: rgba(0,153,100,0.1); }
-.sem-icon-4 { background: rgba(180,0,50,0.08); }
+/* Color de fondo de la caja de logos según variante (como tenía .sem-icon-N). */
+.sem-logos-1 { background: rgba(0,51,153,0.08); }
+.sem-logos-2 { background: rgba(255,204,0,0.15); }
+.sem-logos-3 { background: rgba(0,153,100,0.1); }
+.sem-logos-4 { background: rgba(180,0,50,0.08); }
+/* Normaliza el tamaño de visualización sea cual sea el origen (png/jpg, cualquier
+   dimensión): altura fija, ancho automático, sin deformar. */
+.sem-logo {
+  height: 36px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  display: block;
+}
+
 .sem-card h3 {
   font-family: var(--font-display);
   font-size: 1.1rem;
@@ -60,24 +82,42 @@
 .sem-uni-2 { background: #c4992a; }
 .sem-uni-3 { background: #006644; }
 .sem-uni-4 { background: #8b0024; }
-.sem-subjects {
-  list-style: none;
+
+/* ── Cuerpo con descripción enriquecida (asignaturas como lista) ── */
+.sem-body {
+  flex: 1 1 auto;              /* crece para igualar alturas */
   text-align: left;
   border-top: 1px solid var(--border);
   padding-top: 1rem;
   margin-top: 0.5rem;
 }
-.sem-subjects li {
+.sem-body p {
   font-size: 12.5px;
   color: var(--text-mid);
-  padding: 3px 0;
-  padding-left: 14px;
+  line-height: 1.6;
+  margin-bottom: 0.8rem;
+}
+.sem-body p:last-child { margin-bottom: 0; }
+.sem-body ul,
+.sem-body ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sem-body li {
+  font-size: 12.5px;
+  color: var(--text-mid);
+  padding: 3px 0 3px 14px;
   position: relative;
 }
-.sem-subjects li::before {
+.sem-body li::before {
   content: '·';
   position: absolute;
   left: 2px;
   color: var(--eu-yellow-dark);
   font-weight: 700;
 }
+/* Listas ordenadas, si se usan. */
+.sem-body ol { padding-left: 1.2rem; list-style: decimal; }
+.sem-body ol li { padding-left: 0; }
+.sem-body ol li::before { content: none; }
