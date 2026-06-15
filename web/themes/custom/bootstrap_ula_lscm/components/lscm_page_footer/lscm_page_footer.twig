@@ -1,0 +1,58 @@
+{#
+  lscm_page_footer — pie de página PROVISIONAL de las páginas de contenido.
+  Replica la ESTRUCTURA del footer de la home (marca + columnas de enlaces + zona
+  inferior con copyright y badge UE), pero con contenido por defecto hardcodeado.
+
+  PROVISIONAL: el contenido se hará editable desde la interfaz en un hito futuro
+  ("footer definitivo"), que además unificará este footer con el de la home
+  (ver plan de páginas de contenido y ADR del elemento layout). De momento, las
+  props permiten sobrescribir la marca y el email; el resto es contenido por defecto.
+
+  Props: brand_top, contact_email.
+#}
+<footer class="lscm-page-footer">
+  <div class="lscm-page-footer__inner">
+    <div class="lscm-page-footer__top">
+      <div class="lscm-page-footer__brand">
+        <span class="lscm-page-footer__brand-top">{{ brand_top|default('LSCM Master') }}</span>
+        <p>European Joint Master's Programme in Logistics &amp; Supply Chain Management. A consortium of UAB, RTU, and UASW — training the next generation of European logistics leaders.</p>
+      </div>
+      <div class="lscm-page-footer__col">
+        <h5>Programme</h5>
+        <ul>
+          <li><a href="/about">About the Master</a></li>
+          <li><a href="/contents">Contents</a></li>
+          <li><a href="/elegibility">Eligibility</a></li>
+          <li><a href="/admission">Admission</a></li>
+        </ul>
+      </div>
+      <div class="lscm-page-footer__col">
+        <h5>Resources</h5>
+        <ul>
+          <li><a href="/student-hub">Student Hub</a></li>
+          {% if contact_email %}
+            <li><a href="mailto:{{ contact_email }}">Contact</a></li>
+          {% endif %}
+        </ul>
+      </div>
+      <div class="lscm-page-footer__col">
+        <h5>Partners</h5>
+        <ul>
+          <li><a href="https://www.uab.cat" target="_blank" rel="noopener">UAB Barcelona</a></li>
+          <li><a href="https://www.rtu.lv" target="_blank" rel="noopener">RTU Riga</a></li>
+          <li><a href="https://en.th-wildau.de" target="_blank" rel="noopener">UASW Wildau</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="lscm-page-footer__bottom">
+      <p>© 2025 Master in Logistics &amp; Supply Chain Management. All rights reserved.</p>
+      <div class="lscm-page-footer__eu-badge">
+        <span>🇪🇺</span>
+        <span>Supported by the European Union · Erasmus+ Programme</span>
+      </div>
+    </div>
+    <div class="lscm-page-footer__prov">
+      Provisional footer — final content &amp; design to be defined (shared across all pages).
+    </div>
+  </div>
+</footer>

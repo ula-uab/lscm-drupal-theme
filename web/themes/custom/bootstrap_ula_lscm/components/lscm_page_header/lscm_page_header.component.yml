@@ -1,0 +1,43 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: LSCM Page Header
+status: experimental
+description: >
+  Cabecera (header) compartida por las páginas de contenido del sitio (no la home).
+  Sigue la estética del header de la home (barra azul fija con borde inferior amarillo,
+  logo + marca) pero con NAVEGACIÓN DE SITIO ESTÁNDAR: una barra de enlaces a las páginas
+  del sitio, alimentada por un menú de Drupal (por defecto 'main'). No incluye el menú
+  híbrido de anclas + hamburguesa de la home (ver ADR-003 de HOME-ARCHITECTURE).
+  Marco transversal: se incluye desde las plantillas page--*.html.twig de cada página
+  de contenido, no se reimplementa por página.
+props:
+  type: object
+  properties:
+    logo_url:
+      type: string
+      title: Logo URL
+      description: 'URL del logo de la marca.'
+    brand_top:
+      type: string
+      title: Brand top
+      description: 'Texto principal de la marca (p. ej. "LSCM Master").'
+    brand_sub:
+      type: string
+      title: Brand sub
+      description: 'Texto secundario de la marca (p. ej. "European Joint Programme").'
+    menu_links:
+      type: array
+      title: Menu links
+      description: >
+        Enlaces de navegación de sitio. Array de objetos {title, url}, normalmente el
+        resultado de leer el menú de Drupal 'main' (vía _bootstrap_ula_lscm_get_menu_links).
+      items:
+        type: object
+        properties:
+          title:
+            type: string
+          url:
+            type: string
+    active_url:
+      type: string
+      title: Active URL
+      description: 'URL de la página actual, para marcar el enlace activo en la navegación.'

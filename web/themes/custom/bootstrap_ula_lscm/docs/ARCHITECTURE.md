@@ -39,6 +39,7 @@ sino que referencian la versión del tema en la que se introdujo o modificó cad
 | 1.3.0 | 2026-06-15 | Home: **relación universidad↔semestre** (Fase 4, Sub-hito 4a). Entidad de relación nueva **`ct_university_semester`** (universidad × semestre + texto de modal) + campos de **Lead Partner** en la universidad. Las **pastillas** de `ula_uni_card` se alimentan de datos reales (estáticas; el modal es 4b). Mecanismo de entidad de relación en §5.6; ver ADR-004. |
 | 1.3.1 | 2026-06-15 | Home: **interactividad de las pastillas** (Fase 4, Sub-hito 4b). Las pastillas con contenido se vuelven botones que abren un **modal** (`<dialog>` nativo único, accesible) con el texto del cruce universidad×semestre / Lead Partner. **Fase 4 completa.** Ver ADR-004. |
 | 1.3.2 | 2026-06-15 | Cierre del **plan de colecciones editables e interactividad** (Fase 5). Documentación: §4 de HOME-ARCHITECTURE reescrita como **guía de edición** (textos por sección, colecciones, menú, pastillas); §5.x marcados resueltos; plan archivado; Fase 0 (`page_home`) reconvertida en TO-DO transversal. Solo documentación. |
+| 1.4.0 | 2026-06-15 | **Marco compartido de páginas de contenido** (Fase 1 del plan de páginas de contenido). Header (`lscm_page_header`) y footer provisional (`lscm_page_footer`) propios, independientes de BI, con estética de la home; navegación de sitio desde el menú `main`. Plantilla `page--about.html.twig` que monta el marco solo para `/about` (Opción B, página a página), sin tocar las páginas heredadas. Nuevo elemento documentado en `docs/elements/layout/` (ADR-LAYOUT-001 y -002). |
 
 > **Mantenimiento:** al introducir cambios estructurales (nuevos componentes, cambios de
 > arquitectura, nuevos elementos, colecciones editables), subir la versión del tema en
@@ -460,10 +461,13 @@ bootstrap_ula_lscm/
 │   ├── ula_hero_stat/  ula_why_item/  ula_feature_item/  ula_req_card/
 │   ├── ula_spec_card/  ula_sem_card/  ula_timeline_item/  ula_uni_card/   # Design system (§3)
 │   ├── lscm-master-page/                # Marco de la home (ver doc del elemento home)
+│   ├── lscm_page_header/                # Header del marco de páginas de contenido (elemento layout)
+│   ├── lscm_page_footer/                # Footer provisional del marco de páginas (elemento layout)
 │   └── lscm-master-static/              # Maqueta original de referencia (no en producción)
 ├── templates/                           # Plantillas Twig, organizadas en subcarpetas por tipo
 │   ├── layout/                          # Plantillas de página/región (page--*, html, region--*)
-│   │   └── page--front.html.twig        # Portada (elemento home)
+│   │   ├── page--front.html.twig        # Portada (elemento home)
+│   │   └── page--about.html.twig        # Página About con marco propio (elemento layout)
 │   └── content/                         # Plantillas de entidad (node--*, etc.)
 │       └── node--landing.html.twig      # Render del nodo landing (elemento home)
 └── docs/
@@ -482,8 +486,10 @@ bootstrap_ula_lscm/
     │   ├── programme-semester.md
     │   └── university-semester.md
     ├── elements/                        # Documentación de referencia por elemento
-    │   └── home/
-    │       └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"
+    │   ├── home/
+    │   │   └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"
+    │   └── layout/
+    │       └── LAYOUT-ARCHITECTURE.md   # Documentación del elemento "layout" (marco header+footer)
     └── plans/                           # Planes de desarrollo por fases, por elemento
         ├── paginas-contenido/           # Plan del sistema de páginas de contenido (marco + independencia de BI)
         │   └── plan-sistema-paginas-contenido.md                    # Plan activo

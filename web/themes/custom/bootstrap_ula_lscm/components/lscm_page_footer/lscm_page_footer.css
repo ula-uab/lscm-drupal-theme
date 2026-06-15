@@ -1,0 +1,82 @@
+/**
+ * lscm_page_footer — estilos del pie de página provisional de páginas de contenido.
+ * Reutiliza los tokens globales del tema (ula_tokens). Replica la estructura del
+ * footer de la home (lscm-master-page): marca + columnas + zona inferior + badge UE.
+ */
+.lscm-page-footer {
+  background: var(--text-dark);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 4rem 2rem 2rem;
+}
+.lscm-page-footer__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.lscm-page-footer__top {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.lscm-page-footer__brand-top {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--white);
+}
+.lscm-page-footer__brand p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 0.8rem;
+  line-height: 1.7;
+}
+.lscm-page-footer__col h5 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--eu-yellow);
+  margin-bottom: 1rem;
+}
+.lscm-page-footer__col ul { list-style: none; margin: 0; padding: 0; }
+.lscm-page-footer__col ul li { margin-bottom: 8px; }
+.lscm-page-footer__col ul li a {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.lscm-page-footer__col ul li a:hover { color: var(--white); }
+.lscm-page-footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 2rem;
+}
+.lscm-page-footer__bottom p { font-size: 13px; color: rgba(255, 255, 255, 0.35); margin: 0; }
+.lscm-page-footer__eu-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.lscm-page-footer__prov {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .lscm-page-footer__top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+}
+@media (max-width: 560px) {
+  .lscm-page-footer__top { grid-template-columns: 1fr; }
+}

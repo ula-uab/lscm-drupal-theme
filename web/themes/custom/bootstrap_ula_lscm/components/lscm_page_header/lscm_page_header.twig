@@ -1,0 +1,33 @@
+{#
+  lscm_page_header — cabecera compartida de las páginas de contenido (no la home).
+  Estética del header de la home, pero con navegación de sitio estándar (enlaces a
+  páginas reales del menú 'main'); sin anclas internas ni hamburguesa (ver ADR-003).
+  Props: logo_url, brand_top, brand_sub, menu_links ([{title, url}]), active_url.
+#}
+<header class="lscm-page-header">
+  <div class="lscm-page-header__inner">
+    <a href="/" class="lscm-page-header__logo">
+      {% if logo_url %}
+        <img src="{{ logo_url }}" alt="{{ brand_top }}" class="lscm-page-header__logo-img">
+      {% endif %}
+      <span class="lscm-page-header__brand">
+        <span class="lscm-page-header__brand-top">{{ brand_top }}</span>
+        <span class="lscm-page-header__brand-sub">{{ brand_sub }}</span>
+      </span>
+    </a>
+    {% if menu_links is not empty %}
+      <nav class="lscm-page-header__nav" aria-label="Site navigation">
+        <ul class="lscm-page-header__menu">
+          {% for item in menu_links %}
+            <li>
+              <a href="{{ item.url }}"
+                 class="{{ active_url is defined and active_url == item.url ? 'is-active' : '' }}">
+                {{ item.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+</header>

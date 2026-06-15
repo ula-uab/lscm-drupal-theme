@@ -1,0 +1,20 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: LSCM Page Footer
+status: experimental
+description: >
+  Pie de página (footer) PROVISIONAL compartido por las páginas de contenido del sitio.
+  Inspirado en el footer de la home, con contenido mínimo, hasta que se defina el footer
+  definitivo del sitio. Cuando se consolide el footer final, se unificará con el de la home
+  (deuda registrada en el plan de páginas de contenido). Marco transversal: se incluye desde
+  las plantillas page--*.html.twig, no se reimplementa por página.
+props:
+  type: object
+  properties:
+    brand_top:
+      type: string
+      title: Brand top
+      description: 'Nombre del programa para la marca del footer.'
+    contact_email:
+      type: string
+      title: Contact email
+      description: 'Correo de contacto mostrado en el footer.'

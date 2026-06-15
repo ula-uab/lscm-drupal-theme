@@ -15,6 +15,10 @@ Management). Organizada en **dos niveles**:
 - **[`elements/home/HOME-ARCHITECTURE.md`](elements/home/HOME-ARCHITECTURE.md)** — El elemento
   **home**: el marco `lscm-master-page`, cómo se sirve (nodo `landing` + plantillas), la guía de
   edición de contenido, y los pendientes de la home.
+- **[`elements/layout/LAYOUT-ARCHITECTURE.md`](elements/layout/LAYOUT-ARCHITECTURE.md)** — El elemento
+  **layout**: el marco compartido (header `lscm_page_header` + footer provisional `lscm_page_footer`)
+  de las páginas de contenido, cómo se monta (plantillas `page--<ruta>`, Opción B página a página) y
+  sus ADRs. Transversal a las páginas de contenido.
 
 > A medida que se desarrollen otras secciones del sitio, cada una tendrá su documentación en
 > `docs/elements/<elemento>/`, referenciando a `ARCHITECTURE.md` para lo común.

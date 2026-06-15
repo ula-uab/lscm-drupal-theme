@@ -374,3 +374,50 @@ function _bootstrap_ula_lscm_get_university_pills($university): array {
 
   return $pills;
 }
+
+/**
+ * Implements hook_preprocess_HOOK() for page templates.
+ *
+ * Inyecta las variables del MARCO compartido de las páginas de contenido (header +
+ * footer propios, independientes de Bootstrap Italia) en las plantillas page--*
+ * de esas páginas. De momento (Fase 1) solo aplica a /about (page--about.html.twig).
+ *
+ * El header se nutre del menú de Drupal 'main' (navegación de sitio estándar), leído
+ * con la función reutilizable _bootstrap_ula_lscm_get_menu_links(). Los valores de
+ * marca (logo, brand) son los mismos "de fábrica" que usa la home, por coherencia
+ * estética. El footer es provisional.
+ *
+ * Ver docs/plans/paginas-contenido/ y docs/elements/layout/.
+ */
+function bootstrap_ula_lscm_preprocess_page(array &$variables): void {
+  $route = \Drupal::routeMatch()->getRouteName();
+
+  // Marco propio solo en las páginas de contenido que lo adoptan (Opción B,
+  // página a página). De momento: la página About (vista page_about, display page_1).
+  $framed_routes = [
+    'view.page_about.page_1',
+  ];
+  if (!in_array($route, $framed_routes, TRUE)) {
+    return;
+  }
+
+  // Marca (mismos valores de fábrica que la home, para coherencia estética).
+  $variables['header_logo_url']  = '/sites/default/files/2026-06/logo-MASTER-LSCM.png';
+  $variables['header_brand_top'] = 'LSCM Master';
+  $variables['header_brand_sub'] = 'European Joint Programme';
+
+  // Navegación de sitio: menú de Drupal 'main' (no el home_header de la home).
+  $variables['header_menu_links'] = _bootstrap_ula_lscm_get_menu_links('main');
+
+  // URL de la página actual, para marcar el enlace activo en la navegación.
+  try {
+    $variables['header_active_url'] = \Drupal\Core\Url::fromRoute('<current>')->toString();
+  }
+  catch (\Exception $e) {
+    $variables['header_active_url'] = '';
+  }
+
+  // Footer provisional.
+  $variables['footer_brand_top']     = 'Master in Logistics & Supply Chain Management';
+  $variables['footer_contact_email'] = 'info@master-lscm.eu';
+}

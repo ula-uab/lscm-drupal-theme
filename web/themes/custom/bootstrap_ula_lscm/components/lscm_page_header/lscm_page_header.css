@@ -1,0 +1,82 @@
+/**
+ * lscm_page_header — estilos de la cabecera de páginas de contenido.
+ * Reutiliza los tokens globales del tema (ula_tokens). Estética alineada con el
+ * header de la home (lscm-master-page), con navegación de sitio estándar.
+ */
+.lscm-page-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(0, 51, 153, 0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--eu-yellow);
+}
+.lscm-page-header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.9rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.lscm-page-header__logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.lscm-page-header__logo-img {
+  height: 42px;
+  width: auto;
+  display: block;
+}
+.lscm-page-header__brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.lscm-page-header__brand-top {
+  color: var(--white);
+  font-weight: 700;
+  font-size: 15px;
+}
+.lscm-page-header__brand-sub {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+}
+.lscm-page-header__nav {
+  display: flex;
+}
+.lscm-page-header__menu {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lscm-page-header__menu a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+.lscm-page-header__menu a:hover,
+.lscm-page-header__menu a.is-active {
+  color: var(--eu-yellow);
+}
+
+@media (max-width: 768px) {
+  .lscm-page-header__menu { gap: 1.1rem; }
+  .lscm-page-header__menu a { font-size: 13px; }
+}
+@media (max-width: 560px) {
+  /* En móvil, la navegación pasa a una fila propia bajo la marca.
+     (Mejora futura: un toggle hamburguesa propio de páginas internas si crece el menú.) */
+  .lscm-page-header__inner { flex-wrap: wrap; gap: 0.6rem 2rem; }
+  .lscm-page-header__menu { flex-wrap: wrap; gap: 0.8rem; }
+}

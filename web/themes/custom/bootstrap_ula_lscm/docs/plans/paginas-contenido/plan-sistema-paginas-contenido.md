@@ -61,8 +61,9 @@ heredado (ver análisis).
   amplias), huyendo de nombres genéricos tipo `card`, `card1`, `card2`.
 - **Header y footer son transversales:** se construyen una vez como marco/componente **compartido**,
   no se reimplementan página a página.
-- **El footer es provisional** hasta que se defina su contenido y diseño final; cuando se consolide,
-  habrá que rehacer/unificar el footer de la home para que use el mismo (deuda futura explícita).
+- **El footer es provisional** hasta que se defina su contenido y diseño final. En la Fase 1 se
+  construye con la **estructura** del footer de la home pero contenido hardcodeado; hacerlo **editable
+  desde la interfaz** y **unificarlo con el footer de la home** es un hito propio (Fase 6).
 - **Cautela con la configuración:** las vistas y los bloques viven en la **BD** (no en git); su red de
   seguridad es el **dump**. Cualquier operación que toque configuración (incluida la eliminación de lo
   viejo) lleva dump previo y análisis de qué se pierde.
@@ -146,6 +147,29 @@ analizar qué se pierde (incluida la subvista del consorcio si aún se referenci
 Misma cautela aplicada a `page_home` (TO-DO transversal). No se ejecuta hasta que la sustituta esté
 en producción y validada.
 
+### Fase 6 — Footer definitivo (hito transversal propio)
+
+Hito **independiente de la migración de páginas** (no sigue la secuencia página a página; afecta al
+marco compartido). El footer construido en la Fase 1 es **provisional**: replica la estructura del
+footer de la home pero con **contenido hardcodeado** en el componente `lscm_page_footer`. Este hito
+aborda el footer **definitivo**:
+
+1. **Diseño del layout definitivo** del footer (qué secciones, enlaces, columnas, identidad visual),
+   partiendo de la estructura provisional ya existente.
+2. **Editable desde la interfaz**: decidir **con qué mecanismo** se hace editable y **dónde vive** el
+   contenido (candidatos a evaluar: menú(s) de Drupal para los enlaces, bloque de contenido para los
+   textos, configuración del tema, o el patrón colección→preprocess→prop ya usado en la home). Es el
+   mismo tipo de problema que se resolvió para las colecciones editables de la home; se decidirá con su
+   propio análisis y, si procede, su ADR.
+3. **Unificación con la home**: rehacer el footer de la home para que **comparta** el mismo componente
+   y contenido editable que las páginas de contenido (un único footer en todo el sitio), eliminando la
+   duplicación entre el footer de `lscm-master-page` (home) y `lscm_page_footer` (páginas).
+
+**Por qué se difiere y no se hace en la Fase 1:** invertir en hacer editable un footer aún provisional
+arriesga retrabajo cuando se defina el definitivo. La Fase 1 mejora la **estructura visual** (se ve en
+todas las páginas), pero la **editabilidad y la unificación** se abordan aquí, cuando el diseño final
+esté decidido. No tiene disparador temporal fijo: se acomete cuando el footer definitivo esté definido.
+
 ---
 
 ## Método de trabajo (el mismo del proyecto)
@@ -181,6 +205,7 @@ El plan construye, de forma incremental y validada, un **sistema de páginas de 
 mecanismo de vistas de Drupal** (adecuado para contenido estructurado, a diferencia de la home).
 Empieza por el **marco compartido** (Fase 1), sigue con la **investigación y elección de la vía de
 presentación sin BI** validada con el piloto **About** (Fase 2), lo **documenta** como patrón
-reutilizable y ADRs (Fase 3), y deja anticipadas la **replicación** a las demás páginas (Fase 4) y la
-**eliminación** de lo heredado (Fase 5). La fase crítica y no prejuzgada es la **investigación de vías
-técnicas (2.1)**, que precede a cualquier decisión de implementación.
+reutilizable y ADRs (Fase 3), y deja anticipadas la **replicación** a las demás páginas (Fase 4), la
+**eliminación** de lo heredado (Fase 5) y el **footer definitivo** editable y unificado con la home
+(Fase 6, hito transversal). La fase crítica y no prejuzgada es la **investigación de vías técnicas
+(2.1)**, que precede a cualquier decisión de implementación.
