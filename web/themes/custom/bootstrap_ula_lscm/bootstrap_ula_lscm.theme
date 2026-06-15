@@ -121,6 +121,45 @@ function bootstrap_ula_lscm_preprocess_node(array &$variables): void {
       'variant'     => fn($n) => $n->get('field_sem_variant')->value ?? '1',
     ]
   );
+
+  // Menú de la hamburguesa del header (menú de Drupal 'home_header', editable en admin).
+  // Enlaces de acceso directo a las secciones/páginas del sitio.
+  $variables['header_menu_data'] = _bootstrap_ula_lscm_get_menu_links('home_header');
+}
+
+/**
+ * Devuelve los enlaces de un menú de Drupal como array plano [{title, url}], en
+ * orden, solo los habilitados. Para alimentar la hamburguesa del header.
+ *
+ * Nota: lee el primer nivel del árbol del menú (sin submenús), suficiente para la
+ * navegación de la home. Si en el futuro se necesitan submenús, se ampliaría aquí.
+ *
+ * @param string $menu_name
+ *
+ * @return array<int, array{title: string, url: string}>
+ */
+function _bootstrap_ula_lscm_get_menu_links(string $menu_name): array {
+  $menu_tree = \Drupal::menuTree();
+  $parameters = $menu_tree->getCurrentRouteMenuTreeParameters($menu_name);
+  $parameters->onlyEnabledLinks();
+  $tree = $menu_tree->load($menu_name, $parameters);
+  $manipulators = [
+    ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+    ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
+  ];
+  $tree = $menu_tree->transform($tree, $manipulators);
+
+  $links = [];
+  foreach ($tree as $element) {
+    if (!$element->link->isEnabled()) {
+      continue;
+    }
+    $links[] = [
+      'title' => $element->link->getTitle(),
+      'url'   => $element->link->getUrlObject()->toString(),
+    ];
+  }
+  return $links;
 }
 
 /**

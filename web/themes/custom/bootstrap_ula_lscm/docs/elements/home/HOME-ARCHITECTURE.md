@@ -127,6 +127,41 @@ etc.). Cambiarlas requiere editar ese fichero (código → git → `ddev drush c
 > colecciones editables desde el admin leyendo los nodos y pasándolos como prop al marco
 > (mecanismo **preprocess → prop**, ver ADR-002 en §7).
 
+### Familia C — Menú de la hamburguesa del header → editable en el ADMIN (menú de Drupal)
+
+**Qué incluye:** los enlaces del **menú desplegable (hamburguesa)** del header de la home, que dan
+acceso directo a las secciones/páginas reales del sitio (About, Contents, Elegibility, Admission,
+Student Hub… y las que se añadan).
+
+**Dónde:** en el gestor de menús de Drupal → `/admin/structure/menu/manage/home_header`
+(menú "Home header menu", machine name `home_header`).
+
+**Cómo funciona:**
+- El header de la home lee el menú `home_header` y pinta sus enlaces (título + URL, en orden) en el
+  panel de la hamburguesa. La carga la hace una función del tema
+  (`_bootstrap_ula_lscm_get_menu_links()` en el `.theme`), que pasa los enlaces como prop
+  `header_menu` al marco; el marco los pinta y un JS nativo gestiona el toggle (abrir/cerrar,
+  accesible). Ver ADR correspondiente en §7.
+- **Añadir, quitar o reordenar enlaces NO requiere tocar código:** se hace desde el admin, y la
+  hamburguesa los refleja automáticamente. Este es el mecanismo de mantenimiento del menú a medida
+  que se vayan implementando las páginas del sitio: cada página nueva → se añade su enlace a
+  `home_header` en el admin → aparece en la hamburguesa.
+
+**Convivencia con las anclas.** La hamburguesa **convive** con la barra de anclas internas del nav
+(About→`#about`, Programme→`#journey`…), que son navegación *dentro* de la landing y siguen
+hardcodeadas en el marco. Son dos navegaciones con propósitos distintos: las anclas saltan a las
+secciones-resumen de la home; la hamburguesa lleva a las páginas reales del sitio.
+
+> **Fuente de verdad.** El menú `home_header` es **configuración**, vive en la **BD** (no en git); su
+> red de seguridad es el **dump**, como el resto de la configuración del sitio. El *código* que lo
+> renderiza (la función del `.theme`, el marco, el CSS y el JS) sí vive en git.
+
+> **Independencia respecto al header de las páginas internas.** `home_header` es un menú **propio** de
+> la home, distinto del menú `main` del sitio. Decisión deliberada: el header de la home (anclas +
+> hamburguesa) y el de las futuras páginas internas (navegación híbrida estándar) serán
+> funcionalmente distintos, y no deben compartir menú para no acoplarse. Ver §5.2 y el ADR
+> correspondiente.
+
 ---
 
 ## 5. Pendientes de la home
@@ -186,12 +221,17 @@ multivalor). Dos colecciones (especializaciones y semestres) conllevaron además
 componente** (`ula_spec_card`, `ula_sem_card`).
 
 
-### 5.2. Menú hamburguesa (móvil)
+### 5.2. Menú hamburguesa (móvil) — ✅ RESUELTO (v1.2.0)
 
-La maqueta oculta los enlaces de navegación en móvil sin sustituirlos. Pendiente: añadir un menú
-hamburguesa que use el **menú principal de Drupal** (entradas reales del sitio) con un **toggle
-propio mínimo** (sin frameworks externos, sofisticable más adelante). Es funcionalidad nueva, no
-presente en la maqueta.
+La maqueta ocultaba los enlaces de navegación en móvil sin sustituirlos. **Resuelto en v1.2.0**:
+se añadió al header una **hamburguesa** que despliega los enlaces de un menú de Drupal propio,
+`home_header` (editable en el admin), dando acceso directo a las páginas reales del sitio. Convive
+con las anclas internas de la landing. Toggle con **API nativa** (sin frameworks), accesible
+(`aria-expanded`, cierre con Escape / clic fuera / al navegar). El detalle de gestión y la decisión
+del menú propio están en §4 (Familia C) y en el ADR-003 (§7).
+
+La hamburguesa es visible en escritorio y móvil; en móvil (<600px), donde las anclas se ocultan, es
+la navegación principal.
 
 ### 5.3. Pastillas interactivas de `ula_uni_card`
 
@@ -411,3 +451,39 @@ implementación sigue la **regla de tres**:
 
 El refactor de extraer el genérico (paso 2) se hizo con dos casos reales en la mano, como estaba
 previsto: bajo riesgo y con conocimiento real en lugar de adivinando.
+
+### ADR-003 — Menú de la hamburguesa del header: menú de Drupal propio (`home_header`), no `main`
+
+**Contexto.** Al cerrar el diseño de la home (v1.2.0) se añadió una **hamburguesa** en el header para
+dar acceso directo a las páginas reales del sitio (no solo a las secciones-resumen de la landing, a
+las que ya saltan las anclas internas hardcodeadas del nav). Los enlaces debían ser **configurables**
+(las páginas del sitio existen y crecerán), no hardcodeados.
+
+**Decisión.** La hamburguesa se alimenta de un **menú de Drupal propio**, `home_header` ("Home header
+menu"), inicializado con los enlaces que entonces tenía el menú `main` (About, Contents, Elegibility,
+Admission, Student Hub). El tema lee ese menú (`_bootstrap_ula_lscm_get_menu_links()`) y lo pasa como
+prop `header_menu` al marco, que lo pinta; un JS nativo gestiona el toggle (accesible). Convive con
+las anclas internas, que se mantienen.
+
+**Alternativas consideradas.**
+- *Reutilizar el menú `main` del sitio.* Descartada: el header de la home (anclas + hamburguesa) y el
+  de las futuras páginas internas (navegación híbrida estándar) serán **funcionalmente distintos**;
+  compartir el menú `main` los acoplaría, y un ajuste pensado para uno afectaría al otro. Un menú
+  propio los desacopla.
+- *Hardcodear los enlaces en el `.twig`.* Descartada: contradice el objetivo de contenido
+  configurable; añadir una página obligaría a tocar código.
+- *Integrar el menú principal de Drupal en todo el nav* (sustituyendo las anclas). Descartada: las
+  anclas internas de la landing y la navegación de sitio tienen propósitos distintos y conviven mejor
+  separadas.
+
+**Consecuencias.**
+- Añadir/quitar/reordenar enlaces de la hamburguesa se hace **desde el admin** (no toca código): cada
+  página nueva → su enlace en `home_header` → aparece en la hamburguesa. Mecanismo de mantenimiento
+  documentado en §4 (Familia C).
+- `home_header` es **configuración** (vive en BD; red de seguridad: dump). El código que lo renderiza
+  vive en git.
+- **Coste asumido:** cuando se rehagan las páginas internas, si se quiere que home y páginas compartan
+  enlaces habrá que mantener dos menús (`home_header` y `main`). Es el precio de la independencia
+  buscada entre ambos headers.
+- **Interactividad con API nativa**, sin frameworks (coherente con la independencia de Bootstrap
+  Italia): toggle con `aria-expanded`, cierre con Escape / clic fuera / al navegar.

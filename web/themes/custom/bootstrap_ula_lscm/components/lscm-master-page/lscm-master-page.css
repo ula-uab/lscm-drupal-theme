@@ -99,6 +99,72 @@ nav {
   transform: translateY(-1px);
 }
 
+/* ── Hamburguesa del header (acceso al menú de sitio) ──────────
+   Convive con las anclas (.nav-links). Visible en escritorio y móvil. */
+.nav-burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  width: 40px;
+  height: 40px;
+  margin-left: 1.5rem;
+  padding: 8px;
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.nav-burger:hover {
+  border-color: var(--eu-yellow);
+  background: rgba(255,255,255,0.05);
+}
+.nav-burger-bar {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--white);
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+.nav-burger:hover .nav-burger-bar { background: var(--eu-yellow); }
+.nav-burger[aria-expanded="true"] { border-color: var(--eu-yellow); }
+
+/* Panel desplegable: bajo el nav, alineado a la derecha. */
+.site-menu-panel {
+  position: absolute;
+  top: 100%;
+  right: 2rem;
+  margin-top: 8px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+  border: 1px solid var(--border);
+  min-width: 220px;
+  z-index: 1100;
+  overflow: hidden;
+}
+.site-menu-panel[hidden] { display: none; }
+.site-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+.site-menu-list a {
+  display: block;
+  padding: 0.7rem 1.4rem;
+  color: var(--text-dark);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+.site-menu-list a:hover {
+  background: rgba(0,51,153,0.06);
+  color: var(--eu-blue);
+}
+
 .hero {
   min-height: 100vh;
   background: linear-gradient(135deg, #001a66 0%, #003399 50%, #0044cc 100%);

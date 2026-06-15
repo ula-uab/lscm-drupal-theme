@@ -161,7 +161,26 @@
       <li><a href="#admission">Admission</a></li>
       <li><a href="{{ hero_cta1_url }}" class="nav-cta">Apply Now</a></li>
     </ul>
+    {# Hamburguesa: acceso directo a las páginas del sitio (menú de Drupal 'home_header').
+       Convive con las anclas internas de arriba. Toggle con API nativa (ver .js). #}
+    {% if header_menu is defined and header_menu is not empty %}
+      <button type="button" class="nav-burger" aria-label="Open site menu"
+              aria-expanded="false" aria-controls="site-menu-panel">
+        <span class="nav-burger-bar"></span>
+        <span class="nav-burger-bar"></span>
+        <span class="nav-burger-bar"></span>
+      </button>
+    {% endif %}
   </div>
+  {% if header_menu is defined and header_menu is not empty %}
+    <div class="site-menu-panel" id="site-menu-panel" hidden>
+      <ul class="site-menu-list">
+        {% for item in header_menu %}
+          <li><a href="{{ item.url }}">{{ item.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
 </nav>
 
 {# ───────────────────────────── HERO ───────────────────────────── #}
