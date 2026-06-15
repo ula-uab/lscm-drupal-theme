@@ -28,6 +28,10 @@ base para el rediseño.
 - **[`analysis/about-and-university-entity.md`](analysis/about-and-university-entity.md)** — estado
   de la página About y de la entidad "Universidad del consorcio" (`ct_about_consortium_university`);
   cómo se muestra hoy y opciones de diseño para reutilizarla.
+- **[`analysis/about-page-heredada.md`](analysis/about-page-heredada.md)** — análisis **técnico** de la
+  página «About» heredada (vista `page_about` + bloque `lscm_about_page` + UI Patterns): flujo
+  contenido → visualización, dependencias de Bootstrap Italia y qué es reutilizable. Piloto de la fase
+  de independencia de BI.
 - **[`analysis/contents-subject-entity.md`](analysis/contents-subject-entity.md)** — entidad
   preexistente `ct_contents_subject` (las 15 asignaturas reales del máster) y su relación estructurada
   con los semestres; documentada de cara a la fase futura de adaptación del sitio.
@@ -65,6 +69,8 @@ Los planes de trabajo (hojas de ruta por fases) viven en `docs/plans/<elemento>/
 documentación de referencia. Cada elemento del tema tiene su carpeta de planes; los planes ya
 completados se archivan en el subdirectorio `archive/` de cada elemento.
 
+- **[`plans/paginas-contenido/`](plans/paginas-contenido/)** — plan del **sistema de páginas de contenido**: páginas servidas por vistas con header/footer compartido y presentación independiente de Bootstrap Italia. Piloto: About.
+  - [`plan-sistema-paginas-contenido.md`](plans/paginas-contenido/plan-sistema-paginas-contenido.md) — **activo**.
 - **[`plans/home/`](plans/home/)** — planes de la home:
   - [`archive/plan-colecciones-editables-e-interactividad.md`](plans/home/archive/plan-colecciones-editables-e-interactividad.md) — **completado** (v1.1.0 → v1.3.1): migración de las 8 colecciones a editables, interactividad (hamburguesa, pastillas con modal) y relación universidad↔semestre. La Fase 0 (limpieza de `page_home`) se reconvirtió en TO-DO transversal.
   - [`archive/plan-landing-parametrizada.md`](plans/home/archive/plan-landing-parametrizada.md) — **histórico**: plan inicial de la landing parametrizada (completado).

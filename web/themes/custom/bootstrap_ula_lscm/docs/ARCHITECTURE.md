@@ -471,6 +471,7 @@ bootstrap_ula_lscm/
     ├── ARCHITECTURE.md                  # Este documento (nivel tema)
     ├── analysis/                        # Hallazgos de investigación (secciones existentes a rehacer)
     │   ├── about-and-university-entity.md
+    │   ├── about-page-heredada.md
     │   └── contents-subject-entity.md
     ├── entities/                        # Diseño de entidades propias del tema (no heredadas)
     │   ├── programme-facts.md
@@ -484,6 +485,8 @@ bootstrap_ula_lscm/
     │   └── home/
     │       └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"
     └── plans/                           # Planes de desarrollo por fases, por elemento
+        ├── paginas-contenido/           # Plan del sistema de páginas de contenido (marco + independencia de BI)
+        │   └── plan-sistema-paginas-contenido.md                    # Plan activo
         └── home/
             └── archive/                 # Planes completados (se conservan como referencia histórica)
                 ├── plan-colecciones-editables-e-interactividad.md   # Plan de colecciones e interactividad (completado)
