@@ -419,3 +419,14 @@
     </div>
   </div>
 </footer>
+
+{# Modal único compartido para las pastillas de universidad (sub-hito 4b).
+   Las pastillas con 'info' (botones .uni-sem-tag--button) vuelcan aquí su contenido
+   al pulsarse, vía el JS del marco. <dialog> nativo: foco atrapado, Escape cierra. #}
+<dialog class="uni-modal" id="uni-modal" aria-labelledby="uni-modal-title">
+  <div class="uni-modal__inner">
+    <button type="button" class="uni-modal__close" aria-label="Close" data-modal-close>&times;</button>
+    <h3 class="uni-modal__title" id="uni-modal-title"></h3>
+    <div class="uni-modal__body"></div>
+  </div>
+</dialog>

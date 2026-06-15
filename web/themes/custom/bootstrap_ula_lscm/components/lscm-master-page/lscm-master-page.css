@@ -649,3 +649,62 @@ footer {
   .footer-top { grid-template-columns: 1fr; }
   section { padding: 70px 1.2rem; }
 }
+
+/* ── Modal de las pastillas de universidad (<dialog>, sub-hito 4b) ──────────
+   Modal centrado con backdrop oscuro. Contenido sobre fondo blanco (rich text).
+   Coherente con el design system ula_*. */
+.uni-modal {
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 0;
+  max-width: 520px;
+  width: calc(100% - 2rem);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  background: var(--white);
+}
+.uni-modal::backdrop {
+  background: rgba(0, 20, 60, 0.55);
+  backdrop-filter: blur(2px);
+}
+.uni-modal__inner {
+  position: relative;
+  padding: 2rem 2rem 1.8rem;
+}
+.uni-modal__close {
+  position: absolute;
+  top: 0.8rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.uni-modal__close:hover {
+  background: rgba(0,0,0,0.06);
+  color: var(--text-dark);
+}
+.uni-modal__title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--eu-blue);
+  margin-bottom: 1rem;
+  padding-right: 2rem;
+}
+.uni-modal__body {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+.uni-modal__body p { margin-bottom: 1rem; }
+.uni-modal__body p:last-child { margin-bottom: 0; }
+.uni-modal__body ul,
+.uni-modal__body ol {
+  margin: 0 0 1rem;
+  padding-left: 1.3rem;
+}
+.uni-modal__body li { margin-bottom: 0.4rem; }

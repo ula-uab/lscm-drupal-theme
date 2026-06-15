@@ -77,4 +77,36 @@
       link.addEventListener('click', () => closeMenu());
     });
   }
+
+  // ── Modal de las pastillas de universidad (sub-hito 4b) ─────
+  // Un <dialog> compartido; cada botón .uni-sem-tag--button vuelca su título y su
+  // HTML (data-attributes) al abrirlo. API nativa: showModal() atrapa foco y permite
+  // cerrar con Escape; añadimos cierre por botón y por clic en el backdrop.
+  const uniModal = document.getElementById('uni-modal');
+  if (uniModal) {
+    const titleEl = uniModal.querySelector('.uni-modal__title');
+    const bodyEl = uniModal.querySelector('.uni-modal__body');
+
+    document.querySelectorAll('.uni-sem-tag--button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        titleEl.textContent = btn.getAttribute('data-modal-title') || '';
+        // data-modal-html contiene HTML ya saneado (Basic HTML) desde el campo de modal.
+        bodyEl.innerHTML = btn.getAttribute('data-modal-html') || '';
+        uniModal.showModal();
+      });
+    });
+
+    // Cerrar con el botón de cierre.
+    const closeBtn = uniModal.querySelector('[data-modal-close]');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => uniModal.close());
+    }
+
+    // Cerrar al hacer clic en el backdrop (fuera del contenido).
+    uniModal.addEventListener('click', (e) => {
+      if (e.target === uniModal) {
+        uniModal.close();
+      }
+    });
+  }
 })();

@@ -275,27 +275,25 @@ del menú propio están en §4 (Familia C) y en el ADR-003 (§7).
 La hamburguesa es visible en escritorio y móvil; en móvil (<600px), donde las anclas se ocultan, es
 la navegación principal.
 
-### 5.3. Pastillas interactivas de `ula_uni_card` — 🟡 4a HECHO (v1.3.0), 4b pendiente
+### 5.3. Pastillas interactivas de `ula_uni_card` — ✅ RESUELTO (Fase 4 completa: 4a v1.3.0, 4b v1.3.1)
 
-Las pastillas (`tags`) de las tarjetas de universidad son `{label, info}`. Su contenido depende de la
-relación universidad↔semestre, que se modeló en el **Sub-hito 4a** (v1.3.0). Estado:
+Las pastillas (`tags`) de las tarjetas de universidad son `{label, info}`, alimentadas por la relación
+universidad↔semestre. Fase 4 completa:
 
-- ✅ **Sub-hito 4a — relación y pastillas visibles (v1.3.0).** Se creó la entidad de relación
-  `ct_university_semester` (universidad × semestre, con el texto del modal) y los campos de "Lead
-  Partner" en la universidad. La carga del tema combina ambas fuentes y alimenta los `tags`. Las
-  pastillas **se ven** en las tarjetas (Semester 1/2/3/4 según universidad + Lead Partner en UAB),
-  con su contenido real y editable. Ver ADR-004 (§7), `../../entities/university-semester.md`,
-  `../../ARCHITECTURE.md` §5.6 y la guía de edición en §4 (Familia D).
-- ⬜ **Sub-hito 4b — interactividad (pendiente).** Convertir las pastillas en botones que abran un
-  **popover/modal** con el contenido de `info`, usando la **API nativa** del navegador
-  (`popover` / `<dialog>`), sin frameworks. El `info` (texto del modal) **ya se carga** en cada
-  pastilla; 4b solo lo mostrará. Hoy las pastillas se renderizan estáticas (solo `label`).
+- ✅ **Sub-hito 4a — relación y pastillas visibles (v1.3.0).** Entidad de relación
+  `ct_university_semester` (universidad × semestre + texto del modal) + campos de "Lead Partner" en la
+  universidad. La carga del tema combina ambas fuentes y alimenta los `tags`. Ver ADR-004 (§7),
+  `../../entities/university-semester.md`, `../../ARCHITECTURE.md` §5.6, guía de edición en §4
+  (Familia D).
+- ✅ **Sub-hito 4b — interactividad (v1.3.1).** Las pastillas con `info` se renderizan como **botones**
+  que abren un **modal** (`<dialog>` nativo, único y compartido, en el marco) con el contenido de
+  `info`. API nativa, sin frameworks: `showModal()` (foco atrapado, Escape), más cierre por botón × y
+  por clic en el backdrop. El contenido (rich text de Basic HTML) viaja en `data-modal-html` y el JS
+  del marco lo vuelca en el `<dialog>`. Las pastillas sin `info` siguen siendo etiquetas estáticas.
 
-> **Modelado resuelto (4a).** La relación universidad↔semestre que esta sección anticipaba como
-> pendiente ya está modelada: entidad de relación propia para los semestres + atributo de universidad
-> para "Lead Partner". El análisis previo está en
-> [`../../analysis/about-and-university-entity.md`](../../analysis/about-and-university-entity.md)
-> §3.4; el diseño final, en el ADR-004.
+> **Decisión modal vs popover.** Se eligió **modal** (`<dialog>`) y no popover porque el contenido de
+> cada pastilla es de varios párrafos (más de una o dos frases); el modal aguanta bien texto extenso y
+> centra la lectura, mientras que un popover se rompe con contenido largo. Ver ADR-004.
 
 
 ### 5.4. Limpieza: eliminar la vista vieja `page_home`
@@ -581,6 +579,9 @@ Consortium tratará 3º y 4º como semestres distintos (con su propio contenido)
   asignaturas.
 - **Unicidad del líder** ("solo una universidad"): la garantiza el editor (marcar el booleano en una
   sola), no se fuerza a nivel de datos — innecesario para 3 universidades.
-- **Sub-hitos:** 4a (v1.3.0) crea la relación, los campos de lead y muestra las pastillas (estáticas).
-  4b implementará la interactividad (modal/popover al pulsar, API nativa). El componente `ula_uni_card`
-  ya carga el `info` de cada pastilla; 4b solo lo mostrará.
+- **Sub-hitos:** 4a (v1.3.0) creó la relación, los campos de lead y mostró las pastillas (estáticas).
+  4b (v1.3.1) implementó la interactividad: las pastillas con `info` son botones que abren un **modal**
+  (`<dialog>` nativo único en el marco), con cierre por ×, Escape y clic en backdrop. Se eligió modal
+  (no popover) por la extensión del contenido. El contenido (HTML de Basic HTML) viaja en
+  `data-modal-html` y el JS del marco lo vuelca con `innerHTML` (seguro: HTML ya saneado). **Fase 4
+  completa.**

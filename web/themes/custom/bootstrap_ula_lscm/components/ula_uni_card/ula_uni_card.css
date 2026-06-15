@@ -58,3 +58,19 @@
   padding: 3px 10px;
   border-radius: 100px;
 }
+/* Pastilla clicable (tiene modal): hereda el aspecto de .uni-sem-tag y añade
+   affordance de botón (cursor, hover). Reset de estilos nativos de <button>. */
+.uni-sem-tag--button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+}
+.uni-sem-tag--button:hover {
+  background: rgba(255,204,0,0.3);
+  border-color: var(--eu-yellow);
+  transform: translateY(-1px);
+}
+.uni-sem-tag--button:focus-visible {
+  outline: 2px solid var(--eu-yellow);
+  outline-offset: 2px;
+}

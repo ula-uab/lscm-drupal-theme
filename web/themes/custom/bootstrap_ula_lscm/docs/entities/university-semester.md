@@ -85,8 +85,9 @@ de `ula_uni_card`) combinando las **dos fuentes**, mediante
    `{label: 'Lead Partner', info: field_uni_lead_modal_text}`.
 
 El resultado es un array de `{label, info}`, exactamente lo que `ula_uni_card` espera en `tags`. El
-componente pinta cada `label` como pastilla; el `info` (texto del modal) se carga ya, pero su
-visualización al pulsar (popover/modal) es el **Sub-hito 4b**.
+componente pinta cada pastilla con `info` como un **botón** que, al pulsarse, abre un **modal**
+(`<dialog>` nativo único en el marco) con el contenido de `info` (Sub-hito 4b, v1.3.1). Las pastillas
+sin `info` son etiquetas estáticas.
 
 ---
 

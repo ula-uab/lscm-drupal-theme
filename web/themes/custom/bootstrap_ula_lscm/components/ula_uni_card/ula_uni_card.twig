@@ -1,12 +1,13 @@
 {#
   ula_uni_card — tarjeta de universidad socia.
-  Props: flag, country, name, abbr, description, tags (array).
-  Markup y clases idénticos a la maqueta.
+  Props: flag, country, name, abbr, description, tags (array de {label, info}).
 
-  NOTA sobre tags: cada pastilla se renderiza HOY como etiqueta estática (.uni-sem-tag),
-  fiel a la maqueta. La estructura admite {label, info}; 'info' está reservado para
-  convertir la pastilla en botón con popover/modal en una iteración futura (API nativa),
-  y de momento se ignora. También se acepta una cadena simple como tag.
+  Pastillas (tags): si una pastilla tiene 'info' (texto de modal), se renderiza como
+  BOTÓN que abre un modal compartido (<dialog> en el marco lscm-master-page) con ese
+  contenido. Si no tiene 'info', se renderiza como etiqueta estática (.uni-sem-tag).
+  El contenido del modal viaja en un atributo data-modal-html (HTML saneado por Basic
+  HTML); el JS del marco lo vuelca en el <dialog> al pulsar. Interactividad con API
+  nativa (<dialog>), sin frameworks. Ver ADR-004 / §5.3 (sub-hito 4b).
 #}
 <div class="uni-card">
   <div class="uni-country"><span class="uni-flag">{{ flag }}</span> {{ country }}</div>
@@ -17,7 +18,16 @@
     <div class="uni-semesters">
       {% for tag in tags %}
         {% set tag_label = tag.label is defined ? tag.label : tag %}
-        <span class="uni-sem-tag">{{ tag_label }}</span>
+        {% set tag_info = tag.info is defined ? tag.info : '' %}
+        {% if tag_info is not empty %}
+          <button type="button" class="uni-sem-tag uni-sem-tag--button"
+                  data-modal-title="{{ tag_label }}"
+                  data-modal-html="{{ tag_info|e('html_attr') }}">
+            {{ tag_label }}
+          </button>
+        {% else %}
+          <span class="uni-sem-tag">{{ tag_label }}</span>
+        {% endif %}
       {% endfor %}
     </div>
   {% endif %}
