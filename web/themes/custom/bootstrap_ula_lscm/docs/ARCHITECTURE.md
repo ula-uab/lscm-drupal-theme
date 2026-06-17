@@ -491,8 +491,8 @@ bootstrap_ula_lscm/
     │   └── layout/
     │       └── LAYOUT-ARCHITECTURE.md   # Documentación del elemento "layout" (marco header+footer)
     └── plans/                           # Planes de desarrollo por fases, por elemento
-        ├── paginas-contenido/           # Plan del sistema de páginas de contenido (marco + independencia de BI)
-        │   └── plan-sistema-paginas-contenido.md                    # Plan activo
+        ├── paginas-contenido/           # Plan de páginas de contenido e independencia de BI (plan maestro)
+        │   └── plan-sistema-paginas-contenido.md                    # Plan activo (8 fases, 0–7)
         └── home/
             └── archive/                 # Planes completados (se conservan como referencia histórica)
                 ├── plan-colecciones-editables-e-interactividad.md   # Plan de colecciones e interactividad (completado)

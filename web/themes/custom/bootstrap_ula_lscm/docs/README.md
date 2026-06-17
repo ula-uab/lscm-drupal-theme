@@ -73,8 +73,8 @@ Los planes de trabajo (hojas de ruta por fases) viven en `docs/plans/<elemento>/
 documentación de referencia. Cada elemento del tema tiene su carpeta de planes; los planes ya
 completados se archivan en el subdirectorio `archive/` de cada elemento.
 
-- **[`plans/paginas-contenido/`](plans/paginas-contenido/)** — plan del **sistema de páginas de contenido**: páginas servidas por vistas con header/footer compartido y presentación independiente de Bootstrap Italia. Piloto: About.
-  - [`plan-sistema-paginas-contenido.md`](plans/paginas-contenido/plan-sistema-paginas-contenido.md) — **activo**.
+- **[`plans/paginas-contenido/`](plans/paginas-contenido/)** — plan maestro de **páginas de contenido e independencia de Bootstrap Italia**: el camino para desligar el tema de BI (marco `page.html.twig`, componentes SDC, librerías y regiones), articulado sobre las páginas de contenido (servidas por vistas, con header/footer propios). Piloto: About.
+  - [`plan-sistema-paginas-contenido.md`](plans/paginas-contenido/plan-sistema-paginas-contenido.md) — **activo** (8 fases, 0–7; Fase 1 completada en v1.4.0).
 - **[`plans/home/`](plans/home/)** — planes de la home:
   - [`archive/plan-colecciones-editables-e-interactividad.md`](plans/home/archive/plan-colecciones-editables-e-interactividad.md) — **completado** (v1.1.0 → v1.3.1): migración de las 8 colecciones a editables, interactividad (hamburguesa, pastillas con modal) y relación universidad↔semestre. La Fase 0 (limpieza de `page_home`) se reconvirtió en TO-DO transversal.
   - [`archive/plan-landing-parametrizada.md`](plans/home/archive/plan-landing-parametrizada.md) — **histórico**: plan inicial de la landing parametrizada (completado).

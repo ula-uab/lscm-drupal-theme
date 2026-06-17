@@ -9,7 +9,7 @@
 > `../home/HOME-ARCHITECTURE.md`) por ser una portada autónoma a medida. El marco de las páginas de
 > contenido es **distinto** (otro header, otra navegación), aunque comparte la **estética**. La
 > unificación de ambos footers está prevista como hito futuro (ver §4 y el plan de páginas de
-> contenido, Fase 6).
+> contenido, Fase 7).
 
 ---
 
@@ -52,7 +52,7 @@ Pie de página **provisional** de las páginas de contenido. Replica la **estruc
 home (marca con descripción + tres columnas de enlaces —Programme, Resources, Partners— + zona
 inferior con copyright y badge de la UE), pero con **contenido hardcodeado** por defecto en el propio
 componente. Hacerlo **editable desde la interfaz** y **unificarlo** con el footer de la home es un
-hito futuro (Fase 6 del plan; ver §4).
+hito futuro (Fase 7 del plan; ver §4).
 
 - Ubicación: `components/lscm_page_footer/` (`.component.yml`, `.twig`, `.css`).
 - Props: `brand_top`, `contact_email` (permiten sobrescribir la marca y el correo; el resto del
@@ -101,7 +101,7 @@ Bootstrap Italia, intactas.
 ## 4. Footer: estado provisional y deuda futura
 
 El footer actual es **provisional**: tiene la **estructura** del de la home pero el **contenido
-hardcodeado**. Quedan pendientes, como hito propio (Fase 6 del plan de páginas de contenido):
+hardcodeado**. Quedan pendientes, como hito propio (Fase 7 del plan de páginas de contenido):
 
 - **Diseño del layout definitivo** del footer.
 - **Editable desde la interfaz**: decidir el mecanismo y dónde vive el contenido (menús de Drupal,
@@ -115,7 +115,7 @@ No tiene disparador temporal fijo: se acomete cuando el footer definitivo esté 
 
 ## 5. Pendientes específicos del elemento
 
-- **5.1. Footer definitivo (editable + unificado con la home).** Ver §4 y Fase 6 del plan. Pendiente.
+- **5.1. Footer definitivo (editable + unificado con la home).** Ver §4 y Fase 7 del plan. Pendiente.
 - **5.2. Tabs de administración / título de página.** El marco es deliberadamente minimalista y **no**
   renderiza las regiones `local_tasks` (pestañas "Editar"), `title`, `breadcrumb`, `help`, etc., que sí
   maneja el `page.html.twig` de Bootstrap Italia. Es una decisión de diseño (marco limpio). Si en
@@ -162,8 +162,10 @@ permita eliminar las plantillas `page--<path>` una a una.
 > consolidación es la meta, no una promesa incondicional.
 
 **Disparador de la revisión.** "Cuando no queden páginas no-home dependientes de Bootstrap Italia."
-Enlaza con la Fase 5 del plan de páginas de contenido (eliminación de lo heredado) y con el TO-DO
-transversal de eliminar la vista heredada `page_home`.
+Enlaza con la **Fase 5** del plan de páginas de contenido (replicar a todas las páginas no-home y
+**consolidar** las plantillas específicas en un `page.html.twig` propio único) y con la **Fase 6**
+(eliminación de lo heredado de BI), además del TO-DO transversal de eliminar la vista heredada
+`page_home`.
 
 **Alternativas consideradas.**
 - *Crear ya un `page.html.twig` propio (genérico).* Descartada **ahora**: capturaría **todas** las
