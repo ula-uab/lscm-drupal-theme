@@ -476,7 +476,8 @@ bootstrap_ula_lscm/
     ├── analysis/                        # Hallazgos de investigación (secciones existentes a rehacer)
     │   ├── about-and-university-entity.md
     │   ├── about-page-heredada.md
-    │   └── contents-subject-entity.md
+    │   ├── contents-subject-entity.md
+    │   └── inventario-bi.md             # Inventario propios vs heredados (Fase 0, artefacto vivo)
     ├── entities/                        # Diseño de entidades propias del tema (no heredadas)
     │   ├── programme-facts.md
     │   ├── admission-journey-step.md

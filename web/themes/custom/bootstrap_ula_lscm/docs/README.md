@@ -8,6 +8,10 @@ Management). Organizada en **dos niveles**:
 - **[`ARCHITECTURE.md`](ARCHITECTURE.md)** — Arquitectura global del tema: versionado, identidad
   y estado de independencia, el design system propio (componentes `ula_*` y CSS en tres capas),
   notas técnicas y restricciones del entorno, y la estructura de ficheros.
+- **[`CONCEPTOS-DRUPAL.md`](CONCEPTOS-DRUPAL.md)** — Manual de conceptos clave de Drupal (temas,
+  librerías, regiones, sugerencias de plantilla, SDC, Views + UI Patterns…) **ilustrados y aplicados a
+  este tema**. Material de referencia para desarrolladores y editores. Se amplía conforme avanza el
+  desarrollo.
 - **[`../TODO.md`](../TODO.md)** — Pendientes transversales del tema.
 
 ## Nivel elemento (específico de cada parte)
@@ -32,6 +36,7 @@ base para el rediseño.
 - **[`analysis/about-and-university-entity.md`](analysis/about-and-university-entity.md)** — estado
   de la página About y de la entidad "Universidad del consorcio" (`ct_about_consortium_university`);
   cómo se muestra hoy y opciones de diseño para reutilizarla.
+- **[`analysis/inventario-bi.md`](analysis/inventario-bi.md)** — **inventario de elementos propios vs heredados** de Bootstrap Italia (componentes SDC, plantillas, librerías, regiones): qué está en uso, qué hay que adaptar/rehacer como propio y qué es herencia muerta a eliminar. Mapa maestro de la independencia de BI (Fase 0). Artefacto vivo.
 - **[`analysis/about-page-heredada.md`](analysis/about-page-heredada.md)** — análisis **técnico** de la
   página «About» heredada (vista `page_about` + bloque `lscm_about_page` + UI Patterns): flujo
   contenido → visualización, dependencias de Bootstrap Italia y qué es reutilizable. Piloto de la fase

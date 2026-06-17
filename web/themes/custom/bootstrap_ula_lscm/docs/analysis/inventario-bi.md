@@ -1,0 +1,194 @@
+# Inventario de elementos: propios vs heredados (de cara a la independencia de Bootstrap Italia)
+
+> **Tipo de documento:** análisis (Fase 0 del plan maestro de independencia de BI,
+> `../plans/paginas-contenido/plan-sistema-paginas-contenido.md`).
+>
+> **Propósito.** Catalogar el estado actual del tema `bootstrap_ula_lscm` distinguiendo los **elementos
+> propios** de los **heredados de Bootstrap Italia (BI)**, para guiar el proceso de independencia. Es el
+> **mapa** sobre el que se decide qué se adapta/rehace como propio y qué se elimina al final.
+>
+> **Artefacto vivo.** Este inventario se mantiene actualizado: cada vez que un elemento cambia de estado
+> (heredado → adoptado/propio, o se elimina), se refleja aquí.
+>
+> **Principio rector (importante).** Las **páginas heredadas son la especificación viva** de qué
+> necesitamos: mientras existan, nos dicen qué componentes heredados están en uso real y, por tanto,
+> cuáles hay que cubrir con piezas propias. Por eso se inventarían **antes** de eliminarlas, y solo se
+> eliminan al final, cuando su contenido ya está cubierto por elementos propios. Este inventario es la
+> fotografía de esa especificación.
+
+> **Leyenda de estado:**
+> - **Propio** — diseñado por nosotros (nativo del tema).
+> - **Heredado (en uso)** — de BI, usado por alguna página viva: candidato a **adaptar/rehacer** como
+>   propio o a **sustituir** por diseño nuevo.
+> - **Heredado (muerto)** — de BI, sin uso en ninguna página viva: candidato a **eliminación** directa
+>   en la fase final (Fase 6), sin necesidad de sustituto.
+
+---
+
+## 1. Resumen
+
+| Categoría | Total | Propios | Heredados en uso | Heredados muertos |
+|---|---|---|---|---|
+| **Componentes SDC** | 71 | 12 | 21 | 38 |
+| **Plantillas** (`templates/`) | 3 | 3 | 0 | (usa el `page.html.twig` de BI por herencia, sin fichero propio) |
+| **Librerías cargadas globalmente** | 6 | 3 | 3 | — |
+
+El grueso del trabajo de independencia, a nivel de componentes, se concentra en los **21 componentes
+heredados en uso**: de ellos saldrá la lista de piezas propias a crear (adaptando o rehaciendo). Los
+**38 muertos** se eliminan al final sin más. Los **12 propios** ya están.
+
+---
+
+## 2. Componentes SDC (`components/`)
+
+### 2.1. Propios (12)
+
+Diseñados por nosotros. No requieren acción de independencia (ya son propios); se listan para
+completitud y para fijar la convención de nombres.
+
+| Componente | Tipo | Notas |
+|---|---|---|
+| `ula_feature_item` | Design system (`ula_*`) | Componente de contenido de la home |
+| `ula_hero_stat` | Design system (`ula_*`) | Estadística destacada |
+| `ula_req_card` | Design system (`ula_*`) | Tarjeta de requisito |
+| `ula_sem_card` | Design system (`ula_*`) | Tarjeta de semestre |
+| `ula_spec_card` | Design system (`ula_*`) | Tarjeta de especialización |
+| `ula_timeline_item` | Design system (`ula_*`) | Ítem de cronología |
+| `ula_uni_card` | Design system (`ula_*`) | Tarjeta de universidad |
+| `ula_why_item` | Design system (`ula_*`) | Ítem "por qué" |
+| `lscm_page_header` | Marco de páginas (`lscm_*` propio) | Header del marco de páginas de contenido (Fase 1) |
+| `lscm_page_footer` | Marco de páginas (`lscm_*` propio) | Footer provisional del marco (Fase 1) |
+| `lscm-master-page` | Marco de la home (`lscm-*` propio) | Marco de la home |
+| `lscm-master-static` | Maqueta de referencia (`lscm-*` propio) | Maqueta original; no en producción |
+
+> **Convención de nombres.** `ula_*` se reserva en adelante para **desarrollos nuevos**. Los `lscm_*` /
+> `lscm-*` aquí listados son propios pero nacieron antes de fijar esa convención (marco). Cuando se
+> adopte un componente heredado y se haga propio, se renombrará con prefijo `ula_*` y pasará a esta
+> tabla.
+
+### 2.2. Heredados de BI EN USO (21) — candidatos a adaptar/rehacer
+
+Componentes de Bootstrap Italia que **alguna página viva usa** (vía Views + UI Patterns). Cada uno es
+una pieza que habrá que **adaptar como propia** (renombrándola `ula_*`) o **sustituir** por diseño
+nuevo, al migrar las páginas que la usan. La columna "usado por" indica las vistas donde aparece (la
+especificación viva).
+
+| Componente BI | Usado por (vistas) | Observación para la independencia |
+|---|---|---|
+| `grid_row` | page_about, page_about_consortium, page_admission, page_alumni, page_contents, page_contents_*_semester (4), page_home, page_home_cards | El más transversal: contenedor de rejilla. Pieza estructural clave a rehacer como propia |
+| `card` | page_about, page_home_cards, test | Tarjeta básica |
+| `card2_simple` | page_about_consortium, page_elegibility_admission_requirements | Variante de tarjeta |
+| `card2_big` | page_contents | Variante de tarjeta grande |
+| `modal2` | page_about_consortium, page_contents_*_semester (4) | Modal (ventana emergente) |
+| `point_list2` | page_admission, page_contents | Lista de puntos |
+| `table` | page_elegibility_criteria, page_elegibility_ranks | Tabla |
+| `table_row` | page_elegibility_criteria, page_elegibility_ranks | Fila de tabla |
+| `table_cell` | page_elegibility_criteria, page_elegibility_ranks | Celda de tabla |
+| `accordion` | page_admission_pre_timeline, page_admission_reg_timeline, page_faq_group | Acordeón |
+| `accordion_item` | page_admission_pre_timeline, page_admission_reg_timeline, page_faq_group | Ítem de acordeón |
+| `timeline2` | page_admission_pre_timeline, page_admission_reg_timeline | Cronología |
+| `timeline_item2` | page_admission_pre_timeline, page_admission_reg_timeline | Ítem de cronología |
+| `alert2` | page_elegibility | Aviso/alerta |
+| `grid_row_2` | page_elegibility, page_student_hub | Variante de rejilla |
+| `hero2` | page_home | Hero (cabecera destacada) |
+| `toast` | page_home | Notificación tipo toast |
+| `toast_container` | page_home | Contenedor de toasts |
+| `button2` | page_home_cards | Botón |
+| `avatar2` | view_page_experiences | Avatar |
+| `academic_calendar` | page_student_hub | Calendario académico (posiblemente específico del proyecto, a analizar) |
+
+> **Notas:**
+> - `page_home` y `page_home_cards` corresponden a la **home heredada** (la vista `page_home` está en el
+>   TODO #6 para eliminar, ya sustituida por la home propia nodo+Twig). Sus componentes se inventarían
+>   igualmente, pero su eliminación va ligada a esa limpieza.
+> - `test` es una vista de pruebas; a revisar si debe conservarse.
+> - `academic_calendar` no parece un componente genérico de BI; conviene analizar su origen (podría ser
+>   un componente a medida del desarrollo previo).
+
+### 2.3. Heredados de BI SIN USO (38) — herencia muerta, candidatos a eliminar
+
+Componentes de Bootstrap Italia que **ninguna página viva usa**. Son herencia muerta: candidatos a
+**eliminación** directa en la Fase 6, sin necesidad de sustituto. Se listan para no perderlos de vista
+y poder eliminarlos en bloque al final.
+
+```
+accordion2, alert, badge, blockquote, breadcrumb, button, button_group, button_toolbar,
+callout2, card2_carousel_evidence, card2_special, card2_teaser, card_body, card_group,
+card_overlay, carousel, carousel_item, close_button, collapse2, dropdown, figure, gallery2,
+grid_row_1, grid_row_3, grid_row_4, list, list2, list_group, list_group_item, modal, nav,
+navbar, navbar_nav, offcanvas, pagination, progress, progress_stacked, spinner
+```
+
+> **Cautela.** "Sin uso" aquí significa "no referenciado en ninguna **vista**". Antes de eliminar un
+> componente concreto conviene una comprobación final de que tampoco lo usa ninguna plantilla, bloque
+> de Layout Builder u otro mecanismo. Para el inventario inicial, el barrido de vistas da el grueso
+> fiable (las páginas heredadas son vistas).
+
+---
+
+## 3. Plantillas (`templates/`)
+
+| Plantilla | Origen | Estado | Notas |
+|---|---|---|---|
+| `templates/layout/page--front.html.twig` | Propia | Propio | Marco de la home (elemento home) |
+| `templates/layout/page--about.html.twig` | Propia | Propio | Marco de la página About (elemento layout, Fase 1) |
+| `templates/content/node--landing.html.twig` | Propia | Propio | Render del nodo landing (home) |
+
+> **Falta clave (no es un fichero, es una ausencia):** el tema **no tiene `page.html.twig` propio**. Las
+> páginas no-home sin sugerencia específica usan el `page.html.twig` **heredado de Bootstrap Italia**
+> (`themes/contrib/bootstrap_italia/templates/layout/page.html.twig`). Crear uno propio y desligarlo de
+> BI es la **Fase 2** del plan. Su cadena de dependencias (includes, sub-plantillas de región/header/
+> footer de BI) se analizará al abordar esa fase.
+
+---
+
+## 4. Librerías (assets CSS/JS)
+
+Cargadas globalmente desde el `.info.yml` (ver concepto en `../CONCEPTOS-DRUPAL.md` §2).
+
+| Librería | Origen | Estado | Papel |
+|---|---|---|---|
+| `bootstrap_ula_lscm/libraries-ui` | Propia | Propio | Assets de interfaz del tema |
+| `bootstrap_ula_lscm/custom` | Propia | Propio | Estilos propios personalizados |
+| `bootstrap_ula_lscm/ula_tokens` | Propia | Propio | Tokens de diseño `ula_*` (colores, tipografías) |
+| `bootstrap_italia/base` | **Heredada de BI** | Heredado (en uso) | CSS estructural de BI: viste los componentes de BI en uso. Eliminar en Fase 6, solo cuando nada dependa de él |
+| `bootstrap_italia/enable-all-tooltips` | **Heredada de BI** | Heredado (en uso) | JS de tooltips de BI |
+| `bootstrap_italia/load-fonts` | **Heredada de BI** | Heredado (en uso) | Carga de fuentes de BI |
+
+> **Declaradas pero NO cargadas** (comentadas en el `.info.yml`): `vanilla`, `cdn`, `hot`, `ddev`.
+> También hay declarada en el `.libraries.yml` `ula_landing_base`, cuyo uso conviene aclarar. Pendiente
+> de revisar su propósito y vigencia.
+
+---
+
+## 5. Regiones
+
+El `.info.yml` redeclara **56 regiones** con el esquema completo de Bootstrap Italia (ver concepto en
+`../CONCEPTOS-DRUPAL.md` §3). De ellas, solo unas pocas tienen bloques colocados por las páginas vivas;
+el resto es herencia muerta candidata a adelgazar en la Fase 6.
+
+**Regiones con bloques colocados (en uso real), según Block layout:**
+`brand`, `breadcrumb`, `content` (crítica: el contenido principal), `footer_menu`,
+`footer_small_prints`, `header_center_search`, `header_nav`, `header_slim_action`,
+`header_slim_menu`, `help`, `local_tasks`, `notification`, `title`. (`sidebar_second` tiene un bloque
+desactivado.)
+
+**Resto (~43 regiones):** declaradas pero sin bloques en uso —incluidas todas las `home_*_row_*`, las
+`before/after_content_*`, `footer_first/second/third/fourth`, etc.—. Herencia muerta candidata a
+eliminar del `.info.yml` en la Fase 6.
+
+> El detalle completo de las 56 regiones y su análisis está en el histórico de la investigación; aquí
+> se resume lo accionable (usadas vs muertas).
+
+---
+
+## 6. Conclusión y uso de este inventario
+
+- **Lo que ya es propio:** 12 componentes SDC + 3 plantillas + 3 librerías. No requieren acción.
+- **Lo que hay que adaptar/rehacer (el trabajo de fondo):** los **21 componentes de BI en uso** y el
+  `page.html.twig` (crear propio). De aquí sale la lista de piezas propias a construir, página a página.
+- **Lo que se eliminará al final (Fase 6):** los **38 componentes muertos**, las **~43 regiones**
+  muertas, y las **3 librerías `bootstrap_italia/*`** —cada cosa, solo cuando nada vivo dependa de ella.
+
+Este inventario se actualiza conforme cada componente heredado en uso se adapta como propio (cambia de
+la tabla 2.2 a la 2.1, renombrado) o se confirma su eliminación.
