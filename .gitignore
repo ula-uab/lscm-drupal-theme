@@ -8,7 +8,11 @@ node_modules/
 /backups/
 env
 /.env
+/deploy/build/
+/deploy/deployment-files/*.zip
 *.sql
 *.sql.gz
+/backups/*.sql
+/backups/*.sql.gz
 .DS_Store
 .idea/
