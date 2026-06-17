@@ -131,14 +131,15 @@ navbar, navbar_nav, offcanvas, pagination, progress, progress_stacked, spinner
 | Plantilla | Origen | Estado | Notas |
 |---|---|---|---|
 | `templates/layout/page--front.html.twig` | Propia | Propio | Marco de la home (elemento home) |
-| `templates/layout/page--about.html.twig` | Propia | Propio | Marco de la página About (elemento layout, Fase 1) |
+| `templates/layout/page.html.twig` | Propia | Propio | Marco genérico de páginas no-home (v1.5.0, Fase 2). Sustituye al de BI |
 | `templates/content/node--landing.html.twig` | Propia | Propio | Render del nodo landing (home) |
 
-> **Falta clave (no es un fichero, es una ausencia):** el tema **no tiene `page.html.twig` propio**. Las
-> páginas no-home sin sugerencia específica usan el `page.html.twig` **heredado de Bootstrap Italia**
-> (`themes/contrib/bootstrap_italia/templates/layout/page.html.twig`). Crear uno propio y desligarlo de
-> BI es la **Fase 2** del plan. Su cadena de dependencias (includes, sub-plantillas de región/header/
-> footer de BI) se analizará al abordar esa fase.
+> **Resuelto en v1.5.0 (Fase 2):** el tema **ya tiene `page.html.twig` propio**
+> (`templates/layout/page.html.twig`), que sustituye al heredado de Bootstrap Italia para todas las
+> páginas no-home. Monta header/footer propios (`lscm_page_*`), las regiones funcionales activas y una
+> rejilla propia (librería `lscm_page`), sin clases `container/row/col/it-*` de BI. El análisis del
+> `page.html.twig` de BI (sus 5 partials) y el diseño del propio están en
+> `../elements/layout/LAYOUT-ARCHITECTURE.md` §7–8 (ADR-LAYOUT-003).
 
 ---
 
@@ -151,6 +152,7 @@ Cargadas globalmente desde el `.info.yml` (ver concepto en `../CONCEPTOS-DRUPAL.
 | `bootstrap_ula_lscm/libraries-ui` | Propia | Propio | Assets de interfaz del tema |
 | `bootstrap_ula_lscm/custom` | Propia | Propio | Estilos propios personalizados |
 | `bootstrap_ula_lscm/ula_tokens` | Propia | Propio | Tokens de diseño `ula_*` (colores, tipografías) |
+| `bootstrap_ula_lscm/lscm_page` | Propia | Propio | Rejilla y wrappers del marco de páginas (v1.5.0). Cargada a demanda por `page.html.twig` |
 | `bootstrap_italia/base` | **Heredada de BI** | Heredado (en uso) | CSS estructural de BI: viste los componentes de BI en uso. Eliminar en Fase 6, solo cuando nada dependa de él |
 | `bootstrap_italia/enable-all-tooltips` | **Heredada de BI** | Heredado (en uso) | JS de tooltips de BI |
 | `bootstrap_italia/load-fonts` | **Heredada de BI** | Heredado (en uso) | Carga de fuentes de BI |
@@ -192,3 +194,43 @@ eliminar del `.info.yml` en la Fase 6.
 
 Este inventario se actualiza conforme cada componente heredado en uso se adapta como propio (cambia de
 la tabla 2.2 a la 2.1, renombrado) o se confirma su eliminación.
+
+---
+
+## 7. Cómo se visten hoy las páginas no-home (marco propio + contenido con CSS de BI)
+
+> **Información clave para la migración de componentes.** Documenta de dónde salen los estilos que se
+> ven en las páginas no-home tras adoptar el `page.html.twig` propio (v1.5.0). Es la base para ir
+> adaptando/rehaciendo los componentes del contenido interno.
+
+Tras la Fase 2, en cada página no-home **conviven dos fuentes de estilo**:
+
+1. **CSS propio** (`ula_tokens`, `lscm_page`, y los CSS de los componentes `ula_*`/`lscm_*`) →
+   viste el **marco**: header, footer, rejilla de página. Es independiente de Bootstrap Italia.
+
+2. **CSS de Bootstrap Italia** (librería **`bootstrap_italia/base`**, cargada globalmente desde el
+   `.info.yml`) → viste el **contenido interno** de las páginas: los componentes heredados que usan las
+   vistas (`grid_row`, `card`, `card2_*`, `modal2`, `table`, `accordion`, `academic_calendar`, etc.),
+   incluyendo su tipografía, colores, rellenos, botones y demás.
+
+**Por eso el contenido interno "se ve bien" pese a no haberlo migrado:** no está huérfano de estilos;
+sigue tirando del CSS de Bootstrap Italia que el tema **continúa cargando globalmente**. No se ha
+copiado ni adaptado nada de BI para lograrlo: es, literalmente, el CSS de BI todavía activo.
+
+**Implicaciones para la migración (Fases 3–6):**
+- El marco ya es **independiente** de BI; el **contenido interno de las páginas no migradas, no**:
+  depende de `bootstrap_italia/base`.
+- Para cada componente heredado en uso (ver §2.2), "hacerlo propio" implica **reproducir en CSS propio
+  el aspecto** que hoy le da `bootstrap_italia/base` (tipografía, colores, espaciados, bordes, estados
+  de botón…), adaptándolo al design system `ula_*`. Mientras un componente siga dependiendo del CSS de
+  BI, no se puede retirar esa librería.
+- **`bootstrap_italia/base` solo se podrá eliminar (Fase 6)** cuando **ningún** contenido vivo dependa
+  de ella, es decir, cuando todos los componentes en uso se hayan migrado a `ula_*` con su propio CSS.
+- **Caso señalado — `academic_calendar` (en `/student-hub`):** es uno de los componentes cuyo buen
+  aspecto actual proviene del CSS de BI (o de CSS a medida del desarrollo previo; su origen exacto está
+  pendiente de analizar, ver §2.2). Al migrarlo, habrá que reproducir su aspecto con CSS propio. Es un
+  candidato a analizar con detalle por su complejidad visual.
+
+> **Método sugerido al migrar un componente:** inspeccionar qué reglas de `bootstrap_italia/base` (u
+> otro CSS) le dan su aspecto actual, y reproducir el resultado equivalente con CSS propio basado en
+> los tokens `ula_*`. Así el componente migrado se ve igual o mejor, pero sin depender de BI.

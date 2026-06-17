@@ -1,0 +1,80 @@
+/**
+ * lscm-page.css — Estilos del marco de páginas de contenido (page.html.twig propio).
+ *
+ * Rejilla propia (sin Bootstrap): resuelve el layout de contenido + sidebars con CSS
+ * moderno (flexbox), sin depender de las clases container/row/col de Bootstrap Italia
+ * ni de bootstrap_italia/base. Reutiliza los tokens globales (ula_tokens).
+ *
+ * Sustituye, en clave propia, lo que en Bootstrap Italia hacía _partial.content.html.twig:
+ *  - un contenedor centrado con ancho máximo (equivalente a .container),
+ *  - una fila (equivalente a .row),
+ *  - columnas que reparten el ancho contenido/sidebars (equivalente a col-lg-*).
+ */
+
+/* Contenedor centrado con ancho máximo y márgenes laterales (equivale a .container). */
+.lscm-page__container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* Zona principal: deja hueco para el header fijo. */
+.lscm-page__main {
+  padding-top: 80px;
+  padding-bottom: 3rem;
+}
+
+/* Wrappers de las regiones funcionales (espaciado propio, mínimo y coherente). */
+.lscm-page__breadcrumb { margin-block: 1rem 0.5rem; font-size: 0.9rem; }
+.lscm-page__title { margin-block: 0.5rem 1.5rem; }
+.lscm-page__local-tasks { margin-block: 1rem; }
+.lscm-page__help { margin-block: 1rem; }
+.lscm-page__notification { margin-block: 1rem; }
+
+/* Fila de contenido + sidebars (equivale a .row). Flexbox, apilable en móvil. */
+.lscm-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+/* Columna de contenido principal: por defecto ocupa todo el ancho. */
+.lscm-page__content {
+  flex: 1 1 100%;
+  min-width: 0; /* evita desbordes de contenido ancho dentro de flex */
+}
+
+/* Sidebars: ocultas por defecto (no ocupan si están vacías). */
+.lscm-page__sidebar {
+  flex: 1 1 100%;
+}
+
+/*
+ * Lógica de anchos según número de sidebars (equivalente al reparto de 12 columnas
+ * de Bootstrap, resuelto aquí con flex-basis en porcentaje, solo en pantallas grandes).
+ * Las clases modificadoras las pone la plantilla según haya 1 o 2 sidebars.
+ */
+@media (min-width: 992px) {
+  /* Una sidebar: contenido 2/3, sidebar 1/3 (equivalente a col-lg-8 / col-lg-4). */
+  .lscm-page__row--one-sidebar .lscm-page__content {
+    flex: 1 1 calc(66.666% - 1rem);
+  }
+  .lscm-page__row--one-sidebar .lscm-page__sidebar {
+    flex: 1 1 calc(33.333% - 1rem);
+  }
+
+  /* Dos sidebars: contenido 1/2, cada sidebar 1/4 (equivalente a col-lg-6 / col-lg-3 x2). */
+  .lscm-page__row--two-sidebars .lscm-page__content {
+    flex: 1 1 calc(50% - 1.5rem);
+    order: 2;
+  }
+  .lscm-page__row--two-sidebars .lscm-page__sidebar--first {
+    flex: 1 1 calc(25% - 1.5rem);
+    order: 1;
+  }
+  .lscm-page__row--two-sidebars .lscm-page__sidebar--second {
+    flex: 1 1 calc(25% - 1.5rem);
+    order: 3;
+  }
+}

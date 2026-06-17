@@ -40,6 +40,7 @@ sino que referencian la versión del tema en la que se introdujo o modificó cad
 | 1.3.1 | 2026-06-15 | Home: **interactividad de las pastillas** (Fase 4, Sub-hito 4b). Las pastillas con contenido se vuelven botones que abren un **modal** (`<dialog>` nativo único, accesible) con el texto del cruce universidad×semestre / Lead Partner. **Fase 4 completa.** Ver ADR-004. |
 | 1.3.2 | 2026-06-15 | Cierre del **plan de colecciones editables e interactividad** (Fase 5). Documentación: §4 de HOME-ARCHITECTURE reescrita como **guía de edición** (textos por sección, colecciones, menú, pastillas); §5.x marcados resueltos; plan archivado; Fase 0 (`page_home`) reconvertida en TO-DO transversal. Solo documentación. |
 | 1.4.0 | 2026-06-15 | **Marco compartido de páginas de contenido** (Fase 1 del plan de páginas de contenido). Header (`lscm_page_header`) y footer provisional (`lscm_page_footer`) propios, independientes de BI, con estética de la home; navegación de sitio desde el menú `main`. Plantilla `page--about.html.twig` que monta el marco solo para `/about` (Opción B, página a página), sin tocar las páginas heredadas. Nuevo elemento documentado en `docs/elements/layout/` (ADR-LAYOUT-001 y -002). |
+| 1.5.0 | 2026-06-17 | **`page.html.twig` propio** (Fase 2 del plan de independencia de BI). Marco genérico propio para todas las páginas no-home: sustituye al `page.html.twig` heredado de Bootstrap Italia. Header/footer propios (`lscm_page_*`), regiones funcionales activas (breadcrumb, title, local_tasks, help, notification) y rejilla propia para contenido + sidebars (librería `lscm_page`, `css/lscm-page.css`), sin clases `container/row/col/it-*` de BI. El marco se aplica a todas las páginas no-home (Camino 1); su contenido interno sigue heredado hasta migrarse. ADR-LAYOUT-003. |
 
 > **Mantenimiento:** al introducir cambios estructurales (nuevos componentes, cambios de
 > arquitectura, nuevos elementos, colecciones editables), subir la versión del tema en
@@ -454,7 +455,8 @@ bootstrap_ula_lscm/
 ├── TODO.md                              # Pendientes transversales del tema
 ├── css/
 │   ├── ula-tokens.css                   # Capa 1: variables globales
-│   └── ula-landing-base.css             # Capa 2: base de estilos
+│   ├── ula-landing-base.css             # Capa 2: base de estilos
+│   └── lscm-page.css                    # Marco de páginas: rejilla propia (librería lscm_page)
 ├── components/                          # (Solo se listan los componentes PROPIOS del tema. Conviven
 │   │                                    #  en esta carpeta con componentes heredados de Bootstrap
 │   │                                    #  Italia / anteriores a los ula_*, que NO se listan aquí.)
@@ -466,8 +468,8 @@ bootstrap_ula_lscm/
 │   └── lscm-master-static/              # Maqueta original de referencia (no en producción)
 ├── templates/                           # Plantillas Twig, organizadas en subcarpetas por tipo
 │   ├── layout/                          # Plantillas de página/región (page--*, html, region--*)
-│   │   ├── page--front.html.twig        # Portada (elemento home)
-│   │   └── page--about.html.twig        # Página About con marco propio (elemento layout)
+│   │   ├── page.html.twig               # Marco genérico propio de páginas no-home (elemento layout)
+│   │   └── page--front.html.twig        # Portada (elemento home)
 │   └── content/                         # Plantillas de entidad (node--*, etc.)
 │       └── node--landing.html.twig      # Render del nodo landing (elemento home)
 └── docs/

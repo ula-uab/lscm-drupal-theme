@@ -58,23 +58,26 @@ hito futuro (Fase 7 del plan; ver §4).
 - Props: `brand_top`, `contact_email` (permiten sobrescribir la marca y el correo; el resto del
   contenido es por defecto).
 
-### 2.3. Plantilla de página `page--about.html.twig`
+### 2.3. Plantilla de página `page.html.twig` (marco genérico)
 
-Plantilla que **monta el marco** para la página About: incluye `lscm_page_header`, luego el contenido
-(`{{ page.content }}` —servido por la vista de la página— más `page.highlighted` para los mensajes del
-sistema), y luego `lscm_page_footer`. Captura **solo** `/about` (ver ADR-LAYOUT-001).
+Plantilla que **monta el marco** para todas las páginas no-home: incluye `lscm_page_header`, luego las
+regiones funcionales activas (breadcrumb, title, local_tasks, help, notification) y el contenido
+(`{{ page.content }}` más `page.highlighted`) con la rejilla de contenido + sidebars, y luego
+`lscm_page_footer`. Es el marco **genérico** (ver §7 y ADR-LAYOUT-003); sustituyó a la plantilla
+específica `page--about.html.twig` (eliminada en v1.5.0, ver §7.3).
 
-- Ubicación: `templates/layout/page--about.html.twig`.
+- Ubicación: `templates/layout/page.html.twig`.
 - Incluye los componentes con `include('bootstrap_ula_lscm:<componente>', {...}, with_context = false)`.
+- Carga su CSS con `attach_library('bootstrap_ula_lscm/lscm_page')`.
 
 ### 2.4. Inyección de datos: `bootstrap_ula_lscm_preprocess_page()`
 
 En `bootstrap_ula_lscm.theme`. Inyecta las variables que la plantilla pasa a los componentes
 (`header_logo_url`, `header_brand_top`, `header_brand_sub`, `header_menu_links`, `header_active_url`,
-`footer_brand_top`, `footer_contact_email`), **solo** en las rutas de las páginas que adoptan el marco
-(de momento `view.page_about.page_1`). La navegación se obtiene del menú `main` con la función
-reutilizable `_bootstrap_ula_lscm_get_menu_links('main')` (la misma que usa la hamburguesa de la
-home). La marca usa los mismos valores de fábrica que la home, por coherencia estética.
+`footer_brand_top`, `footer_contact_email`), en **todas las páginas no-home** (excluye la portada, que
+tiene su propio marco; ver ADR-LAYOUT-003, Camino 1). La navegación se obtiene del menú `main` con la
+función reutilizable `_bootstrap_ula_lscm_get_menu_links('main')` (la misma que usa la hamburguesa de
+la home). La marca usa los mismos valores de fábrica que la home, por coherencia estética.
 
 > **Mecanismo:** preprocess → prop, el mismo patrón que la home (ver ADR-002 en
 > `../home/HOME-ARCHITECTURE.md`): el `.theme` carga los datos y la plantilla los pasa como props a los
@@ -211,3 +214,131 @@ momento **no** incluye un botón "Apply Now" (solo los enlaces de navegación en
   `home_header` (home) y `main` (páginas); mantener ambos es el precio de desacoplar los dos headers.
 - El header se nutre de `main` con `_bootstrap_ula_lscm_get_menu_links('main')` (función reutilizada de
   la home). El enlace de la página actual se marca como activo vía `active_url`.
+
+---
+
+## 7. El `page.html.twig` propio (marco genérico de páginas no-home)
+
+> Añadido en la **v1.5.0** (Fase 2 del plan de independencia de BI). Esta sección documenta el análisis
+> del `page.html.twig` heredado de Bootstrap Italia y su sustitución por uno propio.
+
+### 7.1. Análisis del `page.html.twig` heredado de Bootstrap Italia
+
+Hasta la v1.5.0, las páginas no-home sin sugerencia específica usaban el `page.html.twig` **heredado de
+Bootstrap Italia** (`themes/contrib/bootstrap_italia/templates/layout/page.html.twig`). Ese fichero es
+limpio y modular: no mete markup a pelo, sino que delega en **cinco partials** (sub-plantillas):
+
+| Partial de BI | Qué hace | Decisión en nuestro marco |
+|---|---|---|
+| `header/_partial.header.html.twig` | Todo el header de BI (slim header, brand, nav, search) | **Sustituido** por `lscm_page_header` |
+| `content/_partial.before-content.html.twig` | Imprime las regiones `before_content_*` (rejilla Bootstrap) | **Omitido**: esas regiones están vacías; el partial no renderiza nada |
+| `content/_partial.content.html.twig` | `<main>` con las regiones funcionales (breadcrumb, title, local_tasks, help, notification, content) y la **lógica de sidebars** (anchos col-lg-* según 0/1/2 sidebars) | **Reimplementado** con markup y CSS propios |
+| `content/_partial.after-content.html.twig` | Imprime las regiones `after_content_*` (rejilla Bootstrap) | **Omitido**: regiones vacías, no renderiza nada |
+| `footer/_partial.footer.html.twig` | Todo el footer de BI | **Sustituido** por `lscm_page_footer` |
+
+**Regiones funcionales del `_partial.content`, verificadas en uso** (tienen bloques activos en las
+páginas vivas): `breadcrumb`, `title`, `local_tasks` (pestañas de administración), `help`,
+`notification` (mensajes del sistema), `content` (el contenido principal). Las dos sidebars
+(`sidebar_first`, `sidebar_second`) están vacías o con un bloque desactivado, pero la lógica se conserva
+(Nivel 2, ver ADR-LAYOUT-003).
+
+**Dependencias de Bootstrap Italia identificadas en el `_partial.content`:** clases de rejilla de
+Bootstrap (`container`, `row`, `col`, `col-lg-*`), clases propias de BI (`it-*__wrapper`), y variables
+inyectadas por BI (`content_container_type`, `content_padding_bottom`, `content_margin_bottom`). Todas
+se eliminan en la versión propia.
+
+### 7.2. Diseño del `page.html.twig` propio
+
+Estructura conceptual (markup y clases propias, sin Bootstrap Italia):
+
+```
+<div class="lscm-page">
+  → include lscm_page_header              (componente propio)
+  <main class="lscm-page__main">
+    <div class="lscm-page__container">     (contenedor centrado, equiv. a .container)
+      → page.highlighted                   (mensajes del sistema)
+      → page.breadcrumb   (en .lscm-page__breadcrumb)
+      → page.title        (en .lscm-page__title)
+      → page.local_tasks  (en .lscm-page__local-tasks)
+      → page.help         (en .lscm-page__help)
+      → page.notification (en .lscm-page__notification)
+      <div class="lscm-page__row [--one-sidebar|--two-sidebars]">   (equiv. a .row)
+        → page.sidebar_first   (aside, si existe)
+        → page.content         (en .lscm-page__content)
+        → page.sidebar_second  (aside, si existe)
+      </div>
+    </div>
+  </main>
+  → include lscm_page_footer              (componente propio)
+</div>
+```
+
+- **Wrappers propios** (`lscm-page__*`) en cada región: mantienen el punto de enganche para darles
+  estilo propio (espaciado coherente con `ula_tokens`), sin las clases `it-*` de BI.
+- **Rejilla propia** (librería `lscm_page`, `css/lscm-page.css`): resuelve contenedor + fila + columnas
+  con **flexbox**, sin las clases de Bootstrap. El reparto de ancho contenido/sidebars (Nivel 2) se
+  hace con clases modificadoras `--one-sidebar` / `--two-sidebars` que la plantilla pone según el número
+  de sidebars con contenido. Ver el concepto de rejilla en `../../CONCEPTOS-DRUPAL.md` §7.
+- **Header y footer**: incluyen los componentes propios `lscm_page_header` / `lscm_page_footer`. Como
+  son compartidos, su evolución se propaga a todas las páginas que usan este `page.html.twig`.
+
+### 7.3. Relación con `page--about.html.twig` (eliminado en v1.5.0)
+
+Con el `page.html.twig` propio (genérico, más completo), la plantilla específica
+`page--about.html.twig` quedó **redundante**: ambas montaban el mismo marco, pero la de About era más
+minimalista (no imprimía breadcrumb/title/local_tasks) y además su `<main>` no reservaba espacio para
+el header fijo, por lo que el header se superponía al contenido. Validado que el `page.html.twig`
+genérico se comporta mejor (incluye `padding-top` para el header fijo y las regiones funcionales),
+**se eliminó `page--about.html.twig`**: la página About pasa a usar el `page.html.twig` genérico como
+el resto de páginas no-home. Es la primera consolidación de las plantillas específicas en el genérico
+prevista por ADR-LAYOUT-001.
+
+---
+
+## 8. ADR-LAYOUT-003 — `page.html.twig` propio genérico para todas las páginas no-home
+
+**Contexto.** Hasta la v1.5.0, las páginas no-home usaban el `page.html.twig` heredado de Bootstrap
+Italia (el tema no tenía uno propio). Para avanzar en la independencia de BI a nivel de marco
+(Fase 2 del plan), se quiere un `page.html.twig` **propio** que sustituya al de BI, con header/footer
+propios y estructura sin clases de Bootstrap. El análisis del `page.html.twig` de BI (§7.1) mostró que
+delega en cinco partials, de los cuales header y footer ya tienen equivalente propio
+(`lscm_page_*`), los before/after-content están vacíos, y el `_partial.content` maneja seis regiones
+funcionales activas más una lógica de sidebars.
+
+**Decisión.**
+1. **Crear `templates/layout/page.html.twig` propio** (Enfoque A: completo pero limpio), que imprime
+   las seis regiones funcionales activas (breadcrumb, title, local_tasks, help, notification, content)
+   más `page.highlighted`, con markup y clases propias (`lscm-page__*`) y sin clases de Bootstrap/BI.
+2. **Conservar la lógica de sidebars (Nivel 2)**: reproducir el reparto de ancho contenido/sidebars
+   (equivalente a las 12 columnas de Bootstrap) con una **rejilla propia** en CSS (flexbox, librería
+   `lscm_page`), aunque las sidebars estén hoy vacías, por fidelidad funcional y previsión.
+3. **Omitir los partials before/after-content** (sus regiones están vacías; no renderizan nada).
+4. **Aplicar el marco a TODAS las páginas no-home (Camino 1)**: el `preprocess_page` inyecta las
+   variables del marco en todas las páginas no-home (excluyendo la portada, que tiene su propio marco
+   `page--front` + `lscm-master-page`). Las páginas de administración no se ven afectadas porque usan el
+   tema Claro.
+
+**Consecuencia inmediata (asumida y deliberada).** Al sustituir el `page.html.twig` de BI por el
+propio, **todas** las páginas no-home pasan a tener el header/footer propios **de golpe**, pero su
+**contenido interno sigue siendo el heredado** (servido por sus vistas con componentes de BI) hasta que
+cada página se migre en fases posteriores. Por tanto, durante la transición, las páginas no migradas se
+verán con **marco propio + contenido viejo "dentro"**, lo que puede producir desajustes visuales. Esto
+es **aceptado**: el proyecto adoptó la *tolerancia gestionada a roturas* (las roturas se detectan, se
+analizan y se resuelven caso a caso), y es el comportamiento esperado de un `page.html.twig` genérico
+(que por definición captura todas las no-home).
+
+**Alternativas consideradas.**
+- *Enfoque B (minimalista, solo content + highlighted).* Descartada: las páginas vivas usan seis
+  regiones funcionales (verificado); un marco minimalista las dejaría a todas sin migas, título,
+  pestañas de administración, etc., degradándolas más de lo necesario durante la transición.
+- *Nivel 1 de sidebars (sin lógica de reparto).* Descartada a favor del Nivel 2: aunque las sidebars
+  están vacías hoy, conservar la lógica con rejilla propia evita rehacerla si se usan, y el coste es
+  acotado (CSS flexbox propio).
+- *Mantener el marco página a página (no Camino 1).* Descartada por incoherencia técnica: un
+  `page.html.twig` genérico propio captura por definición todas las no-home; no puede sustituir al de
+  BI "solo para algunas" sin dejar de ser genérico.
+
+**Relación con ADR-LAYOUT-001.** Aquel estableció las plantillas específicas `page--<ruta>` como
+transición, con consolidación futura en un `page.html.twig` propio único. Este ADR materializa ese
+`page.html.twig` propio. La consolidación de las plantillas específicas (eliminar `page--about` si
+procede) queda como pendiente (§7.3) y como parte de la Fase 5 del plan.

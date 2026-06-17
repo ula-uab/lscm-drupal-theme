@@ -1,0 +1,100 @@
+{#
+/**
+ * @file
+ * page.html.twig — Marco GENÉRICO propio de las páginas no-home.
+ *
+ * Sustituye al page.html.twig heredado de Bootstrap Italia. Drupal lo usa para todas
+ * las páginas que no tengan una sugerencia de plantilla más específica (no afecta a la
+ * home, que usa page--front, ni a páginas con su propio page--<ruta>).
+ *
+ * Independiente de Bootstrap Italia:
+ *  - Header y footer: componentes propios lscm_page_header / lscm_page_footer
+ *    (los mismos del marco de páginas; su evolución se propaga a todas estas páginas).
+ *  - Estructura y rejilla: clases propias (lscm-page__*) + CSS propio (librería lscm_page),
+ *    sin container/row/col de Bootstrap ni clases it-* de BI.
+ *
+ * Replica, en clave propia, lo que en BI hacía _partial.content.html.twig (Enfoque A,
+ * Nivel 2): imprime las regiones funcionales activas y resuelve contenido + sidebars.
+ * Los partials before/after-content de BI se omiten (sus regiones están vacías).
+ *
+ * Variables del marco (header_*, footer_*) inyectadas por
+ * bootstrap_ula_lscm_preprocess_page() para las rutas que adoptan el marco.
+ */
+#}
+{{ attach_library('bootstrap_ula_lscm/lscm_page') }}
+
+<div class="lscm-page" id="lscm-page--default">
+
+  {{ include('bootstrap_ula_lscm:lscm_page_header', {
+    logo_url: header_logo_url,
+    brand_top: header_brand_top,
+    brand_sub: header_brand_sub,
+    menu_links: header_menu_links,
+    active_url: header_active_url,
+  }, with_context = false) }}
+
+  <main class="lscm-page__main" id="main-content" role="main">
+    <div class="lscm-page__container">
+
+      {# Mensajes del sistema (Drupal): se conservan siempre. #}
+      {% if page.highlighted %}
+        {{ page.highlighted }}
+      {% endif %}
+
+      {% if page.breadcrumb %}
+        <div class="lscm-page__breadcrumb">{{ page.breadcrumb }}</div>
+      {% endif %}
+
+      {% if page.title %}
+        <div class="lscm-page__title">{{ page.title }}</div>
+      {% endif %}
+
+      {% if page.local_tasks %}
+        <div class="lscm-page__local-tasks">{{ page.local_tasks }}</div>
+      {% endif %}
+
+      {% if page.help %}
+        <div class="lscm-page__help">{{ page.help }}</div>
+      {% endif %}
+
+      {% if page.notification %}
+        <div class="lscm-page__notification">{{ page.notification }}</div>
+      {% endif %}
+
+      {# Fila de contenido + sidebars. La clase modificadora ajusta el reparto de ancho. #}
+      {% set _row_modifier = '' %}
+      {% if page.sidebar_first and page.sidebar_second %}
+        {% set _row_modifier = 'lscm-page__row--two-sidebars' %}
+      {% elseif page.sidebar_first or page.sidebar_second %}
+        {% set _row_modifier = 'lscm-page__row--one-sidebar' %}
+      {% endif %}
+
+      <div class="lscm-page__row {{ _row_modifier }}">
+
+        {% if page.sidebar_first %}
+          <aside class="lscm-page__sidebar lscm-page__sidebar--first" role="complementary">
+            {{ page.sidebar_first }}
+          </aside>
+        {% endif %}
+
+        <div class="lscm-page__content">
+          {{ page.content }}
+        </div>
+
+        {% if page.sidebar_second %}
+          <aside class="lscm-page__sidebar lscm-page__sidebar--second" role="complementary">
+            {{ page.sidebar_second }}
+          </aside>
+        {% endif %}
+
+      </div>
+
+    </div>
+  </main>
+
+  {{ include('bootstrap_ula_lscm:lscm_page_footer', {
+    brand_top: footer_brand_top,
+    contact_email: footer_contact_email,
+  }, with_context = false) }}
+
+</div>

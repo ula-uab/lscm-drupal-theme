@@ -390,16 +390,17 @@ function _bootstrap_ula_lscm_get_university_pills($university): array {
  * Ver docs/plans/paginas-contenido/ y docs/elements/layout/.
  */
 function bootstrap_ula_lscm_preprocess_page(array &$variables): void {
-  $route = \Drupal::routeMatch()->getRouteName();
-
-  // Marco propio solo en las páginas de contenido que lo adoptan (Opción B,
-  // página a página). De momento: la página About (vista page_about, display page_1).
-  $framed_routes = [
-    'view.page_about.page_1',
-  ];
-  if (!in_array($route, $framed_routes, TRUE)) {
+  // La home tiene su propio marco (page--front + componente lscm-master-page); no se toca.
+  // En páginas de administración el tema activo es Claro (no este), por lo que este
+  // preprocess no se ejecuta para ellas.
+  if (!empty($variables['is_front'])) {
     return;
   }
+
+  // Camino 1: el marco propio (header + footer) se aplica a TODAS las páginas no-home.
+  // El page.html.twig propio (genérico) las captura; aquí se les inyectan las variables
+  // del marco. El contenido interno de las páginas aún no migradas sigue siendo el heredado
+  // (se verá "dentro" del marco propio) hasta que cada página se migre en fases posteriores.
 
   // Marca (mismos valores de fábrica que la home, para coherencia estética).
   $variables['header_logo_url']  = '/sites/default/files/2026-06/logo-MASTER-LSCM.png';

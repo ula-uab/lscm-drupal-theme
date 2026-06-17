@@ -90,3 +90,13 @@ ula_landing_base:
       css/ula-landing-base.css: {}
   dependencies:
     - bootstrap_ula_lscm/ula_tokens
+
+# Marco de páginas de contenido (page.html.twig propio): rejilla y wrappers de regiones.
+# Independiente de Bootstrap Italia. Depende de los tokens globales.
+lscm_page:
+  version: 1.0
+  css:
+    theme:
+      css/lscm-page.css: {}
+  dependencies:
+    - bootstrap_ula_lscm/ula_tokens

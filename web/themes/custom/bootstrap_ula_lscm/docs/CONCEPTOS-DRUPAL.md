@@ -21,6 +21,7 @@
 4. [Sugerencias de plantilla (theme suggestions)](#4-sugerencias-de-plantilla-theme-suggestions)
 5. [SDC — Single Directory Components](#5-sdc--single-directory-components)
 6. [Vistas (Views) y UI Patterns](#6-vistas-views-y-ui-patterns)
+7. [El sistema de rejilla de 12 columnas](#7-el-sistema-de-rejilla-de-12-columnas)
 
 > *(El índice se irá completando conforme se añadan entradas.)*
 
@@ -87,6 +88,13 @@ eliminación en la fase final de la independencia (Fase 6 del plan), pero **solo
 ellas**: hoy, `bootstrap_italia/base` es lo que da estilo a los componentes de BI que usan las páginas
 heredadas; retirarla ahora dejaría esas páginas sin estilos.
 
+> **Caso real (tras la Fase 2).** En las páginas no-home conviven hoy dos fuentes de estilo: el **CSS
+> propio** (`ula_tokens`, `lscm_page`, componentes `ula_*`) viste el **marco** (header/footer/rejilla),
+> mientras que **`bootstrap_italia/base`** sigue vistiendo el **contenido interno** (los componentes
+> heredados de las vistas: tipografía, colores, botones…). Por eso el contenido "se ve bien" aunque no
+> se haya migrado: sigue tirando del CSS de BI todavía cargado. El detalle y sus implicaciones para la
+> migración están en `analysis/inventario-bi.md` §7.
+
 > Las librerías comentadas en el `.info.yml` (`vanilla`, `cdn`, `hot`, `ddev`) están **declaradas pero
 > no cargadas**. Su propósito y vigencia conviene aclararlos durante el inventario (Fase 0).
 
@@ -142,14 +150,15 @@ activar el **Twig debugging**, que las vuelca como comentarios en el HTML (`THEM
 SUGGESTIONS`, con `✅` marcando la que se usa y `▪️` las disponibles no usadas).
 
 **En nuestro tema.** Esto es la base de la estrategia del marco de páginas (ver
-`elements/layout/LAYOUT-ARCHITECTURE.md`, ADR-LAYOUT-001):
+`elements/layout/LAYOUT-ARCHITECTURE.md`):
 - La **home** usa `page--front.html.twig` (sugerencia 1), su plantilla propia.
-- La **página About** se captura con `page--about.html.twig` (sugerencia 3, basada en el path `/about`)
-  —verificado con Twig debug—, lo que permite darle un marco propio **sin** crear un `page.html.twig`
-  genérico que afectaría a todas las páginas.
-- Las **demás páginas no-home** caen hoy en el `page.html.twig` genérico, que el tema **hereda de
-  Bootstrap Italia** (el tema no tiene `page.html.twig` propio… todavía: crear uno propio es la Fase 2
-  del plan).
+- Las **demás páginas no-home** usan el **`page.html.twig` propio** del tema (la sugerencia genérica),
+  que sustituyó al heredado de Bootstrap Italia (Fase 2, v1.5.0). Históricamente, durante la Fase 1, la
+  página About tuvo una plantilla específica `page--about.html.twig` (sugerencia basada en el path
+  `/about`, verificada con Twig debug) para darle un marco propio sin afectar a las demás; al crear el
+  `page.html.twig` propio genérico, esa plantilla específica se volvió redundante y se eliminó
+  (ADR-LAYOUT-003). El mecanismo de sugerencias por path sigue disponible si en el futuro alguna página
+  necesitara un marco distinto del genérico.
 
 ---
 
@@ -210,3 +219,34 @@ presenta con UI Patterns apuntando a **componentes de Bootstrap Italia** (`grid_
 de independencia (Fase 4) mantiene el mecanismo de Views pero **redirige la presentación** de los
 componentes de BI a componentes propios `ula_*`. Ver el análisis del piloto en
 `analysis/about-page-heredada.md`.
+
+---
+
+## 7. El sistema de rejilla de 12 columnas
+
+**Qué es.** Una **convención de maquetación** (popularizada por Bootstrap, y que usa Bootstrap Italia)
+para repartir el espacio horizontal de una página. El ancho disponible se divide imaginariamente en
+**12 columnas iguales**, y cada elemento declara cuántas de esas 12 ocupa.
+
+**Cómo funciona.** Tres piezas trabajan juntas:
+- Un **contenedor** (`container`) centra el contenido y le da un ancho máximo con márgenes laterales.
+- Una **fila** (`row`) agrupa columnas en horizontal.
+- Las **columnas** (`col-*`) declaran su ancho en doceavos: `col-6` = la mitad, `col-4` = un tercio,
+  `col-12` = todo el ancho. Las columnas de una misma fila suman hasta 12 para llenarla (p. ej.
+  `col-8` + `col-4`).
+
+El número 12 se elige por tener muchos divisores (2, 3, 4, 6), lo que permite repartos cómodos: mitades
+(6+6), tercios (4+4+4), cuartos (3+3+3+3) o asimétricos (8+4, 9+3…). El sufijo de tamaño (p. ej.
+`col-lg-8`) añade **responsividad**: indica desde qué tamaño de pantalla aplica ese reparto (`lg` =
+pantallas grandes); en móvil, las columnas suelen apilarse a ancho completo.
+
+**En nuestro tema.** Las clases `container` / `row` / `col-*` provienen de **Bootstrap** (vía la
+librería `bootstrap_italia/base`); las páginas heredadas las usan a través de las plantillas y
+componentes de BI. Como parte de la independencia (Fase 2 del plan), **no las usamos** en el marco
+propio: el `page.html.twig` propio resuelve el mismo problema —contenedor centrado + reparto de ancho
+entre el contenido principal y las barras laterales (*sidebars*)— con **CSS propio** (la librería
+`lscm_page`, fichero `css/lscm-page.css`), usando **flexbox** en lugar de las clases de Bootstrap. El
+reparto equivalente: contenido a ancho completo si no hay sidebars; contenido 2/3 + sidebar 1/3 si hay
+una; contenido 1/2 + sidebar 1/4 + sidebar 1/4 si hay dos. Así se conserva la **misma capacidad de
+layout** (contenido + sidebars) sin depender de la rejilla de Bootstrap. Ver
+`elements/layout/LAYOUT-ARCHITECTURE.md`.
