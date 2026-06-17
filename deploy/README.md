@@ -346,7 +346,14 @@ tipo de cambio:
 Plantillas Twig, CSS/JS, `.theme`, `.libraries.yml`, componentes… Solo cambian ficheros
 bajo `themes/custom/bootstrap_ula_lscm/`; no tocan core, vendor, contrib ni `settings.php`.
 
-1. Si tocaste CSS/JS, recompila: `deploy/scripts/1-build.sh` (regenera `dist/`).
+1. **Recompila solo si tocaste assets compilados.** El tema tiene dos tipos de CSS/JS:
+   - **Compilados por Webpack** (fuente en `src/`, salida en `dist/`): si los cambiaste,
+     recompila con `deploy/scripts/1-build.sh` (regenera `dist/`).
+   - **CSS plano en `css/`** referenciado directo en `.libraries.yml` (p. ej.
+     `css/lscm-page.css`): ya está en su forma final, se sirve tal cual; **no requiere
+     build**.
+   Si tu cambio solo toca `css/*.css` planos, plantillas Twig, `.theme` o `.libraries.yml`,
+   **puedes saltarte este paso** (ejecutar `1-build.sh` no haría daño, pero sobra).
 2. Empaqueta solo el tema: `deploy/scripts/4-package-theme.sh` → genera
    `deploy/deployment-files/lscm-theme.zip` (con la ruta `themes/custom/bootstrap_ula_lscm/`
    en su raíz, sin `node_modules`).
