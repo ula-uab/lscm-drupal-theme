@@ -9,7 +9,7 @@ node_modules/
 env
 /.env
 /deploy/build/
-/deploy/deployment-files/*.zip
+/deploy/deployment-files/
 *.sql
 *.sql.gz
 /backups/*.sql
