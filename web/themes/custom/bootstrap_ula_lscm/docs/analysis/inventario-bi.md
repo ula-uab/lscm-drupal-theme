@@ -29,19 +29,20 @@
 
 | Categoría | Total | Propios | Heredados en uso | Heredados muertos |
 |---|---|---|---|---|
-| **Componentes SDC** | 71 | 12 | 21 | 38 |
+| **Componentes SDC** | 73 | 14 | 21 | 38 |
 | **Plantillas** (`templates/`) | 3 | 3 | 0 | (usa el `page.html.twig` de BI por herencia, sin fichero propio) |
 | **Librerías cargadas globalmente** | 6 | 3 | 3 | — |
 
 El grueso del trabajo de independencia, a nivel de componentes, se concentra en los **21 componentes
 heredados en uso**: de ellos saldrá la lista de piezas propias a crear (adaptando o rehaciendo). Los
-**38 muertos** se eliminan al final sin más. Los **12 propios** ya están.
+**38 muertos** se eliminan al final sin más. Los **14 propios** ya están (los 12 iniciales + `ula_card_simple`
+y `ula_grid_row`, estos dos añadidos para el modelo de contenido de páginas no-home con Layout Builder).
 
 ---
 
 ## 2. Componentes SDC (`components/`)
 
-### 2.1. Propios (12)
+### 2.1. Propios (14)
 
 Diseñados por nosotros. No requieren acción de independencia (ya son propios); se listan para
 completitud y para fijar la convención de nombres.
@@ -56,6 +57,8 @@ completitud y para fijar la convención de nombres.
 | `ula_timeline_item` | Design system (`ula_*`) | Ítem de cronología |
 | `ula_uni_card` | Design system (`ula_*`) | Tarjeta de universidad |
 | `ula_why_item` | Design system (`ula_*`) | Ítem "por qué" |
+| `ula_card_simple` | Design system (`ula_*`, basado en slots) | Tarjeta genérica reutilizable para fondo claro; acepta campos renderizados (flujo Views → UI Patterns) |
+| `ula_grid_row` | Design system (`ula_*`, basado en slots) | Rejilla propia de columnas de igual altura; sustituye a `grid_row` (BI) como Format de vista |
 | `lscm_page_header` | Marco de páginas (`lscm_*` propio) | Header del marco de páginas de contenido (Fase 1) |
 | `lscm_page_footer` | Marco de páginas (`lscm_*` propio) | Footer provisional del marco (Fase 1) |
 | `lscm-master-page` | Marco de la home (`lscm-*` propio) | Marco de la home |

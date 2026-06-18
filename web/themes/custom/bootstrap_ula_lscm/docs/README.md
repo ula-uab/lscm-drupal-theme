@@ -12,6 +12,9 @@ Management). Organizada en **dos niveles**:
   librerías, regiones, sugerencias de plantilla, SDC, Views + UI Patterns…) **ilustrados y aplicados a
   este tema**. Material de referencia para desarrolladores y editores. Se amplía conforme avanza el
   desarrollo.
+- **[`COMPONENTS.md`](COMPONENTS.md)** — Catálogo de los **componentes SDC propios** del tema (design
+  system `ula_*` y marco `lscm_*`/`lscm-*`): función y atributos principales (slots y props) de cada uno.
+  Describe los componentes en sí; su uso para componer páginas se documenta en `CONTENT-LAYOUT.md`.
 - **[`../TODO.md`](../TODO.md)** — Pendientes transversales del tema.
 
 ## Nivel elemento (específico de cada parte)
