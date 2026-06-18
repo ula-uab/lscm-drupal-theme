@@ -136,7 +136,7 @@ Construido el marco compartido de las páginas de contenido, independiente de BI
 `page--about.html.twig`, que captura **solo** `/about` sin afectar a las demás páginas (Opción B,
 página a página). Documentado en `docs/elements/layout/` con ADR-LAYOUT-001 (marco vía `page--<ruta>`
 como transición, con consolidación futura en un `page.html.twig` propio) y ADR-LAYOUT-002 (navegación
-desde `main`). Ver `../../elements/layout/LAYOUT-ARCHITECTURE.md`.
+desde `main`). Ver `../../elements/layout/SHARED-FRAME-LAYOUT.md`.
 
 ### Fase 2 — `page.html.twig` propio (desligado de BI, dependencia a dependencia)
 
@@ -172,6 +172,22 @@ presentación). Cada adopción: análisis del componente, reimplementación/adap
 
 Sustituir la capa de presentación dependiente de BI de las vistas por presentación propia `ula_*`,
 **conservando el mecanismo de Views**.
+
+> **Avance (v1.5.1, 2026-06-18).** Los puntos 1 y 2 de esta fase están **resueltos** y el 3 está
+> **parcialmente validado**:
+> - **§1 (investigación de vías + ADR): hecho.** La vía elegida es **Layout Builder** como mecanismo de
+>   composición de la página, con una **vista que pinta entidades con componentes propios** (flujo
+>   Views → UI Patterns, slots por `view_field`) insertada como **bloque** en una sección. Registrado en
+>   **ADR-LAYOUT-004** (`../../elements/layout/CONTENT-LAYOUT.md`). Se descartó Paragraphs (no produce
+>   página/ruta) y replicar el mecanismo Twig de la home (costoso para muchas páginas).
+> - **§2 (requisito de secciones heterogéneas apiladas, algunas como listados mapeados a un componente):
+>   satisfecho** por el modelo de secciones + bloques de LB. *Sub-cuestión aclarada:* las secciones
+>   dinámicas listan **nodos** (la vista del consorcio lista nodos `ct_about_consortium_university`).
+> - **§3 (decisión y validación con piloto): mecanismo validado, reconstrucción pendiente.** El flujo se
+>   validó en la prueba piloto multi-sección `/about-lb`. **Queda** reconstruir la About real en clave
+>   propia (y rehacer la tarjeta heredada como componente `ula_*` propio, §9.2 de `CONTENT-LAYOUT.md`).
+>
+> El resto de la fase (puntos 3-4 y la subvista del consorcio) sigue vigente como está descrito abajo.
 
 1. **Investigación previa de vías técnicas (primera tarea, obligatoria — no se decide a priori).**
    Identificar y evaluar los **caminos viables** para que una vista presente su contenido con

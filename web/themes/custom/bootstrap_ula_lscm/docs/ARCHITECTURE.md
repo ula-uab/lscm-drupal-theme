@@ -11,6 +11,29 @@ todo lo que es común a varios elementos.
 
 ---
 
+## Índice
+
+- [1. Control de versiones del tema](#1-control-de-versiones-del-tema)
+- [2. Identidad y estado de independencia](#2-identidad-y-estado-de-independencia)
+- [3. Design system: componentes SDC `ula_*`](#3-design-system-componentes-sdc-ula_)
+- [4. Sistema de CSS en tres capas](#4-sistema-de-css-en-tres-capas)
+- [5. Patrón de contenido editable: tipos de contenido + vistas + componentes](#5-patrón-de-contenido-editable-tipos-de-contenido--vistas--componentes)
+  - [5.1. Los tres conceptos de Drupal implicados](#51-los-tres-conceptos-de-drupal-implicados)
+  - [5.2. La pieza que conecta vista y componente: `ui_patterns_views`](#52-la-pieza-que-conecta-vista-y-componente-ui_patterns_views)
+  - [5.3. Una misma entidad, varias representaciones](#53-una-misma-entidad-varias-representaciones)
+  - [5.4. Resumen del patrón](#54-resumen-del-patrón)
+  - [5.5. Implementación en Views: el patrón de dos niveles](#55-implementación-en-views-el-patrón-de-dos-niveles)
+  - [5.6. Entidades de relación (cruces entre dos entidades)](#56-entidades-de-relación-cruces-entre-dos-entidades)
+- [6. Notas técnicas y restricciones del entorno](#6-notas-técnicas-y-restricciones-del-entorno)
+- [7. Pendientes transversales del tema](#7-pendientes-transversales-del-tema)
+- [8. Estructura de ficheros del tema](#8-estructura-de-ficheros-del-tema)
+
+> Cómo se compone el **contenido** de las páginas no-home (Layout Builder) y el modelo de página se
+> documentan en el elemento layout: `docs/elements/layout/CONTENT-LAYOUT.md` (con ADR-LAYOUT-004). El
+> **marco compartido** (header/footer/`page.html.twig`), en `docs/elements/layout/SHARED-FRAME-LAYOUT.md`.
+
+---
+
 ## 1. Control de versiones del tema
 
 El tema `bootstrap_ula_lscm` usa **versionado semántico propio** (`MAYOR.MENOR.PARCHE`),
@@ -41,6 +64,7 @@ sino que referencian la versión del tema en la que se introdujo o modificó cad
 | 1.3.2 | 2026-06-15 | Cierre del **plan de colecciones editables e interactividad** (Fase 5). Documentación: §4 de HOME-ARCHITECTURE reescrita como **guía de edición** (textos por sección, colecciones, menú, pastillas); §5.x marcados resueltos; plan archivado; Fase 0 (`page_home`) reconvertida en TO-DO transversal. Solo documentación. |
 | 1.4.0 | 2026-06-15 | **Marco compartido de páginas de contenido** (Fase 1 del plan de páginas de contenido). Header (`lscm_page_header`) y footer provisional (`lscm_page_footer`) propios, independientes de BI, con estética de la home; navegación de sitio desde el menú `main`. Plantilla `page--about.html.twig` que monta el marco solo para `/about` (Opción B, página a página), sin tocar las páginas heredadas. Nuevo elemento documentado en `docs/elements/layout/` (ADR-LAYOUT-001 y -002). |
 | 1.5.0 | 2026-06-17 | **`page.html.twig` propio** (Fase 2 del plan de independencia de BI). Marco genérico propio para todas las páginas no-home: sustituye al `page.html.twig` heredado de Bootstrap Italia. Header/footer propios (`lscm_page_*`), regiones funcionales activas (breadcrumb, title, local_tasks, help, notification) y rejilla propia para contenido + sidebars (librería `lscm_page`, `css/lscm-page.css`), sin clases `container/row/col/it-*` de BI. El marco se aplica a todas las páginas no-home (Camino 1); su contenido interno sigue heredado hasta migrarse. ADR-LAYOUT-003. |
+| 1.5.1 | 2026-06-18 | **Documentación: adopción de Layout Builder** como mecanismo de composición del contenido de las páginas no-home. Validado el flujo Views → UI Patterns (la vista pinta entidades con tarjetas) dentro de una página compuesta con LB, mediante prueba piloto multi-sección en `/about-lb`. Nuevo elemento documental `elements/layout/CONTENT-LAYOUT.md` (con ADR-LAYOUT-004) y renombrado del documento del marco a `SHARED-FRAME-LAYOUT.md` (antes `LAYOUT-ARCHITECTURE.md`). Se matizan §5.2 y §6.1 (el descarte de LB era específico de la home) y se amplía §5.5 con las lecciones del flujo (`view_field` vs `entity_field`, formatter de imagen en el campo, variante del componente). Solo documentación; la migración de las páginas a clave propia es trabajo posterior. |
 
 > **Mantenimiento:** al introducir cambios estructurales (nuevos componentes, cambios de
 > arquitectura, nuevos elementos, colecciones editables), subir la versión del tema en
@@ -205,6 +229,16 @@ Este es el **mismo patrón que el sitio ya usa** en la timeline de Admissions: n
 > documento de la home, sobre por qué la home se sirve con una plantilla Twig y no con
 > `ui_patterns_blocks` ni Layout Builder). `ui_patterns_views` opera a nivel de *fila de vista* y es
 > el caso de uso para el que está diseñado; no comparte aquella limitación.
+>
+> **Actualización (v1.5.1):** la frase anterior "no ofrece sin Layout Builder" no implica que Layout
+> Builder esté descartado en el proyecto. **Se descartó para la home** (portada a medida servida con
+> plantilla Twig, ADR-001), pero **se adopta como mecanismo de composición del contenido de las
+> páginas no-home** (ver `../elements/layout/CONTENT-LAYOUT.md`, ADR-LAYOUT-004). En ese modelo, una
+> vista que pinta entidades con componentes (lo que sí ofrece `ui_patterns_views`) se inserta como
+> **bloque** dentro de una sección de Layout Builder. Es decir: la composición de la página la da LB; el
+> render de cada entidad como tarjeta lo da `ui_patterns_views`. Los dos contextos (home con Twig,
+> no-home con LB) conviven deliberadamente.
+
 
 ### 5.3. Una misma entidad, varias representaciones
 
@@ -292,6 +326,31 @@ Vista
 > **el patrón** (dos niveles, mapeo de fuentes) pero con **componentes propios**: la rejilla y la
 > tarjeta del design system `ula_*`, no las del tema base.
 
+**Lecciones aprendidas al alimentar los slots (v1.5.1).** Al validar este patrón dentro de una página
+compuesta con Layout Builder (ver `../elements/layout/CONTENT-LAYOUT.md` §5), se confirmaron tres puntos
+que conviene tener presentes para que las tarjetas se rendericen completas:
+
+- **`view_field` vs `entity_field` (decisivo para imágenes).** Hay dos vías para alimentar un slot desde
+  una vista: `view_field` (referenciar un campo **añadido en la sección *Fields*** de la vista, ya
+  renderizado por su formatter) y `entity_field` / `[Entity] ➜ [Field]` (tomar el campo directamente de
+  la entidad de la fila). La segunda sirve para **texto**, pero **no permite configurar el formatter de
+  imagen** en el contexto de fila de Views, por lo que las imágenes quedan en blanco. **Regla: alimentar
+  todos los slots con `view_field`** (campos en *Fields*), que es lo que hace la vista heredada
+  equivalente y lo validado como correcto.
+- **El formatter de imagen va en el campo de la vista, no en el slot.** Para una imagen: añadir el campo
+  a *Fields*, ponerle **Formatter = Image con un image style no vacío**, y apuntar el slot a ese campo
+  vía `view_field`. Un image style **vacío** hace que la imagen no se vea aunque el mapeo sea correcto.
+- **La variante del componente.** Si la tarjeta solo pinta el hueco de imagen en una **variante**
+  concreta, hay que seleccionar esa variante en la configuración del componente (selector *Variant*,
+  antes de los slots). Con la variante por defecto, el dato de imagen puede llegar al slot y **aun así no
+  pintarse**.
+
+> **Método (lección de proceso).** Estos puntos se resolvieron **comparando** la vista nueva con la vista
+> heredada que ya renderizaba las tarjetas correctamente, no teorizando en abstracto. Ante un slot que no
+> pinta, la primera pregunta es *"¿en qué se diferencia esto de lo que ya funciona?"*. El detalle completo
+> de este flujo, con un checklist de diagnóstico, está en `../elements/layout/CONTENT-LAYOUT.md` §5.
+
+
 ### 5.6. Entidades de relación (cruces entre dos entidades)
 
 Algunos datos no pertenecen a una entidad ni a otra, sino a la **combinación de dos**. Cuando la
@@ -355,10 +414,17 @@ Implicaciones para el mantenimiento:
   page y las visibilidades de bloques **no están en git**.
 - **El respaldo de la configuración son los dumps de BD** (`ddev export-db`). Antes de cualquier
   cambio de configuración hay que hacer un dump; es la única forma de revertir.
-- **Conviene evitar meter configuración pesada en BD.** Por eso se descartó Layout Builder
-  (ver el documento de la home): habría añadido configuración compleja a una BD que no se
-  versiona, haciendo el sitio más frágil de reproducir. Se prefieren mecanismos que vivan en
-  código (plantillas Twig en el tema).
+- **Conviene evitar meter configuración pesada en BD.** Por este motivo, en su momento, se descartó
+  Layout Builder **para la home** (ver el documento de la home): habría añadido configuración compleja a
+  una BD que no se versiona, haciendo el sitio más frágil de reproducir, y para una portada a medida se
+  prefirió un mecanismo que vive en código (plantilla Twig en el tema).
+  **Matización (v1.5.1):** este criterio sigue vigente, pero **no implica un descarte global de Layout
+  Builder**. Para las **páginas no-home** (muchas, heterogéneas, de estructura repetible) **sí se adopta
+  Layout Builder** como mecanismo de composición (ver `../elements/layout/CONTENT-LAYOUT.md`,
+  ADR-LAYOUT-004), **asumiendo conscientemente** el coste de añadir configuración no versionada a la BD a
+  cambio de la flexibilidad de composición. Es decir: se evita meter configuración pesada en BD **salvo
+  cuando el mecanismo lo justifica** (LB para páginas no-home); cuando se hace, la red de seguridad es la
+  misma de siempre (dump antes de tocar) y refuerza el interés de adoptar gestión de configuración (§7).
 - **Riesgo conocido de `config:import`:** en este proyecto, importar configuración global ha
   fallado por dependencias de módulos (p.ej. `ui_patterns_field_formatters`). Evitar
   `config:import` / `theme:uninstall` globales; preferir cambios quirúrgicos.
@@ -491,8 +557,9 @@ bootstrap_ula_lscm/
     ├── elements/                        # Documentación de referencia por elemento
     │   ├── home/
     │   │   └── HOME-ARCHITECTURE.md     # Documentación del elemento "home"
-    │   └── layout/
-    │       └── LAYOUT-ARCHITECTURE.md   # Documentación del elemento "layout" (marco header+footer)
+    │   └── layout/                          # Elemento "layout", en dos ficheros (uno por elemento del layout)
+    │       ├── SHARED-FRAME-LAYOUT.md       # Marco compartido de páginas (header + footer + page.html.twig)
+    │       └── CONTENT-LAYOUT.md            # Diseño del contenido de páginas no-home con Layout Builder
     └── plans/                           # Planes de desarrollo por fases, por elemento
         ├── paginas-contenido/           # Plan de páginas de contenido e independencia de BI (plan maestro)
         │   └── plan-sistema-paginas-contenido.md                    # Plan activo (8 fases, 0–7)

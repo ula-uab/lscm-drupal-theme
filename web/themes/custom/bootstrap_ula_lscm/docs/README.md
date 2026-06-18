@@ -19,10 +19,16 @@ Management). Organizada en **dos niveles**:
 - **[`elements/home/HOME-ARCHITECTURE.md`](elements/home/HOME-ARCHITECTURE.md)** — El elemento
   **home**: el marco `lscm-master-page`, cómo se sirve (nodo `landing` + plantillas), la guía de
   edición de contenido, y los pendientes de la home.
-- **[`elements/layout/LAYOUT-ARCHITECTURE.md`](elements/layout/LAYOUT-ARCHITECTURE.md)** — El elemento
-  **layout**: el marco compartido (header `lscm_page_header` + footer provisional `lscm_page_footer`)
-  de las páginas de contenido, cómo se monta (plantillas `page--<ruta>`, Opción B página a página) y
-  sus ADRs. Transversal a las páginas de contenido.
+- El elemento **layout** (transversal a las páginas de contenido) se documenta en dos ficheros, uno
+  por cada elemento del layout:
+  - **[`elements/layout/SHARED-FRAME-LAYOUT.md`](elements/layout/SHARED-FRAME-LAYOUT.md)** — El **marco
+    compartido**: header (`lscm_page_header`) + footer provisional (`lscm_page_footer`) de las páginas
+    de contenido, cómo se monta (plantillas `page--<ruta>` / `page.html.twig` propio) y sus ADRs
+    (ADR-LAYOUT-001, -002, -003).
+  - **[`elements/layout/CONTENT-LAYOUT.md`](elements/layout/CONTENT-LAYOUT.md)** — El **diseño del
+    contenido** de las páginas no-home basado en **Drupal Layout Builder**: modelo de composición de
+    páginas con secciones + bloques (vistas que pintan entidades con componentes vía UI Patterns) y su
+    ADR (ADR-LAYOUT-004).
 
 > A medida que se desarrollen otras secciones del sitio, cada una tendrá su documentación en
 > `docs/elements/<elemento>/`, referenciando a `ARCHITECTURE.md` para lo común.
@@ -88,5 +94,8 @@ completados se archivan en el subdirectorio `archive/` de cada elemento.
 
 - **¿Mantener o editar el contenido de la home?** → `elements/home/HOME-ARCHITECTURE.md` §4.
 - **¿Entender el design system / crear o tocar componentes?** → `ARCHITECTURE.md` §3 y §4.
+- **¿Componer una página no-home (secciones, grids de tarjetas con Layout Builder)?** →
+  `elements/layout/CONTENT-LAYOUT.md`. El marco (header/footer) que la envuelve, en
+  `elements/layout/SHARED-FRAME-LAYOUT.md`.
 - **¿Hacer cambios de configuración (campos, tipos de contenido, vistas)?** → leer antes
   `ARCHITECTURE.md` §6 (restricciones del entorno: config/sync, dumps, crear campos por código).

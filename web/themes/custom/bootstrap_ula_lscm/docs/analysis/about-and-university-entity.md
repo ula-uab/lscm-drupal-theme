@@ -59,6 +59,14 @@ varias representaciones" — ver `../ARCHITECTURE.md` §5.3):
   1. El **título enlaza** a la página de la universidad (`/node/N`) — vía `link_to_entity`.
   2. El botón **"+ info"** abre un **modal** (Bootstrap Italia) con el texto ampliado.
 
+> **Lección aprendida (añadido v1.5.1).** Este mapeo es **la referencia que funciona**: al construir la
+> vista equivalente en clave propia se replicó exactamente este patrón (slots por **`view_field`**,
+> formatter de imagen **en el campo** de la vista, **variante** del componente que pinta la imagen,
+> `link_to_entity` para el enlace, componente de modal anidado en el slot de texto). El detalle del flujo
+> y un checklist de diagnóstico están en `../elements/layout/CONTENT-LAYOUT.md` §5. La forma correcta de
+> abordar la vista nueva era **partir de este análisis y comparar** con esta vista que ya funcionaba,
+> antes de construir desde cero.
+
 ### 2.2. Como página de nodo (`/node/N`) — SIN DISEÑAR
 
 - Al visitar la página propia de una universidad, Drupal renderiza el **Manage display** del modo

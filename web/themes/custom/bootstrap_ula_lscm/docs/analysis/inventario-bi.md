@@ -139,7 +139,7 @@ navbar, navbar_nav, offcanvas, pagination, progress, progress_stacked, spinner
 > páginas no-home. Monta header/footer propios (`lscm_page_*`), las regiones funcionales activas y una
 > rejilla propia (librería `lscm_page`), sin clases `container/row/col/it-*` de BI. El análisis del
 > `page.html.twig` de BI (sus 5 partials) y el diseño del propio están en
-> `../elements/layout/LAYOUT-ARCHITECTURE.md` §7–8 (ADR-LAYOUT-003).
+> `../elements/layout/SHARED-FRAME-LAYOUT.md` §7–8 (ADR-LAYOUT-003).
 
 ---
 

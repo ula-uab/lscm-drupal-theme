@@ -150,7 +150,7 @@ activar el **Twig debugging**, que las vuelca como comentarios en el HTML (`THEM
 SUGGESTIONS`, con `✅` marcando la que se usa y `▪️` las disponibles no usadas).
 
 **En nuestro tema.** Esto es la base de la estrategia del marco de páginas (ver
-`elements/layout/LAYOUT-ARCHITECTURE.md`):
+`elements/layout/SHARED-FRAME-LAYOUT.md`):
 - La **home** usa `page--front.html.twig` (sugerencia 1), su plantilla propia.
 - Las **demás páginas no-home** usan el **`page.html.twig` propio** del tema (la sugerencia genérica),
   que sustituyó al heredado de Bootstrap Italia (Fase 2, v1.5.0). Históricamente, durante la Fase 1, la
@@ -249,4 +249,4 @@ entre el contenido principal y las barras laterales (*sidebars*)— con **CSS pr
 reparto equivalente: contenido a ancho completo si no hay sidebars; contenido 2/3 + sidebar 1/3 si hay
 una; contenido 1/2 + sidebar 1/4 + sidebar 1/4 si hay dos. Así se conserva la **misma capacidad de
 layout** (contenido + sidebars) sin depender de la rejilla de Bootstrap. Ver
-`elements/layout/LAYOUT-ARCHITECTURE.md`.
+`elements/layout/SHARED-FRAME-LAYOUT.md`.

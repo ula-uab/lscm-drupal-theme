@@ -161,11 +161,24 @@ contenido `lscm_*`**, servido por una vista. Tipos de bloque de contenido existe
 | Componentes `grid_row` / `card` (BI) | **No** | Se sustituyen por componentes `ula_*` propios. |
 | Clases Bootstrap (`col-md-*`, `g-0`) | **No** | Se sustituyen por el CSS propio del componente. |
 | Formato `bootstrap_italia_2` | **No** | Se usa `basic_html` (no inyecta markup de BI). |
-| Mecanismo Views + UI Patterns | **A decidir en el plan** | Flujo distinto al de la home; el plan decidirá el flujo de la nueva página. |
-| Subvista `page_about_consortium` | **A decidir (análisis aparte)** | Ver §4. |
+| Mecanismo Views + UI Patterns | **Resuelto (v1.5.1)** | El flujo de presentación adoptado es: página compuesta con **Layout Builder** (secciones + bloques) y, dentro de una sección, una **vista que pinta entidades con tarjetas** vía UI Patterns (alimentando los slots por `view_field`). Ver `../elements/layout/CONTENT-LAYOUT.md` (ADR-LAYOUT-004). |
+| Subvista `page_about_consortium` | **Patrón confirmado** | Es exactamente el flujo de dos niveles que se ha validado y adoptado (vista que pinta universidades con tarjetas). Sirve de **referencia que funciona** para construir la vista equivalente en clave propia (se replicó su mecanismo: `view_field`, formatter de imagen en el campo, variante del componente). La decisión de si la nueva About la embebe, la enlaza o la omite sigue correspondiendo al plan. |
 
 > **Siguiente paso (fase de plan).** Con este análisis cerrado, el siguiente paso del método es
 > **elaborar el plan de diseño e implementación** de la nueva página «About» (en `docs/plans/`), en
 > clave `ula_*` / `lscm_*`, sin dependencias de Bootstrap Italia, bajo el header/footer compartido que
 > se construya para las páginas internas. El plan decidirá el flujo (cómo se sirve la página y cómo se
 > presenta) y qué se hace con la subvista del consorcio.
+
+---
+
+## 7. Lección aprendida (añadido v1.5.1)
+
+Al construir la vista de universidades en clave propia (la equivalente a `page_about_consortium` de
+§4) se confirmó, **por comparación con esta vista heredada**, el mecanismo correcto para que las
+tarjetas se rendericen completas: alimentar los slots por **`view_field`** (campos añadidos en *Fields*,
+no `entity_field`), configurar el **formatter de imagen en el campo** de la vista (con image style no
+vacío), y seleccionar la **variante** del componente que pinta la imagen. La vista heredada de §4 ya
+hacía exactamente esto; tomarla como **referencia que funciona** habría ahorrado el rodeo. El detalle de
+este flujo y un checklist de diagnóstico están en `../elements/layout/CONTENT-LAYOUT.md` §5; el método
+("comparar con lo que funciona antes de teorizar") quedó recogido en las instrucciones del proyecto.
