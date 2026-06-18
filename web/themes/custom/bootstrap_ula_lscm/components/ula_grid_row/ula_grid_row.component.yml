@@ -1,0 +1,35 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Grid Row
+status: experimental
+description: >
+  Rejilla propia del design system ULA para disponer una colección de elementos (tarjetas u
+  otros) en columnas de IGUAL ALTURA. Pensada para usarse como contenedor (Nivel 1) del Format
+  de una vista: recibe las filas en el slot 'content' (fuente "view_rows") y las coloca en una
+  rejilla CSS responsive. Sustituye al grid_row heredado (que usa clases de Bootstrap Italia):
+  componente autónomo, sin BI; el aspecto y las columnas los controla su CSS con tokens de
+  ula-tokens.css. El número de columnas en escritorio se elige con 'columns' (se reduce solo,
+  en tablet y móvil). Los conectores visuales entre tarjetas (como en la home) NO se incluyen
+  en esta versión _simple; se abordarán por encima de esta base.
+slots:
+  content:
+    title: Content
+    description: >
+      Los elementos a disponer en la rejilla (p. ej. la fuente "view_rows" de una vista). Cada
+      elemento ocupa una celda; todas las celdas de una fila igualan su altura a la más alta.
+props:
+  type: object
+  properties:
+    columns:
+      title: 'Columns (desktop)'
+      description: 'Número de columnas en escritorio. En tablet se reduce a 2 y en móvil a 1. Por defecto, 3.'
+      type: string
+      enum:
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+      'meta:enum':
+        '1': '1 column'
+        '2': '2 columns'
+        '3': '3 columns'
+        '4': '4 columns'

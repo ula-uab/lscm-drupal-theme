@@ -1,0 +1,21 @@
+{#
+  ula_grid_row — rejilla propia del design system ULA (versión _simple).
+
+  Coloca los elementos del slot 'content' en una rejilla CSS de columnas de IGUAL ALTURA.
+  Pensado como Nivel 1 (Format de una vista): 'content' recibe la fuente "view_rows", de modo
+  que cada fila de la vista ocupa una celda de la rejilla.
+
+  Autónomo: NO usa clases ni markup de Bootstrap Italia. El número de columnas en escritorio lo
+  fija la prop 'columns' (el CSS reduce a 2 en tablet y a 1 en móvil). El contenedor de ancho de
+  página lo aporta la sección, no este componente.
+
+  Se normaliza 'content' a secuencia y se itera, envolviendo cada elemento en una celda — igual
+  que hacía grid_row —, para producir una celda por fila de la vista.
+#}
+{% set items = (content and content is not sequence) ? [content] : content %}
+{% set attributes = attributes.addClass('ula-grid-row', 'ula-grid-row--cols-' ~ (columns|default('3'))) %}
+<div{{ attributes }}>
+  {% for item in items %}
+    <div class="ula-grid-row__col">{{ item }}</div>
+  {% endfor %}
+</div>

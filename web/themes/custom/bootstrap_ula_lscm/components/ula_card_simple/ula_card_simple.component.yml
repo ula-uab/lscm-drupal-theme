@@ -1,0 +1,36 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Card Simple
+status: experimental
+description: >
+  Tarjeta genérica y reutilizable del design system ULA (versión _simple). Pensada para
+  fondo CLARO/blanco (la mayoría de las páginas de contenido). El contenido entra por SLOTS
+  (no por props), de modo que acepta campos renderizados de cualquier entidad — encaja en el
+  flujo Views → UI Patterns sin atarse a un tipo de contenido concreto. Componente autónomo:
+  no usa markup ni clases de Bootstrap Italia; el aspecto lo aportan los tokens de
+  ula-tokens.css. La imagen se muestra por presencia (sin variantes): si el slot 'image' viene
+  relleno, se pinta la cabecera. El contenedor en rejilla NO vive aquí, lo aporta la sección.
+  Versiones más sofisticadas (variantes, fondo oscuro, fecha/autor/categoría, pastillas) se
+  abordarán por encima de esta base.
+slots:
+  image:
+    title: 'Image (field)'
+    description: 'Imagen de cabecera (campo de imagen ya renderizado por su formatter). Opcional: si está vacío, la tarjeta no muestra cabecera.'
+  title:
+    title: 'Title (field)'
+    description: 'Título de la tarjeta.'
+  subtitle:
+    title: 'Subtitle (field)'
+    description: 'Dato secundario sobre el título (p. ej. acrónimo, ubicación, categoría). Opcional.'
+  body:
+    title: 'Body (eg. body, raw text)'
+    description: 'Texto o descripción. Acepta HTML saneado (párrafos y listas).'
+  link:
+    title: 'Link (eg. read more, entity link)'
+    description: 'Enlace de la tarjeta (p. ej. campo enlazado a la entidad con "Link to the original entity", o un enlace propio). Opcional.'
+props:
+  type: object
+  properties:
+    shadow:
+      title: 'Enable shadow'
+      description: 'Muestra una sombra de reposo en la tarjeta (además del realce al pasar el cursor).'
+      type: boolean

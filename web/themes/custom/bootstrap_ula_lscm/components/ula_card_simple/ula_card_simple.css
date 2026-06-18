@@ -1,0 +1,114 @@
+/**
+ * ula_card_simple — estilos del patrón de tarjeta genérica (versión _simple).
+ *
+ * Tarjeta sobre fondo CLARO/blanco. Estética y efecto hover tomados de ula_sem_card
+ * (la tarjeta de la home que va sobre fondo blanco), para coherencia visual. Consume
+ * tokens de ula-tokens.css. El contenedor en rejilla NO está aquí (lo aporta la sección).
+ *
+ * Nota de color: sobre fondo blanco NO se usa el dorado claro (--eu-yellow) como color
+ * protagonista (no contrasta bien); la paleta es azul (--eu-blue) + textos neutros.
+ *
+ * Igual altura: .ula-card es flex column y .ula-card__body crece (flex:1), de modo que al
+ * estirar la rejilla todas las tarjetas igualan a la más alta. No se usa height:100% para
+ * no depender de que el padre tenga altura definida (evita deformarse en aislado).
+ */
+.ula-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;                /* recorta la imagen a las esquinas redondeadas */
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+/* Efecto hover conservado de las tarjetas de la home (ula_sem_card). */
+.ula-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0, 51, 153, 0.12);
+  border-color: var(--eu-blue);
+}
+
+/* Sombra de reposo opcional (prop shadow). El hover prevalece por especificidad de orden. */
+.ula-card--shadow {
+  box-shadow: 0 4px 16px rgba(0, 51, 153, 0.08);
+}
+
+/* ── Cabecera con imagen ── */
+/* El slot 'image' trae un campo de imagen ya renderizado (un <img> del formatter de Views).
+   Normalizamos su presentación sea cual sea su tamaño de origen. */
+.ula-card__image {
+  line-height: 0;                  /* elimina el hueco bajo la imagen inline */
+}
+.ula-card__image :where(img) {
+  display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* ── Cuerpo ── */
+.ula-card__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;                  /* ocupa el alto disponible (igualar alturas) */
+  padding: 1.8rem;
+}
+.ula-card__subtitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eu-blue);
+  margin-bottom: 0.5rem;
+}
+.ula-card__title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.3;
+  margin: 0 0 0.6rem;
+}
+
+/* Texto/descripción: crece para igualar alturas entre tarjetas de la fila. */
+.ula-card__body {
+  flex: 1 1 auto;
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+/* Estilado del HTML que produce el rich text (Basic HTML): párrafos y listas, sin clases. */
+.ula-card__body p {
+  margin: 0 0 0.9rem;
+}
+.ula-card__body p:last-child {
+  margin-bottom: 0;
+}
+.ula-card__body ul,
+.ula-card__body ol {
+  margin: 0 0 0.9rem;
+  padding-left: 1.1rem;
+}
+.ula-card__body ul:last-child,
+.ula-card__body ol:last-child {
+  margin-bottom: 0;
+}
+.ula-card__body li {
+  margin-bottom: 0.3rem;
+}
+
+/* ── Enlace ── */
+.ula-card__link {
+  margin-top: 1.2rem;
+}
+.ula-card__link :where(a) {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--eu-blue);
+  text-decoration: none;
+}
+.ula-card__link :where(a):hover {
+  text-decoration: underline;
+}

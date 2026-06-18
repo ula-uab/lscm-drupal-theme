@@ -1,0 +1,8 @@
+name: Preview
+props:
+  columns: '3'
+slots:
+  content:
+    - '<div style="border:1.5px solid #e3e3e3;border-radius:14px;padding:1.5rem;">Card A</div>'
+    - '<div style="border:1.5px solid #e3e3e3;border-radius:14px;padding:1.5rem;">Card B (taller<br>content<br>here)</div>'
+    - '<div style="border:1.5px solid #e3e3e3;border-radius:14px;padding:1.5rem;">Card C</div>'

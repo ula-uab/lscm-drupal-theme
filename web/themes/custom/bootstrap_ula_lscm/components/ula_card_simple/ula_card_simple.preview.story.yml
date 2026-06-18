@@ -1,0 +1,10 @@
+name: Preview
+props:
+  shadow: false
+slots:
+  title: 'Universitat Autònoma de Barcelona'
+  subtitle: 'Spain · Barcelona'
+  body: >
+    <p>Lead institution of the consortium, coordinating the LSCM master's
+    programme across the partner universities.</p>
+  link: '<a href="#">Read more</a>'

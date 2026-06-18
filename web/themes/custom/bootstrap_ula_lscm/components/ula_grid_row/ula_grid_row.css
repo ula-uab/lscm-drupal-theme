@@ -1,0 +1,42 @@
+/**
+ * ula_grid_row — rejilla propia del design system ULA (versión _simple).
+ *
+ * Columnas de IGUAL ALTURA mediante CSS Grid (align-items: stretch hace que las celdas de
+ * una fila igualen su altura a la más alta) + celdas flex que estiran su contenido (la
+ * tarjeta) a la altura completa de la celda. Sustituye a grid_row (Bootstrap Italia): sin
+ * clases container/row/col, controlado por tokens de ula-tokens.css.
+ *
+ * El contenedor de ancho de página lo aporta la sección, no este componente. Los conectores
+ * visuales entre tarjetas (home) no se incluyen en esta versión.
+ */
+.ula-grid-row {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;     /* base (móvil): 1 columna */
+  align-items: stretch;           /* iguala la altura de las celdas por fila */
+}
+
+/* La celda estira su contenido (la tarjeta) a la altura completa de la celda. */
+.ula-grid-row__col {
+  display: flex;
+}
+.ula-grid-row__col > * {
+  width: 100%;                    /* la tarjeta ocupa todo el ancho de la celda */
+}
+
+/* Tablet (>=600px): como mucho 2 columnas. */
+@media (min-width: 600px) {
+  .ula-grid-row--cols-2,
+  .ula-grid-row--cols-3,
+  .ula-grid-row--cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Escritorio (>=992px): el número de columnas elegido en 'columns'. */
+@media (min-width: 992px) {
+  .ula-grid-row--cols-1 { grid-template-columns: 1fr; }
+  .ula-grid-row--cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .ula-grid-row--cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .ula-grid-row--cols-4 { grid-template-columns: repeat(4, 1fr); }
+}

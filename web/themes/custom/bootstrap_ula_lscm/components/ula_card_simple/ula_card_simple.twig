@@ -1,0 +1,37 @@
+{#
+  ula_card_simple — tarjeta genérica del design system ULA (versión _simple).
+
+  Slots: image, title, subtitle, body (HTML saneado), link. Todos opcionales: cada
+  bloque se pinta solo si su slot viene relleno (la imagen, por tanto, "por presencia",
+  sin necesidad de variantes).
+
+  Pensada para fondo CLARO/blanco. Componente autónomo: NO incluye markup de Bootstrap
+  Italia; el aspecto lo aportan los tokens de ula-tokens.css y el CSS propio del componente.
+
+  Igual altura entre tarjetas de una misma fila: .ula-card es flex column y .ula-card__body
+  crece (flex:1), de modo que al estirar la rejilla (align-items: stretch, defecto en
+  grid/flex) todas igualan a la más alta y el enlace queda anclado abajo. El contenedor en
+  rejilla lo aporta la sección, no este componente.
+
+  'body' se imprime con |raw porque es HTML ya saneado (Basic HTML: párrafos y listas, sin
+  clases ni scripts), no texto plano.
+#}
+<div class="ula-card{{ shadow ? ' ula-card--shadow' : '' }}">
+  {% if image %}
+    <div class="ula-card__image">{{ image }}</div>
+  {% endif %}
+  <div class="ula-card__content">
+    {% if subtitle %}
+      <div class="ula-card__subtitle">{{ subtitle }}</div>
+    {% endif %}
+    {% if title %}
+      <h3 class="ula-card__title">{{ title }}</h3>
+    {% endif %}
+    {% if body %}
+      <div class="ula-card__body">{{ body }}</div>
+    {% endif %}
+    {% if link %}
+      <div class="ula-card__link">{{ link }}</div>
+    {% endif %}
+  </div>
+</div>
