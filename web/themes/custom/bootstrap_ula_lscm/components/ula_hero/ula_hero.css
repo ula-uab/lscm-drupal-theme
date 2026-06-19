@@ -1,0 +1,212 @@
+/**
+ * ula_hero — hero / cabecera de página del design system ULA.
+ *
+ * Dos presentaciones del MISMO componente vía la clase modificadora:
+ *   .ula-hero--page  cabecera de página interna (más baja; eyebrow como texto)
+ *   .ula-hero--home  portada a pantalla completa (eyebrow en píldora; flecha de scroll)
+ *
+ * Colores y disposición tomados del hero real de la home (no de la maqueta de About):
+ * el degradado azul, el dorado del resaltado y la píldora, los botones, las stats y el
+ * scroll replican lo que ya hay en la home. Tipografía y color, vía tokens de ula-tokens.css.
+ * Autónomo: sin clases ni markup de Bootstrap Italia.
+ */
+
+.ula-hero {
+  /* Degradado del hero de la home (literal, para casar exactamente con la portada). */
+  background: linear-gradient(135deg, #001a66 0%, #003399 50%, #0044cc 100%);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Variante: página interna ── */
+.ula-hero--page {
+  padding: 100px 2rem 80px;
+  /* Full-bleed: la variante 'page' vive dentro del contenedor de contenido del
+     marco (.lscm-page__container, centrado y con max-width 1200px). Estos márgenes
+     negativos simétricos hacen que el hero "rompa" ese contenedor y llegue a los
+     bordes de la pantalla (como en la home), sin tocar el marco.
+     REQUISITO: página de UNA COLUMNA (sin sidebars). Con sidebars, el contenido no
+     queda centrado en el viewport y el cálculo se descuadra. */
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  /* Pega el hero al header: cancela el padding-top del marco (.lscm-page__main,
+     80px) para que el hero suba hasta arriba y quede tras el header fijo, como en
+     la home. El padding-top interno (100px) mantiene el contenido por debajo del
+     header. ASUME que el hero es el primer elemento del contenido (Sección 0) y
+     que el padding-top del marco son 80px; si cambia ese valor, revisar este -80px. */
+  margin-top: -80px;
+}
+
+/* ── Variante: portada (home) ── */
+.ula-hero--home {
+  min-height: 100vh;
+  padding: 100px 2rem 60px;
+}
+/* Resplandores decorativos solo en la portada (la cabecera de página es más sobria). */
+.ula-hero--home::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(255, 204, 0, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.ula-hero--home::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Eyebrow ── */
+/* Píldora con punto delante, en ambas variantes (page y home): el efecto de la home. */
+.ula-hero__eyebrow {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 204, 0, 0.12);
+  border: 1px solid rgba(255, 204, 0, 0.35);
+  color: var(--eu-yellow);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 2rem;
+  animation: ula-hero-fade-up 0.6s ease both;
+}
+.ula-hero__eyebrow::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--eu-yellow);
+}
+
+/* ── Título ── */
+.ula-hero__title {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.12;
+  margin: 0 0 1.5rem;
+  animation: ula-hero-fade-up 0.6s 0.1s ease both;
+}
+.ula-hero--page .ula-hero__title {
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  max-width: 800px;
+}
+.ula-hero--home .ula-hero__title {
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  max-width: 800px;
+}
+
+/* Resaltado en dorado. En 'home', en su propia línea y en cursiva (como la portada). */
+.ula-hero__highlight {
+  color: var(--eu-yellow);
+}
+.ula-hero--home .ula-hero__highlight {
+  display: block;
+  font-style: italic;
+}
+
+/* ── Subtítulo ── */
+.ula-hero__subtitle {
+  position: relative;
+  z-index: 1;
+  font-size: 1.15rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 640px;
+  margin: 0 0 2.5rem;
+  line-height: 1.6;
+  animation: ula-hero-fade-up 0.6s 0.2s ease both;
+}
+
+/* ── Acciones / CTAs ── */
+/* El slot recibe enlaces renderizados (campo Link). Se estilan todos igual (un solo tipo
+   de botón, decisión del proyecto): botón sólido dorado, como el primario de la home. */
+.ula-hero__actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: ula-hero-fade-up 0.6s 0.3s ease both;
+}
+/* Estilo "outline" (como el botón "Explore programme" de la home): transparente,
+   borde y texto claros. Un solo tipo de botón (decisión del proyecto). */
+.ula-hero__actions a {
+  display: inline-block;
+  background: transparent;
+  color: var(--white);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.ula-hero__actions a:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Stats ── */
+/* Contenedor flex; cada hijo es un ula_hero_stat ya renderizado. */
+.ula-hero__stats {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 3rem;
+  margin-top: 4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: ula-hero-fade-up 0.6s 0.4s ease both;
+}
+
+/* ── Flecha de scroll (solo en 'home') ── */
+.ula-hero__scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: ula-hero-bounce 2s infinite;
+}
+.ula-hero__scroll-arrow {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-right: 2px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  transform: rotate(45deg);
+}
+
+/* ── Animaciones (con nombre propio para no chocar con las de la home) ── */
+@keyframes ula-hero-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes ula-hero-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .ula-hero__stats { gap: 1.5rem; }
+}

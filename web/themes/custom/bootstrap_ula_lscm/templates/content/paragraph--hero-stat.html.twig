@@ -1,0 +1,18 @@
+{#
+  Plantilla del paragraph `hero_stat`.
+
+  Renderiza cada estadística reutilizando el componente del design system
+  `ula_hero_stat` (basado en props), al que se le pasan los VALORES PLANOS de los
+  campos del paragraph. Así una colección de paragraphs `hero_stat` (el campo
+  multivalor `field_hero_stats` del hero) se pinta como varios `ula_hero_stat`,
+  sin necesitar el formatter de UI Patterns (que este sitio no tiene) y sin
+  modificar el componente —que la home reutiliza igual, por composición—.
+
+  El componente aporta su propio marcado y estilo; aquí solo se compone. No se
+  usa {{ content }} a propósito: el display por defecto del paragraph está vacío
+  y el contenido se arma directamente desde los campos.
+#}
+{{ include('bootstrap_ula_lscm:ula_hero_stat', {
+  number: paragraph.field_stat_number.value,
+  label: paragraph.field_stat_label.value,
+}) }}

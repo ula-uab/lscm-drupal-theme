@@ -28,7 +28,7 @@
   flex-shrink: 0;
 }
 .lscm-page-header__logo-img {
-  height: 42px;
+  height: 63px;
   width: auto;
   display: block;
 }
@@ -38,13 +38,18 @@
   line-height: 1.2;
 }
 .lscm-page-header__brand-top {
-  color: var(--white);
+  font-family: var(--font-body);
+  color: var(--eu-yellow);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 17px;
+  letter-spacing: 0.02em;
 }
 .lscm-page-header__brand-sub {
   color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .lscm-page-header__nav {
   display: flex;

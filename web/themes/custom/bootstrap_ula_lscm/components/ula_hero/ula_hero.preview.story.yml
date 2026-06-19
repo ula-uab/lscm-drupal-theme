@@ -1,0 +1,9 @@
+name: Preview
+props:
+  size: page
+slots:
+  eyebrow: 'About the Programme'
+  title: 'Where Engineering Meets'
+  title_highlight: 'Global Supply Chains'
+  subtitle: 'A quantitative, engineering-driven master''s degree that bridges rigorous methodology with the strategic challenges of modern logistics and supply chain management.'
+  actions: '<a href="#">Apply Now</a>'

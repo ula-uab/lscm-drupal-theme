@@ -1,0 +1,38 @@
+{#
+  ula_hero — hero / cabecera de página del design system ULA.
+
+  Slots (todos opcionales salvo el título): eyebrow, title, title_highlight, subtitle,
+  actions (CTAs), stats. Cada bloque se pinta solo si su slot viene relleno.
+
+  La prop 'size' ('page' | 'home') cambia la presentación vía la clase modificadora; el
+  marcado es el mismo. La flecha de scroll solo aparece en 'home'.
+
+  Autónomo: no usa markup ni clases de Bootstrap Italia. Colores y tipografía, de
+  ula-tokens.css y del CSS propio del componente.
+#}
+{% set size = size|default('page') %}
+<section class="ula-hero ula-hero--{{ size }}">
+  {% if eyebrow %}
+    <div class="ula-hero__eyebrow">{{ eyebrow }}</div>
+  {% endif %}
+
+  {% if title or title_highlight %}
+    <h1 class="ula-hero__title">{{ title }}{% if title_highlight %} <span class="ula-hero__highlight">{{ title_highlight }}</span>{% endif %}</h1>
+  {% endif %}
+
+  {% if subtitle %}
+    <p class="ula-hero__subtitle">{{ subtitle }}</p>
+  {% endif %}
+
+  {% if actions %}
+    <div class="ula-hero__actions">{{ actions }}</div>
+  {% endif %}
+
+  {% if stats %}
+    <div class="ula-hero__stats">{{ stats }}</div>
+  {% endif %}
+
+  {% if size == 'home' %}
+    <div class="ula-hero__scroll" aria-hidden="true"><span class="ula-hero__scroll-arrow"></span></div>
+  {% endif %}
+</section>

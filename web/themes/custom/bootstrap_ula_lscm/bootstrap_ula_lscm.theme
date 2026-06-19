@@ -422,14 +422,16 @@ function bootstrap_ula_lscm_preprocess_page(array &$variables): void {
   $variables['footer_brand_top']     = 'Master in Logistics & Supply Chain Management';
   $variables['footer_contact_email'] = 'info@master-lscm.eu';
 
-  // Páginas de contenido compuestas con Layout Builder: ocultar el título de página
-  // (bloque 'page_title' del marco), que no debe mostrarse en estas páginas (el título
-  // ya lo aporta la propia composición). Reversible: basta eliminar este bloque; el título
-  // se sigue mostrando en el resto de páginas. Cuando se retire el tipo de prueba 'lb_test'
-  // (ver TODO.md #8), dejar solo el tipo definitivo en la lista.
+  // Páginas de contenido compuestas con Layout Builder: ocultar los elementos de cabecera
+  // que pinta Drupal (el bloque 'page_title' y el breadcrumb del marco), que no deben
+  // mostrarse en estas páginas: el hero de la composición ya hace de cabecera. Reversible:
+  // basta eliminar este bloque; título y breadcrumb se siguen mostrando en el resto de
+  // páginas. Cuando se retire el tipo de prueba 'lb_test' (ver TODO.md #8), dejar solo el
+  // tipo definitivo en la lista.
   $node = \Drupal::routeMatch()->getParameter('node');
-  $tipos_sin_titulo = ['lb_contents', 'lb_test'];
-  if ($node instanceof \Drupal\node\NodeInterface && in_array($node->bundle(), $tipos_sin_titulo, TRUE)) {
+  $tipos_sin_cabecera_drupal = ['lb_contents', 'lb_test'];
+  if ($node instanceof \Drupal\node\NodeInterface && in_array($node->bundle(), $tipos_sin_cabecera_drupal, TRUE)) {
     unset($variables['page']['title']);
+    unset($variables['page']['breadcrumb']);
   }
 }

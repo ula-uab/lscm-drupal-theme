@@ -1,0 +1,47 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Hero
+status: experimental
+description: >
+  Hero / cabecera de página del design system ULA. Fondo azul degradado (el de la home) y
+  contenido por SLOTS, de modo que se alimenta de campos renderizados (encaja en Views →
+  UI Patterns) sin atarse a una entidad concreta. Componente autónomo: no usa markup ni clases
+  de Bootstrap Italia; colores y tipografía salen de los tokens de ula-tokens.css.
+  La prop 'size' controla dos presentaciones del mismo componente: 'page' (cabecera de página
+  interna, más baja, eyebrow como texto) y 'home' (portada a pantalla completa, eyebrow en
+  píldora y flecha de scroll). Los slots vacíos no se pintan: el eyebrow, las CTAs (slot
+  'actions') y las estadísticas (slot 'stats') son opcionales por presencia. El slot 'stats'
+  está pensado para recibir una colección de componentes ula_hero_stat (reutilización por
+  composición); cómo se mapea cada estadística a ula_hero_stat es configuración del campo, no
+  de este componente.
+slots:
+  eyebrow:
+    title: 'Eyebrow (field)'
+    description: 'Etiqueta superior corta (p. ej. "About the Programme"). Opcional.'
+  title:
+    title: 'Title (field)'
+    description: 'Título principal (la parte no resaltada).'
+  title_highlight:
+    title: 'Title highlight (field)'
+    description: 'Parte del título resaltada en dorado. En "home" se muestra en su propia línea y en cursiva; en "page", en línea. Opcional.'
+  subtitle:
+    title: 'Subtitle (field)'
+    description: 'Párrafo descriptivo bajo el título. Opcional.'
+  actions:
+    title: 'Actions / CTAs (field)'
+    description: 'Enlaces de llamada a la acción (p. ej. un campo Link). Se estilan como botones. Opcional, por presencia.'
+  stats:
+    title: 'Stats (field)'
+    description: 'Colección de estadísticas (pensada para componentes ula_hero_stat). Opcional, por presencia.'
+props:
+  type: object
+  properties:
+    size:
+      title: 'Size'
+      description: 'Presentación: "page" (cabecera de página interna) u "home" (portada a pantalla completa). Por defecto, "page".'
+      type: string
+      enum:
+        - page
+        - home
+      'meta:enum':
+        page: 'Page (internal header)'
+        home: 'Home (full-screen landing)'
