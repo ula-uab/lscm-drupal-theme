@@ -244,6 +244,20 @@ y configuración):
 - **Código del tema:** eliminar del `.info.yml` las **regiones** de BI no usadas (identificadas en la
   Fase 2.3) y la carga de la librería **`bootstrap_italia/base`**; revisar la relación `base theme`
   con Bootstrap Italia. Cada eliminación, validada.
+- **Análisis previo obligatorio (regiones y bloques heredados) — antes de podar nada.** Observado
+  (jun. 2026): aunque el `page.html.twig` propio se ha simplificado mucho y solo imprime unas pocas
+  regiones, **Block Layout (`/admin/structure/block`) sigue mostrando todas las regiones y bloques
+  heredados de Bootstrap Italia**. Es esperado y, a día de hoy, **inocuo**: las **regiones** se declaran
+  en el **`.info.yml`** (no en la plantilla) y las **asignaciones de bloques a regiones** son
+  **configuración (BD)**; simplificar `page.html.twig` no elimina ni unas ni otras, solo deja de
+  imprimirlas — los bloques asignados a regiones que la plantilla ya no pinta simplemente **no se
+  renderizan**, pero siguen figurando en Block Layout. La poda exige primero un **análisis a fondo**:
+  (a) qué regiones imprime de hecho el `page.html.twig` propio, y cuáles usan **la home** y el **marco
+  heredado** que aún conviven; (b) qué **bloques quedarían huérfanos** al retirar cada región; (c) qué
+  se pierde en cada caso. Solo tras ese mapeo se procede a la poda quirúrgica: regiones del `.info.yml`
+  (código/git, reversible) y desasignación/borrado de bloques (configuración/BD, **dump previo**). No
+  tocar antes de tener el análisis, y no antes de que la home y las páginas vivas dejen de depender de
+  esas regiones.
 - **Culminación:** cuando no quede dependencia de Bootstrap Italia en las páginas vivas ni en los
   assets, el tema puede declararse autónomo → **cambio MAYOR de versión**.
 
