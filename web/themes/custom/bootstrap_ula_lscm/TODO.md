@@ -53,15 +53,6 @@ es configuración, vive solo en BD) y verificar qué se pierde. Análisis origin
 `docs/elements/home/HOME-ARCHITECTURE.md` §5.4.
 **Prioridad:** baja (condicionada al avance de independencia de BI).
 
-### 7. Programar componente propio `ula_card_simple`
-Tarjeta del design system `ula_*` con la **estética de una tarjeta propia** pero con **estructura
-análoga a la tarjeta heredada** (contenido por **slots**, props solo para configuración del aspecto),
-de modo que sea **reutilizable en distintos contextos y con distintas entidades**, no atada a una
-entidad concreta. Sustituye a la tarjeta heredada de Bootstrap Italia que se usó en el piloto de
-páginas de contenido. Relacionado con `docs/elements/layout/CONTENT-LAYOUT.md` §9.2 (rehacer la
-tarjeta en clave propia): **este TO-DO es la entrada transversal de esa tarea**, y §9.2 lo referencia.
-**Prioridad:** media (primer paso de la migración de componentes tras documentar el modelo de contenido).
-
 ### 8. Limpiar el andamiaje del piloto Paragraphs-vs-Layout-Builder en BD
 Durante la valoración del mecanismo de composición de las páginas no-home se crearon elementos de
 prueba que conviene **purgar** para dejar la BD limpia (se seguirán haciendo pruebas, conviene higiene):
@@ -77,6 +68,31 @@ funciona y posible base de la vista real). **Antes de tocar:** dump de BD (es co
 y confirmar qué se pierde.
 **Prioridad:** baja (higiene; condicionada a decidir el tipo de contenido definitivo y a rehacer About).
 **Detalle:** ver la tabla *Inventario de gadgets del piloto* más abajo (qué purgar y qué conservar).
+
+### 9. Rediseñar `hero_view` a filtro contextual (un solo view para todos los heros)
+Hoy `hero_view` tiene el término **fijo** en el filtro (`field_hero_page = About`), de modo que **solo
+sirve para el hero de About**: añadir un hero a otra página obliga a duplicar la vista. Rediseñarla para
+que reciba el término (o el nodo de la página) **como argumento** vía **filtro contextual**, de modo que
+**una sola vista** sirva el hero de cualquier página.
+**Incógnita a validar primero (en el Drupal real):** cómo Layout Builder pasa el argumento (el nodo de la
+página actual) al bloque de la vista — es la incógnita que se aplazó al elegir taxonomía fija (ver
+`docs/elements/layout/CONTENT-LAYOUT.md` §5.7). No hay ninguna vista con filtro contextual en el sitio de
+la que partir.
+**Cuando se aborde:** validar la incógnita; luego reconfigurar la vista (quitar filtro fijo, añadir
+contextual) — **configuración, dump previo** — y actualizar `CONTENT-LAYOUT.md` §5.7 y `entities/hero.md`.
+**Prioridad:** media (evolución del patrón del hero; desbloquea reutilizarlo en más páginas).
+
+### 10. Componente propio `ula_cta_band` (franja de cierre / llamada a la acción)
+La maqueta de About termina con una **franja CTA** (fondo azul, título + texto + un botón), distinta del
+hero: otro rol (cierre, no cabecera), más simple, y puede aparecer en cualquier página e incluso varias
+veces. Modelarla como **componente SDC propio nuevo** (`ula_cta_band`; slots `title`/`text`/`actions`,
+full-bleed, tokens propios), **no** como variante de `ula_hero` (forzaría el concepto).
+**A decidir en su mini-análisis:** el mecanismo de colocación/alimentación — bloque de UI Patterns colocado
+en Layout Builder (hay `ui_patterns_blocks`) con el texto escrito en la config del bloque, vs. bloque de
+contenido en línea con campos. **No** modelarlo con vista-por-término (no es "uno por página").
+**Documentación:** ficha en `COMPONENTS.md` + un **ADR** que fije la distinción `ula_hero` (cabecera) vs
+`ula_cta_band` (franja de cierre), para no confundir cuándo usar cada uno.
+**Prioridad:** media (componente nuevo del design system).
 
 ## Inventario de gadgets del piloto (Paragraphs vs Layout Builder)
 
@@ -96,6 +112,10 @@ git.** Antes de purgar: **dump de BD**.
 
 ## Resueltos
 
+- **Componente propio `ula_card_simple` (antiguo TO-DO #7).** Construido y validado: tarjeta del design
+  system `ula_*` por slots (ver `docs/COMPONENTS.md` §1.1), sustituta de la heredada `card2_simple` (BI).
+  Su **adopción** en las vistas existentes (p. ej. universidades, que aún usan la heredada) queda como paso
+  de migración posterior (ver `docs/elements/layout/CONTENT-LAYOUT.md` §9.2).
 - **Reparto del CSS monolítico (21 KB) al trocear en componentes SDC.** Resuelto con el
   sistema de tres capas: tokens globales (`ula_tokens`) + base de la landing
   (`ula_landing_base`) + CSS por componente. Ver `docs/elements/home/HOME-ARCHITECTURE.md` §3.
