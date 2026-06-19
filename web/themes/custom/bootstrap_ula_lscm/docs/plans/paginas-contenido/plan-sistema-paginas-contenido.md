@@ -258,6 +258,17 @@ y configuración):
   (código/git, reversible) y desasignación/borrado de bloques (configuración/BD, **dump previo**). No
   tocar antes de tener el análisis, y no antes de que la home y las páginas vivas dejen de depender de
   esas regiones.
+  - **Matiz importante (corregido jun. 2026).** El "inocuo" de arriba aplica **solo a las regiones que el
+    `page.html.twig` propio NO imprime**. El marco propio **sí imprime** estas regiones funcionales:
+    `breadcrumb`, `title`, `local_tasks`, `help`, `notification` (y `page.highlighted` para los mensajes del
+    sistema). Por tanto, los bloques heredados asignados a **esas** regiones **sí se renderizan**. Caso real
+    de esta sesión: el bloque de **breadcrumb** (heredado, pintado por plantillas de BI) aparecía en las
+    páginas `lb_contents` precisamente porque el marco imprime la región `breadcrumb`; se suprimió desde
+    código con `preprocess_page` (`unset($variables['page']['breadcrumb'])`, junto al título). En cambio, el
+    bloque del **menú principal** (`system_menu_block:main` en la región `header_nav`) **es inerte**, porque
+    el marco **no** imprime `header_nav`. **Regla precisa: un bloque en una región heredada se ve si y solo
+    si el `page.html.twig` propio imprime esa región** — no basta con "es heredado, luego no se ve". El
+    análisis (a) debe, por tanto, **listar explícitamente** qué regiones imprime el marco.
 - **Culminación:** cuando no quede dependencia de Bootstrap Italia en las páginas vivas ni en los
   assets, el tema puede declararse autónomo → **cambio MAYOR de versión**.
 

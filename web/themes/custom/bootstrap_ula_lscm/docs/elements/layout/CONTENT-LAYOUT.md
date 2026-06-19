@@ -31,6 +31,7 @@
   - [5.4. La imagen: formatter en el campo de la vista, no en el slot](#54-la-imagen-formatter-en-el-campo-de-la-vista-no-en-el-slot)
   - [5.5. La variante del componente](#55-la-variante-del-componente)
   - [5.6. Diagnóstico por comparación: checklist de un slot que no pinta](#56-diagnóstico-por-comparación-checklist-de-un-slot-que-no-pinta)
+  - [5.7. Variante: una sola instancia filtrada por término (el hero de página)](#57-variante-una-sola-instancia-filtrada-por-término-el-hero-de-página)
 - [6. Validación: la prueba piloto `/about-lb`](#6-validación-la-prueba-piloto-about-lb)
 - [7. Independencia de Bootstrap Italia en este modelo](#7-independencia-de-bootstrap-italia-en-este-modelo)
 - [8. Implicación para la configuración (sitio sin config/sync)](#8-implicación-para-la-configuración-sitio-sin-configsync)
@@ -199,7 +200,7 @@ Vista (display de bloque, insertable en una sección de LB)
 > con CSS propio** (`ula_*`) sobre el contenedor que Views genera (clase `.view-<id>`, targeteable sin
 > configuración extra). La elección del mecanismo de grid es un pendiente con implicaciones propias
 > (ver §9): la regla de fondo es que **el aspecto lo controle el design system propio**, no el framework
-> heredado.
+> heredado. **Hoy existe ya el contenedor propio `ula_grid_row`** (ver §9.1 y `../../COMPONENTS.md` §1.2).
 
 ### 5.2. Cómo se alimenta cada slot: las fuentes (`source`)
 
@@ -299,6 +300,52 @@ heredada equivalente) y revisar, en orden:
 > Confirmar siempre **de qué entorno** procede el dato observado (local `*.ddev.site` vs. hosting) antes
 > de diagnosticar, para no mezclar entornos.
 
+### 5.7. Variante: una sola instancia filtrada por término (el hero de página)
+
+El mismo flujo **Views → UI Patterns** sirve para alimentar **un componente de instancia única**, no solo
+una colección de tarjetas. El caso es el **hero de página**: una vista devuelve **un** hero (el de la
+página) y un componente (`ula_hero`) lo pinta. Es el patrón que consume el tipo de contenido `hero` (ver
+`../../entities/hero.md`) y el componente `ula_hero` (ver `../../COMPONENTS.md` §1.3).
+
+Difiere del caso de colección (§5.1) en dos cosas:
+
+- **No hay Nivel 1 (contenedor/rejilla).** Una instancia única no necesita un grid que envuelva filas: solo
+  se usa el **Row** = `Component` `bootstrap_ula_lscm:ula_hero`, con sus slots alimentados por `view_field`
+  (`eyebrow`←`field_hero_eyebrow`, `title`←`field_hero_title`, `title_highlight`←`field_hero_highlight`,
+  `subtitle`←`field_hero_subtitle`, `actions`←`field_hero_ctas`, `stats`←`field_hero_stats`) y la prop
+  `size` fijada a `page`.
+- **La vista se filtra para devolver la instancia que toca.** En vez de listar una colección, filtra por un
+  **término de taxonomía** (`field_hero_page` = el término de la página; en About, *About*=tid 22) y se
+  limita a **1 resultado**. El emparejamiento «esta página ↔ este hero» se hace por el **término**, no por
+  las filas.
+
+```
+Vista hero_view (display de bloque, en la Sección 0 del LB de la página)
+└── Row: Component  →  bootstrap_ula_lscm:ula_hero  (prop size = page)
+        slots ← view_field (eyebrow/title/title_highlight/subtitle/actions/stats)
+   [Filtros: tipo = Hero  Y  field_hero_page = término de la página · límite 1]
+```
+
+**La colección anidada (stats), por composición.** Las estadísticas del hero **sí** son una colección, pero
+**dentro** del único nodo (campo multivalor `field_hero_stats`), no filas de la vista. Se renderizan como
+*Rendered entity*; cada paragraph `hero_stat` pasa por su plantilla
+(`templates/content/paragraph--hero-stat.html.twig`), que **incluye** el componente `ula_hero_stat`. Así una
+colección dentro de una entidad se pinta como varios componentes **sin** *field formatter* de UI Patterns
+(que este sitio no tiene) — ver `../../entities/hero.md` §3 y `../../CONCEPTOS-DRUPAL.md` (composición de
+SDC). Es el mismo mecanismo de "varios" que ya da un campo multivalor mapeado a un slot (como las CTAs).
+
+**Por qué taxonomía y no filtro contextual.** Para seleccionar el hero de cada página se eligió un **filtro
+normal por término** (el mismo tipo de filtro que la vista de universidades, conocido y validado) en lugar
+de un **filtro contextual** (pasar a la vista el nodo de la página como argumento desde Layout Builder). El
+contextual es elegante, pero el modo de alimentar ese argumento en LB no está validado en este sitio (no hay
+ninguna vista con filtro contextual de la que partir); la taxonomía es explícita, editable y sin incógnitas.
+
+**Full-bleed (presentación, no Views).** En la variante `page`, el hero rompe el contenedor de contenido del
+marco (`.lscm-page__container`, max-width 1200px) para ocupar **todo el ancho** y pegarse bajo el header,
+como la portada. Esto es CSS del componente (`ula_hero.css`), **requiere página de una columna** (sin
+sidebars) y compensa el `padding-top` del marco; los detalles y avisos están comentados en el propio CSS. No
+es un asunto de Views ni de Layout Builder.
+
 ---
 
 ## 6. Validación: la prueba piloto `/about-lb`
@@ -360,13 +407,21 @@ Implicaciones prácticas:
   **grid** a la colección de tarjetas: si mediante un componente contenedor de rejilla propio (Nivel 1), o
   dejando el *Format* en lista y resolviendo el grid horizontal con **CSS propio `ula_*`** sobre el
   contenedor de la vista (`.view-<id>`). Tiene implicaciones más allá de "una regla CSS" (responsive,
-  reutilización entre páginas, relación con las capas de CSS del tema). Pendiente.
+  reutilización entre páginas, relación con las capas de CSS del tema).
+  **✓ Resuelto:** se optó por el **componente contenedor de rejilla propio** y se construyó `ula_grid_row`
+  (CSS Grid, columnas responsive; ver `../../COMPONENTS.md` §1.2). Queda como paso siguiente su **adopción**
+  en las vistas existentes (p. ej. universidades), hoy aún sobre el `grid_row` heredado.
 - **9.2. Rehacer la tarjeta en clave propia.** La tarjeta usada en el piloto es un componente heredado de
   Bootstrap Italia; rehacerla como componente `ula_*` propio es el primer paso de migración tras esta
   documentación. (Anotado también como pendiente transversal del design system.)
-- **9.3. Tipo de contenido definitivo de las páginas.** El piloto usa un tipo de prueba (`lb_test`).
-  Decidir el tipo de contenido real con el que se modelarán las páginas no-home (genérico `page` u otro),
-  y si LB se activa por tipo o por nodo (override). Pendiente.
+  **✓ Resuelto:** se construyó `ula_card_simple` (tarjeta propia por slots, fondo claro; ver
+  `../../COMPONENTS.md` §1.1) como sustituta de la heredada `card2_simple`. Queda como paso siguiente su
+  **adopción** en la vista de universidades, que aún usa la heredada.
+- **9.3. Tipo de contenido definitivo de las páginas.** El piloto usó un tipo de prueba (`lb_test`).
+  **Actualización (v1.6.0):** las páginas de contenido reales se modelan con el tipo **`lb_contents`**
+  (About es un nodo `lb_contents`, con LB por override); `lb_test` queda como tipo de prueba **a retirar**
+  (ver `TODO.md` #8). Queda **abierto** decidir formalmente si `lb_contents` es el tipo definitivo (o se
+  renombra a un genérico) y si LB se activa por tipo o por nodo. **Parcialmente resuelto.**
 - **9.4. Página de detalle de las entidades.** Las entidades que se muestran como tarjetas (p. ej. las
   universidades) tienen además su página de nodo, **hoy sin diseñar** (ver
   `../../analysis/about-and-university-entity.md` §2.2 y §3.3). Pendiente, ligado a este modelo.

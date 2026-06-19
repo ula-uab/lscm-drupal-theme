@@ -17,6 +17,7 @@
 - [1. Componentes genéricos reutilizables (design system `ula_*`)](#1-componentes-genéricos-reutilizables-design-system-ula_)
   - [1.1. `ula_card_simple`](#11-ula_card_simple)
   - [1.2. `ula_grid_row`](#12-ula_grid_row)
+  - [1.3. `ula_hero`](#13-ula_hero)
 - [2. Tarjetas de contenido (`ula_*`, monopropósito)](#2-tarjetas-de-contenido-ula_-monopropósito)
   - [2.1. `ula_uni_card`](#21-ula_uni_card)
   - [2.2. `ula_spec_card`](#22-ula_spec_card)
@@ -106,6 +107,55 @@ Props:
 
 > Conectores visuales entre tarjetas (como en la home) **no** están en esta versión; aplazados a una
 > versión sofisticada (ver `CONTENT-LAYOUT.md` §9.1).
+
+### 1.3. `ula_hero`
+
+Hero / **cabecera de página**: el bloque superior sobre fondo azul degradado, con eyebrow, título (con una
+parte resaltada en dorado), subtítulo, llamadas a la acción y, opcionalmente, una fila de estadísticas.
+Autónomo (sin Bootstrap Italia); el degradado, el dorado, la píldora del eyebrow y el estilo de los botones
+están tomados del **hero de la home** y de los tokens. El contenido entra por **slots**, así que se alimenta
+de campos renderizados (Views → UI Patterns) sin atarse a una entidad. Es el componente que pinta los nodos
+del tipo de contenido `hero` (ver `entities/hero.md`).
+
+Slots:
+
+| Slot | Función |
+|---|---|
+| `eyebrow` | Etiqueta superior corta (píldora con punto). Opcional |
+| `title` | Título principal (parte no resaltada) |
+| `title_highlight` | Parte del título resaltada en dorado. Opcional |
+| `subtitle` | Párrafo descriptivo. Opcional |
+| `actions` | CTAs (enlaces ya renderizados); se estilan como botón. Opcional, por presencia |
+| `stats` | Colección de estadísticas (componentes `ula_hero_stat` ya renderizados). Opcional, por presencia |
+
+Props:
+
+| Prop | Tipo | Función |
+|---|---|---|
+| `size` | enum `page` / `home` | Presentación del componente (ver abajo). Por defecto `page` |
+
+**La prop `size` y las dos presentaciones («variantes»).** `size` no cambia el contenido, solo la
+**presentación** del mismo componente. Es lo que en lenguaje informal llamamos «variante» del hero, aunque
+técnicamente es una prop `enum`, **no** una *variant* de UI Patterns:
+
+- **`page`** (por defecto): cabecera de **página interna**. Más baja (no ocupa toda la pantalla). En el marco
+  de páginas, su CSS la extiende a **todo el ancho** (full-bleed, rompiendo el contenedor de contenido) y la
+  **pega bajo el header**, como la portada. Es la que usa About.
+- **`home`**: **portada a pantalla completa** (`min-height: 100vh`), con resplandores decorativos y flecha de
+  scroll. Pensada para que, el día que se migre la home a este componente, reproduzca su hero.
+
+El eyebrow (píldora con punto) y el resaltado en dorado son **comunes a ambas**; en `home` el resaltado se
+muestra en su propia línea y en cursiva.
+
+**Stats, por composición.** El slot `stats` recibe una colección de `ula_hero_stat` **ya renderizados**; el
+componente no los itera. El mapeo de cada estadística a `ula_hero_stat` lo hace la plantilla del paragraph
+`hero_stat` (ver `entities/hero.md` §3 y `CONCEPTOS-DRUPAL.md`, composición de SDC). `ula_hero_stat` se
+reutiliza sin modificar (lo usa también la home).
+
+**Consumo y full-bleed.** Se alimenta vía una **vista filtrada por taxonomía** (`entities/hero.md`,
+`CONTENT-LAYOUT.md`). En `page`, el full-bleed requiere que la página sea de **una sola columna**; los
+detalles y avisos (dependencia del `padding-top` del marco, posible scroll horizontal) están comentados en
+el propio `ula_hero.css`.
 
 ---
 

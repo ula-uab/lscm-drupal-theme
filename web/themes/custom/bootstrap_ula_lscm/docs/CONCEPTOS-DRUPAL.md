@@ -194,6 +194,27 @@ incluyen desde Twig con `{{ include('tema:componente', { prop: valor }) }}`.
 > nacieron antes de fijar esta convención—. Cuando se adopta un componente heredado y se hace propio, se
 > le cambia el nombre con prefijo propio y pasa al inventario de elementos propios.
 
+**Composición: un componente dentro de otro.** Un SDC puede **incluir** a otro en su plantilla, con la
+misma sintaxis `{{ include('tema:componente', { … }) }}`. Esto permite **reutilizar** un componente como
+pieza de otro, sin duplicar su markup ni su CSS. Ejemplo real en el tema: el componente `ula_hero_stat`
+(una estadística: número + etiqueta) se reutiliza por composición en **dos sitios distintos**, sin
+modificarlo:
+
+- En el **marco de la home** (`lscm-master-page`), que recorre las estadísticas e incluye un `ula_hero_stat`
+  por cada una:
+  `{{ include('bootstrap_ula_lscm:ula_hero_stat', { number: stat.number, label: stat.label }) }}`.
+- En la **plantilla del paragraph `hero_stat`** (`templates/content/paragraph--hero-stat.html.twig`), que
+  hace lo mismo a partir de los **valores de los campos** del paragraph:
+  `{{ include('bootstrap_ula_lscm:ula_hero_stat', { number: paragraph.field_stat_number.value, label: paragraph.field_stat_label.value }) }}`.
+
+**Por qué esto importa para alimentar colecciones desde campos.** Cuando un componente está basado en
+**props** (espera **valores de texto**, no campos renderizados), no puede alimentarse directamente desde una
+vista mapeando un campo (daría el error "got object"; ver §6 y `COMPONENTS.md`, props vs. slots). La
+composición **desde una plantilla** resuelve ese caso: la plantilla lee el **valor plano** del campo
+(`.value`) y se lo pasa como prop. Es lo que permite pintar la colección de estadísticas del hero como
+varios `ula_hero_stat` **sin** un *field formatter* de UI Patterns (que este sitio no tiene). Ver
+`entities/hero.md` §3 y `COMPONENTS.md` §1.3.
+
 ---
 
 ## 6. Vistas (Views) y UI Patterns

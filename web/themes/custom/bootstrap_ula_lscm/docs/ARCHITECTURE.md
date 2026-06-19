@@ -65,6 +65,7 @@ sino que referencian la versión del tema en la que se introdujo o modificó cad
 | 1.4.0 | 2026-06-15 | **Marco compartido de páginas de contenido** (Fase 1 del plan de páginas de contenido). Header (`lscm_page_header`) y footer provisional (`lscm_page_footer`) propios, independientes de BI, con estética de la home; navegación de sitio desde el menú `main`. Plantilla `page--about.html.twig` que monta el marco solo para `/about` (Opción B, página a página), sin tocar las páginas heredadas. Nuevo elemento documentado en `docs/elements/layout/` (ADR-LAYOUT-001 y -002). |
 | 1.5.0 | 2026-06-17 | **`page.html.twig` propio** (Fase 2 del plan de independencia de BI). Marco genérico propio para todas las páginas no-home: sustituye al `page.html.twig` heredado de Bootstrap Italia. Header/footer propios (`lscm_page_*`), regiones funcionales activas (breadcrumb, title, local_tasks, help, notification) y rejilla propia para contenido + sidebars (librería `lscm_page`, `css/lscm-page.css`), sin clases `container/row/col/it-*` de BI. El marco se aplica a todas las páginas no-home (Camino 1); su contenido interno sigue heredado hasta migrarse. ADR-LAYOUT-003. |
 | 1.5.1 | 2026-06-18 | **Documentación: adopción de Layout Builder** como mecanismo de composición del contenido de las páginas no-home. Validado el flujo Views → UI Patterns (la vista pinta entidades con tarjetas) dentro de una página compuesta con LB, mediante prueba piloto multi-sección en `/about-lb`. Nuevo elemento documental `elements/layout/CONTENT-LAYOUT.md` (con ADR-LAYOUT-004) y renombrado del documento del marco a `SHARED-FRAME-LAYOUT.md` (antes `LAYOUT-ARCHITECTURE.md`). Se matizan §5.2 y §6.1 (el descarte de LB era específico de la home) y se amplía §5.5 con las lecciones del flujo (`view_field` vs `entity_field`, formatter de imagen en el campo, variante del componente). Solo documentación; la migración de las páginas a clave propia es trabajo posterior. |
+| 1.6.0 | 2026-06-19 | **Hero de página** (componente `ula_hero` + tipo de contenido `hero`). Nuevo componente SDC `ula_hero` (autónomo, por slots; dos presentaciones vía prop `size` *page*/*home*), que reutiliza `ula_hero_stat` por composición para las estadísticas mediante la plantilla `paragraph--hero-stat.html.twig`. Se alimenta de una **vista filtrada por taxonomía** (`page_id`) que inyecta los campos del tipo de contenido `hero` en sus slots, insertada en el Layout Builder de la página (patrón de instancia única, `elements/layout/CONTENT-LAYOUT.md` §5.7). Header de páginas (`lscm_page_header`): logo +50% y marca alineada con la home. `preprocess_page` oculta título **y** breadcrumb en las páginas de contenido (LB). También se construyeron antes `ula_card_simple` y `ula_grid_row` (catálogo en `COMPONENTS.md`). Documentación: `entities/hero.md`, ficha `ula_hero` en `COMPONENTS.md` §1.3, composición de SDC en `CONCEPTOS-DRUPAL.md`, y regla corregida de regiones heredadas en el plan (Fase 6). El tipo de contenido, el paragraph `hero_stat`, la vista y la composición en LB son **configuración (BD), no git**. |
 
 > **Mantenimiento:** al introducir cambios estructurales (nuevos componentes, cambios de
 > arquitectura, nuevos elementos, colecciones editables), subir la versión del tema en
@@ -122,6 +123,12 @@ y `.preview.story.yml`.
 | `ula_sem_card` | Tarjeta de semestre | semester, icon, university, title, subjects[], variant |
 | `ula_timeline_item` | Paso de cronología | title, description, show_line |
 | `ula_uni_card` | Tarjeta de universidad | flag, country, name, abbr, description, tags[] |
+
+> **Catálogo completo y al día.** La tabla anterior recoge los componentes de la **home**. El catálogo
+> **autoritativo** de todos los componentes propios —incluidos los genéricos por slots `ula_card_simple`,
+> `ula_grid_row` y `ula_hero` (este último con sus slots y la prop `size`)— está en
+> [`COMPONENTS.md`](COMPONENTS.md), que es la referencia mantenida al día. Las entidades que los alimentan
+> se documentan en `entities/` (p. ej. `entities/hero.md`).
 
 ### Convenciones y decisiones de diseño de los componentes
 

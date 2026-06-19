@@ -29,20 +29,20 @@
 
 | Categoría | Total | Propios | Heredados en uso | Heredados muertos |
 |---|---|---|---|---|
-| **Componentes SDC** | 73 | 14 | 21 | 38 |
-| **Plantillas** (`templates/`) | 3 | 3 | 0 | (usa el `page.html.twig` de BI por herencia, sin fichero propio) |
+| **Componentes SDC** | 74 | 15 | 21 | 38 |
+| **Plantillas** (`templates/`) | 4 | 4 | 0 | (usa el `page.html.twig` de BI por herencia, sin fichero propio) |
 | **Librerías cargadas globalmente** | 6 | 3 | 3 | — |
 
 El grueso del trabajo de independencia, a nivel de componentes, se concentra en los **21 componentes
 heredados en uso**: de ellos saldrá la lista de piezas propias a crear (adaptando o rehaciendo). Los
-**38 muertos** se eliminan al final sin más. Los **14 propios** ya están (los 12 iniciales + `ula_card_simple`
-y `ula_grid_row`, estos dos añadidos para el modelo de contenido de páginas no-home con Layout Builder).
+**38 muertos** se eliminan al final sin más. Los **15 propios** ya están (los 12 iniciales + `ula_card_simple`,
+`ula_grid_row` y `ula_hero`, añadidos para el modelo de contenido de páginas no-home con Layout Builder).
 
 ---
 
 ## 2. Componentes SDC (`components/`)
 
-### 2.1. Propios (14)
+### 2.1. Propios (15)
 
 Diseñados por nosotros. No requieren acción de independencia (ya son propios); se listan para
 completitud y para fijar la convención de nombres.
@@ -59,6 +59,7 @@ completitud y para fijar la convención de nombres.
 | `ula_why_item` | Design system (`ula_*`) | Ítem "por qué" |
 | `ula_card_simple` | Design system (`ula_*`, basado en slots) | Tarjeta genérica reutilizable para fondo claro; acepta campos renderizados (flujo Views → UI Patterns) |
 | `ula_grid_row` | Design system (`ula_*`, basado en slots) | Rejilla propia de columnas de igual altura; sustituye a `grid_row` (BI) como Format de vista |
+| `ula_hero` | Design system (`ula_*`, basado en slots) | Hero/cabecera de página; dos presentaciones vía prop `size` (page/home); reutiliza `ula_hero_stat` por composición para las stats |
 | `lscm_page_header` | Marco de páginas (`lscm_*` propio) | Header del marco de páginas de contenido (Fase 1) |
 | `lscm_page_footer` | Marco de páginas (`lscm_*` propio) | Footer provisional del marco (Fase 1) |
 | `lscm-master-page` | Marco de la home (`lscm-*` propio) | Marco de la home |
@@ -136,6 +137,7 @@ navbar, navbar_nav, offcanvas, pagination, progress, progress_stacked, spinner
 | `templates/layout/page--front.html.twig` | Propia | Propio | Marco de la home (elemento home) |
 | `templates/layout/page.html.twig` | Propia | Propio | Marco genérico de páginas no-home (v1.5.0, Fase 2). Sustituye al de BI |
 | `templates/content/node--landing.html.twig` | Propia | Propio | Render del nodo landing (home) |
+| `templates/content/paragraph--hero-stat.html.twig` | Propia | Propio | Render del paragraph `hero_stat`: reutiliza `ula_hero_stat` por composición (v1.6.0) |
 
 > **Resuelto en v1.5.0 (Fase 2):** el tema **ya tiene `page.html.twig` propio**
 > (`templates/layout/page.html.twig`), que sustituye al heredado de Bootstrap Italia para todas las

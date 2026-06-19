@@ -80,6 +80,10 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
 - **[`entities/university-semester.md`](entities/university-semester.md)** — `ct_university_semester`:
   **entidad de relación** universidad × semestre (alimenta las pastillas de `ula_uni_card` y, a
   futuro, la página Consortium). Primer cruce entre dos entidades del tema.
+- **[`entities/hero.md`](entities/hero.md)** — `hero` (+ paragraph `hero_stat`): la **cabecera/hero de
+  una página de contenido** (eyebrow, título con resaltado, subtítulo, CTAs, estadísticas). Primera
+  entidad del modelo de páginas no-home: se consume por una **vista filtrada por taxonomía** que alimenta
+  el componente `ula_hero` (no por preprocess → prop como la home).
 
 ## Planes de desarrollo
 
