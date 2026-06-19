@@ -69,19 +69,6 @@ y confirmar qué se pierde.
 **Prioridad:** baja (higiene; condicionada a decidir el tipo de contenido definitivo y a rehacer About).
 **Detalle:** ver la tabla *Inventario de gadgets del piloto* más abajo (qué purgar y qué conservar).
 
-### 9. Rediseñar `hero_view` a filtro contextual (un solo view para todos los heros)
-Hoy `hero_view` tiene el término **fijo** en el filtro (`field_hero_page = About`), de modo que **solo
-sirve para el hero de About**: añadir un hero a otra página obliga a duplicar la vista. Rediseñarla para
-que reciba el término (o el nodo de la página) **como argumento** vía **filtro contextual**, de modo que
-**una sola vista** sirva el hero de cualquier página.
-**Incógnita a validar primero (en el Drupal real):** cómo Layout Builder pasa el argumento (el nodo de la
-página actual) al bloque de la vista — es la incógnita que se aplazó al elegir taxonomía fija (ver
-`docs/elements/layout/CONTENT-LAYOUT.md` §5.7). No hay ninguna vista con filtro contextual en el sitio de
-la que partir.
-**Cuando se aborde:** validar la incógnita; luego reconfigurar la vista (quitar filtro fijo, añadir
-contextual) — **configuración, dump previo** — y actualizar `CONTENT-LAYOUT.md` §5.7 y `entities/hero.md`.
-**Prioridad:** media (evolución del patrón del hero; desbloquea reutilizarlo en más páginas).
-
 ### 10. Componente propio `ula_cta_band` (franja de cierre / llamada a la acción)
 La maqueta de About termina con una **franja CTA** (fondo azul, título + texto + un botón), distinta del
 hero: otro rol (cierre, no cabecera), más simple, y puede aparecer en cualquier página e incluso varias
@@ -112,6 +99,14 @@ git.** Antes de purgar: **dump de BD**.
 
 ## Resueltos
 
+- **`hero_view` rediseñada a filtro contextual (antiguo TO-DO #9).** El hero ya **no** se empareja con la
+  página por un término fijo, sino con un **filtro contextual** sobre `field_target_page` (referencia al
+  **nodo** de la página) con valor por defecto «ID de contenido desde la URL». **Una sola vista sirve el
+  hero de cualquier página**, sin duplicarla. La incógnita de cómo LB pasaba el argumento se disolvió: «ID
+  de contenido desde la URL» lee el nodo de la ruta, no el contexto de LB (validado en `/about`). Cambio de
+  modelo: el campo de término `field_hero_page` se sustituyó por `field_target_page` (nodo). Documentado en
+  `docs/elements/layout/CONTENT-LAYOUT.md` §5.7 y `docs/entities/hero.md`. **Es configuración (BD)**: la
+  vista y el campo viven en la base de datos, no en git.
 - **Componente propio `ula_card_simple` (antiguo TO-DO #7).** Construido y validado: tarjeta del design
   system `ula_*` por slots (ver `docs/COMPONENTS.md` §1.1), sustituta de la heredada `card2_simple` (BI).
   Su **adopción** en las vistas existentes (p. ej. universidades, que aún usan la heredada) queda como paso

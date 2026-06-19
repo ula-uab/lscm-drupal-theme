@@ -31,7 +31,7 @@
   - [5.4. La imagen: formatter en el campo de la vista, no en el slot](#54-la-imagen-formatter-en-el-campo-de-la-vista-no-en-el-slot)
   - [5.5. La variante del componente](#55-la-variante-del-componente)
   - [5.6. Diagnóstico por comparación: checklist de un slot que no pinta](#56-diagnóstico-por-comparación-checklist-de-un-slot-que-no-pinta)
-  - [5.7. Variante: una sola instancia filtrada por término (el hero de página)](#57-variante-una-sola-instancia-filtrada-por-término-el-hero-de-página)
+  - [5.7. Variante: una sola instancia (el hero de página)](#57-variante-una-sola-instancia-el-hero-de-página)
 - [6. Validación: la prueba piloto `/about-lb`](#6-validación-la-prueba-piloto-about-lb)
 - [7. Independencia de Bootstrap Italia en este modelo](#7-independencia-de-bootstrap-italia-en-este-modelo)
 - [8. Implicación para la configuración (sitio sin config/sync)](#8-implicación-para-la-configuración-sitio-sin-configsync)
@@ -300,7 +300,7 @@ heredada equivalente) y revisar, en orden:
 > Confirmar siempre **de qué entorno** procede el dato observado (local `*.ddev.site` vs. hosting) antes
 > de diagnosticar, para no mezclar entornos.
 
-### 5.7. Variante: una sola instancia filtrada por término (el hero de página)
+### 5.7. Variante: una sola instancia (el hero de página)
 
 El mismo flujo **Views → UI Patterns** sirve para alimentar **un componente de instancia única**, no solo
 una colección de tarjetas. El caso es el **hero de página**: una vista devuelve **un** hero (el de la
@@ -314,16 +314,18 @@ Difiere del caso de colección (§5.1) en dos cosas:
   (`eyebrow`←`field_hero_eyebrow`, `title`←`field_hero_title`, `title_highlight`←`field_hero_highlight`,
   `subtitle`←`field_hero_subtitle`, `actions`←`field_hero_ctas`, `stats`←`field_hero_stats`) y la prop
   `size` fijada a `page`.
-- **La vista se filtra para devolver la instancia que toca.** En vez de listar una colección, filtra por un
-  **término de taxonomía** (`field_hero_page` = el término de la página; en About, *About*=tid 22) y se
-  limita a **1 resultado**. El emparejamiento «esta página ↔ este hero» se hace por el **término**, no por
-  las filas.
+- **La vista devuelve la instancia que toca con un _filtro contextual_.** En vez de listar una colección,
+  `hero_view` tiene un **filtro contextual** sobre `field_target_page` —el campo del hero que **referencia
+  el nodo de la página**— con valor por defecto **«ID de contenido desde la URL»**, y se limita a **1
+  resultado**. Al renderizarse en `/about` (nodo 93), el argumento es ese nodo y la vista devuelve el hero
+  cuyo `field_target_page` apunta a él. El emparejamiento «esta página ↔ este hero» lo hace el **argumento
+  de la URL**, no un filtro fijo.
 
 ```
 Vista hero_view (display de bloque, en la Sección 0 del LB de la página)
 └── Row: Component  →  bootstrap_ula_lscm:ula_hero  (prop size = page)
         slots ← view_field (eyebrow/title/title_highlight/subtitle/actions/stats)
-   [Filtros: tipo = Hero  Y  field_hero_page = término de la página · límite 1]
+   [Filtro contextual: field_target_page = nodo de la URL · tipo = Hero · límite 1]
 ```
 
 **La colección anidada (stats), por composición.** Las estadísticas del hero **sí** son una colección, pero
@@ -334,11 +336,16 @@ colección dentro de una entidad se pinta como varios componentes **sin** *field
 (que este sitio no tiene) — ver `../../entities/hero.md` §3 y `../../CONCEPTOS-DRUPAL.md` (composición de
 SDC). Es el mismo mecanismo de "varios" que ya da un campo multivalor mapeado a un slot (como las CTAs).
 
-**Por qué taxonomía y no filtro contextual.** Para seleccionar el hero de cada página se eligió un **filtro
-normal por término** (el mismo tipo de filtro que la vista de universidades, conocido y validado) en lugar
-de un **filtro contextual** (pasar a la vista el nodo de la página como argumento desde Layout Builder). El
-contextual es elegante, pero el modo de alimentar ese argumento en LB no está validado en este sitio (no hay
-ninguna vista con filtro contextual de la que partir); la taxonomía es explícita, editable y sin incógnitas.
+**Por qué filtro contextual por el nodo (y no taxonomía fija).** El diseño inicial (v1.6.0) usaba un
+**filtro fijo por término** (`field_hero_page` = un término del vocabulario `page_id`): sólido, pero **no
+escalable** — cada página obligaba a **duplicar la vista** con otro término. Se rediseñó a **filtro
+contextual por el nodo de la página** (campo `field_target_page` → nodo `lb_contents`). La incógnita que en
+su día frenó el contextual —cómo pasar el argumento desde Layout Builder— **se disolvió** al usar **«ID de
+contenido desde la URL»** como valor por defecto: ese origen lee el **nodo de la ruta**, no el contexto de
+LB, así que funciona con el bloque embebido **sin depender de LB**. Validado en `/about` (con una vista de
+prueba que, embebida en el LB, recibía el nid 93 de la página). Coste asumido: el hero referencia el
+**nodo** de la página, no un término; al editar un hero se elige la página destino. Resultado: **una sola
+`hero_view` sirve el hero de todas las páginas**.
 
 **Full-bleed (presentación, no Views).** En la variante `page`, el hero rompe el contenedor de contenido del
 marco (`.lscm-page__container`, max-width 1200px) para ocupar **todo el ancho** y pegarse bajo el header,

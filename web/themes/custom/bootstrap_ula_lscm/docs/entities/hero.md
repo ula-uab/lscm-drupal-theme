@@ -2,8 +2,8 @@
 
 > **Tipo de documento:** diseño de **entidades propias** del tema (no heredadas). Ver `entities/`.
 >
-> **Creada en:** v1.6.0 · **Mecanismo de consumo:** vista filtrada por taxonomía → componente
-> (Views → UI Patterns, por **slots**), distinto del patrón preprocess → prop de la home
+> **Creada en:** v1.6.0 · **Mecanismo de consumo:** vista con **filtro contextual** por el nodo de la
+> página → componente (Views → UI Patterns, por **slots**), distinto del patrón preprocess → prop de la home
 > (ver `../elements/layout/CONTENT-LAYOUT.md` y `../COMPONENTS.md`, componente `ula_hero`).
 
 ---
@@ -22,8 +22,8 @@ editar sus textos sin tocar código.
 
 **Por qué una entidad separada (y no campos en el tipo de página).** Puede haber heros en varias páginas;
 un tipo de contenido `hero` dedicado, con un nodo por página, mantiene el hero como una pieza
-independiente y reutilizable. El emparejamiento «este hero ↔ esta página» se resuelve con una
-**taxonomía** (ver §3), no incrustando el hero en el nodo de la página.
+independiente y reutilizable. El emparejamiento «este hero ↔ esta página» se resuelve con una **referencia
+al nodo de la página** (`field_target_page`, ver §3), no incrustando el hero en el nodo de la página.
 
 **Por qué la presentación la aporta el componente y no el contenido.** El nodo solo guarda **datos**
 (textos, enlaces, cifras). El aspecto (degradado, colores, tipografía, disposición) lo pone el componente
@@ -31,9 +31,9 @@ propio `ula_hero` (design system `ula_*`), de modo que el contenido editable que
 clases de Bootstrap Italia. Por eso el subtítulo es **texto plano** (sin formato): evita de raíz cualquier
 clase/markup de BI; el estilado lo aporta el CSS del componente.
 
-> **Este tipo, de facto, es el modelo de páginas de contenido tomando forma.** El `hero` y su vista por
-> término son la primera rebanada del modelo de contenido de las páginas (la decisión del «tipo de
-> contenido definitivo», ver `../elements/layout/CONTENT-LAYOUT.md` §9.3). No es solo una página: es el
+> **Este tipo, de facto, es el modelo de páginas de contenido tomando forma.** El `hero` y su vista con
+> **filtro contextual** son la primera rebanada del modelo de contenido de las páginas (la decisión del «tipo
+> de contenido definitivo», ver `../elements/layout/CONTENT-LAYOUT.md` §9.3). No es solo una página: es el
 > patrón que se reutilizará.
 
 ---
@@ -51,7 +51,7 @@ clase/markup de BI; el estilado lo aporta el CSS del componente.
 | `field_hero_subtitle` | string_long | 1 | Párrafo descriptivo. **Texto plano** (sin formato). → slot `subtitle`. |
 | `field_hero_ctas` | link | ∞ | Botones de llamada a la acción: cada valor es **URL + texto del enlace**. → slot `actions`. |
 | `field_hero_stats` | entity_reference_revisions → paragraph `hero_stat` | ∞ | Colección de estadísticas. → slot `stats`. |
-| `field_hero_page` | entity_reference → taxonomy_term (vocab `page_id`) | 1 | **Criterio de filtrado**: identifica a qué página pertenece el hero. La vista filtra por este término. |
+| `field_target_page` | entity_reference → node (bundle `lb_contents`) | 1 | **Criterio de filtrado**: el **nodo de la página** a la que pertenece el hero. La vista filtra por él con un **filtro contextual** («ID de contenido desde la URL»). Requerido; acotado a `lb_contents`. |
 
 ### 2.2. Paragraph `hero_stat`
 
@@ -67,10 +67,13 @@ existe un tipo de campo nativo que lo cubra; por eso se modela con **Paragraphs*
 con dos campos, referenciado múltiple). El criterio es usar la herramienta más simple que cubra el dato, no
 uniformar por uniformar.
 
-**Por qué se reutiliza el vocabulario `page_id`.** Ya existía en el sitio (términos: Home=1, Experiences=2,
-Contents=6, Elegibility=7, Admission=8, Student Hub=9, Alumni=10, **About=22**). Se reutiliza en vez de
-crear uno nuevo, siguiendo el principio de aprovechar lo que ya funciona. El hero de About referencia el
-término **About (tid 22)**.
+**Por qué el hero referencia el _nodo_ de la página (y no un término).** `field_target_page` apunta al
+**nodo `lb_contents`** de la página a la que pertenece el hero. Esto permite que la vista lo seleccione con
+un **filtro contextual** por «ID de contenido desde la URL» (ver §3): el argumento es el nodo de la página
+que se está visitando, así que **una sola vista sirve el hero de cualquier página**, sin duplicarla.
+*(Diseño inicial, en v1.6.0: el hero referenciaba un término del vocabulario `page_id` y la vista filtraba
+por término **fijo**, lo que obligaba a una vista por página. Sustituido por la referencia al nodo + filtro
+contextual; el campo `field_hero_page` (término) se eliminó y se creó `field_target_page` (nodo).)*
 
 ---
 
@@ -79,10 +82,14 @@ término **About (tid 22)**.
 El hero **no** se visita como página propia (no hay una URL `/hero-de-about`): se **inyecta** en la página
 de contenido que lo usa. El flujo:
 
-1. **Vista `hero_view`** (display de bloque, sin página propia): lista nodos de tipo `hero`, **filtrada por
-   `field_hero_page`** = el término de la página (en About, el término About). Limitada a **1 resultado**
-   (un hero por página). Es el mismo mecanismo de la vista de universidades (`consortium_universities`),
-   pero con una criba más (el término), porque hay un hero por página.
+1. **Vista `hero_view`** (display de bloque, sin página propia): lista nodos de tipo `hero`, con un **filtro
+   contextual** sobre `field_target_page` cuyo valor por defecto es **«ID de contenido desde la URL»**. Al
+   renderizarse en una página recibe como argumento el **nodo de esa página** (en `/about`, el nodo 93) y
+   devuelve el hero cuyo `field_target_page` apunta a él. Limitada a **1 resultado**. **Una sola vista sirve
+   el hero de cualquier página** (no se duplica por página): el emparejamiento lo hace el argumento de la
+   URL, no un filtro fijo. Validado: «ID de contenido desde la URL» entrega el nodo de la página también con
+   el bloque embebido en Layout Builder (lee la ruta, no el contexto de LB) — ver
+   `../elements/layout/CONTENT-LAYOUT.md` §5.7.
 2. **Row = Component** `bootstrap_ula_lscm:ula_hero` (Views → UI Patterns). Los campos se mapean a los
    **slots** por `view_field`: `eyebrow`←`field_hero_eyebrow`, `title`←`field_hero_title`,
    `title_highlight`←`field_hero_highlight`, `subtitle`←`field_hero_subtitle`, `actions`←`field_hero_ctas`,
@@ -108,9 +115,9 @@ de contenido que lo usa. El flujo:
 
 ## 4. Notas sobre el contenido
 
-- **Un nodo `hero` por página.** El emparejamiento con la página se hace por el término de `field_hero_page`.
-  Si dos heros compartieran término, la vista (limitada a 1) mostraría uno indeterminado; un término por
-  hero.
+- **Un nodo `hero` por página.** El emparejamiento con la página se hace por el **nodo** referenciado en
+  `field_target_page`. Si dos heros apuntaran a la misma página, la vista (limitada a 1) mostraría uno
+  indeterminado; la unicidad la sostiene la disciplina editorial, no una restricción técnica.
 - **Eyebrow, título y resaltado son texto plano** (string): no admiten HTML. El resaltado se modela como un
   campo aparte (`field_hero_highlight`) en vez de incrustar un `<span>` en el título, para no meter markup
   en el contenido editable.
