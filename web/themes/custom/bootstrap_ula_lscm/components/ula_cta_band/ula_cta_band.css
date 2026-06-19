@@ -1,0 +1,48 @@
+/**
+ * ula_cta_band — tarjeta de llamada a la acción (cierre de página).
+ *
+ * Tarjeta que ocupa el ancho de su contenedor (NO full-bleed, a diferencia de ula_hero):
+ * borde azul marcado + fondo claro (off-white), para destacar antes del footer sin romper
+ * el contenedor de contenido. Sin hover en la tarjeta. Tokens de ula-tokens.css. Sin BI.
+ */
+
+.ula-cta-band {
+  background: var(--off-white);
+  border: 2px solid var(--eu-blue);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.ula-cta-band__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 0.75rem;
+}
+
+.ula-cta-band__text {
+  color: var(--text-mid);
+  max-width: 560px;
+  margin: 0 auto 1.75rem;
+  line-height: 1.6;
+}
+
+/* Acciones: el slot recibe enlaces renderizados (campo Link). Botón sólido dorado
+   (la tarjeta es de fondo claro, así que el dorado con texto azul oscuro contrasta bien). */
+.ula-cta-band__actions a {
+  display: inline-block;
+  background: var(--eu-yellow);
+  color: var(--eu-blue-dark);
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.ula-cta-band__actions a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 51, 153, 0.18);
+}

@@ -1,0 +1,20 @@
+{#
+  ula_cta_band — tarjeta de llamada a la acción (cierre de página).
+
+  Slots (todos opcionales por presencia): title, text, actions. Cada bloque se pinta solo si su
+  slot viene relleno. Tarjeta al ancho del contenedor (NO full-bleed), borde azul y fondo claro.
+  Autónomo: sin markup ni clases de Bootstrap Italia.
+#}
+<div class="ula-cta-band">
+  {% if title %}
+    <h2 class="ula-cta-band__title">{{ title }}</h2>
+  {% endif %}
+
+  {% if text %}
+    <div class="ula-cta-band__text">{{ text }}</div>
+  {% endif %}
+
+  {% if actions %}
+    <div class="ula-cta-band__actions">{{ actions }}</div>
+  {% endif %}
+</div>

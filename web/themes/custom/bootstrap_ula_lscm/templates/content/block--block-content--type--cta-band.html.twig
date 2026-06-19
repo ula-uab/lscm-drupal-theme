@@ -1,0 +1,25 @@
+{#
+  Plantilla del bloque de contenido `cta_band` (theme hook `block`).
+
+  Nombre confirmado con el debug de Twig: la sugerencia que Layout Builder emite para este bloque es
+  `block--block-content--type--cta-band`. Compone el componente `ula_cta_band` con los campos del
+  bloque (mismo mecanismo de composición que `paragraph--hero-stat.html.twig`).
+
+  `title` y `text` se pasan como VALOR CRUDO (`.value`), no como render array, por dos razones:
+   1) No pasan por `field.html.twig` (que aquí sirve Bootstrap Italia por herencia de subtema): el
+      render interno del CTA band queda libre de la ruta de plantillas de BI.
+   2) Evita meter un `<div class="field…">` dentro del `<h2>` del componente (HTML inválido); el
+      `<h2>` recibe texto plano.
+  `actions` se deja como render array (`content.field_cta_link`): así el formateador Link de Drupal
+  construye el `<a>` con el href correcto (más fiable que armar el enlace a mano, sobre todo con URLs
+  provisionales). El `<a>` lo estila el CSS del componente como botón.
+
+  Acceso a la entidad del bloque: `content['#block_content']`. Validado de hecho en /about (si la
+  tarjeta mostrara el botón pero NO el título/texto, este acceso sería otro y habría que ajustarlo).
+#}
+{% set cta = content['#block_content'] %}
+{{ include('bootstrap_ula_lscm:ula_cta_band', {
+  title: cta.field_cta_title.value,
+  text: cta.field_cta_text.value,
+  actions: content.field_cta_link,
+}) }}

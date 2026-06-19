@@ -69,17 +69,18 @@ y confirmar qué se pierde.
 **Prioridad:** baja (higiene; condicionada a decidir el tipo de contenido definitivo y a rehacer About).
 **Detalle:** ver la tabla *Inventario de gadgets del piloto* más abajo (qué purgar y qué conservar).
 
-### 10. Componente propio `ula_cta_band` (franja de cierre / llamada a la acción)
-La maqueta de About termina con una **franja CTA** (fondo azul, título + texto + un botón), distinta del
-hero: otro rol (cierre, no cabecera), más simple, y puede aparecer en cualquier página e incluso varias
-veces. Modelarla como **componente SDC propio nuevo** (`ula_cta_band`; slots `title`/`text`/`actions`,
-full-bleed, tokens propios), **no** como variante de `ula_hero` (forzaría el concepto).
-**A decidir en su mini-análisis:** el mecanismo de colocación/alimentación — bloque de UI Patterns colocado
-en Layout Builder (hay `ui_patterns_blocks`) con el texto escrito en la config del bloque, vs. bloque de
-contenido en línea con campos. **No** modelarlo con vista-por-término (no es "uno por página").
-**Documentación:** ficha en `COMPONENTS.md` + un **ADR** que fije la distinción `ula_hero` (cabecera) vs
-`ula_cta_band` (franja de cierre), para no confundir cuándo usar cada uno.
-**Prioridad:** media (componente nuevo del design system).
+### 11. Componente propio `ula_section_header` (cabecera + título de sección)
+Patrón reutilizable de **cabecera de sección** que aparece en toda la maqueta: una **etiqueta corta**
+precedida de una **rayita dorada** (en la maqueta, `.section-tag`: azul, mayúsculas, con `::before` dorado),
+un **título grande** (`.section-title`) y una **descripción** opcional (`.section-desc`). Es, seguramente, el
+patrón más reutilizable del sitio. Modelarlo como **componente SDC propio** (`ula_section_header`; slots
+tag/title/description).
+**A decidir en su mini-análisis:** (a) **tipografía del título** — en la maqueta usa la de cuerpo en negrita
+(`--font-body` 700), **no** la *display* (Playfair); decidir si se mantiene así o se usa la display; (b) el
+**mecanismo de alimentación/colocación**, que está atado al modelo de secciones de las páginas, aún abierto
+(ver `docs/elements/layout/CONTENT-LAYOUT.md` §9.3): no se da por resuelto copiando el del CTA band.
+**Documentación:** ficha en `COMPONENTS.md` (y `entities/` si acaba teniendo block type/entidad asociada).
+**Prioridad:** media (alto valor de reutilización; bloqueado en parte por el modelo de secciones).
 
 ## Inventario de gadgets del piloto (Paragraphs vs Layout Builder)
 
@@ -99,6 +100,14 @@ git.** Antes de purgar: **dump de BD**.
 
 ## Resueltos
 
+- **Componente propio `ula_cta_band` (antiguo TO-DO #10).** Construido y validado: franja/tarjeta de cierre
+  (CTA) antes del footer (slots `title`/`text`/`actions`; borde azul marcado + fondo claro; **no** full-bleed,
+  ocupa el ancho del contenedor). Se alimenta de un **tipo de bloque de contenido** `cta_band` (campos
+  `field_cta_title`/`field_cta_text`/`field_cta_link`) colocado en Layout Builder, compuesto vía la plantilla
+  `block--block-content--type--cta-band.html.twig` (nombre confirmado con el debug de Twig). Decisión: pieza
+  nueva e independiente del hero (ADR en `docs/entities/cta_band.md`). Documentado en `COMPONENTS.md` §1.4,
+  `entities/cta_band.md`, `CONCEPTOS-DRUPAL.md` e inventario. **El block type y sus ejemplares son
+  configuración (BD)**; el componente y la plantilla son código (git).
 - **`hero_view` rediseñada a filtro contextual (antiguo TO-DO #9).** El hero ya **no** se empareja con la
   página por un término fijo, sino con un **filtro contextual** sobre `field_target_page` (referencia al
   **nodo** de la página) con valor por defecto «ID de contenido desde la URL». **Una sola vista sirve el

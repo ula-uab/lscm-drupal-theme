@@ -215,6 +215,17 @@ composición **desde una plantilla** resuelve ese caso: la plantilla lee el **va
 varios `ula_hero_stat` **sin** un *field formatter* de UI Patterns (que este sitio no tiene). Ver
 `entities/hero.md` §3 y `COMPONENTS.md` §1.3.
 
+**El mismo patrón, en un bloque de contenido (el CTA band).** La composición desde plantilla no es solo para
+paragraphs: también vale para **bloques de contenido** (`block_content`). El CTA band se pinta así: la
+plantilla del bloque `templates/content/block--block-content--type--cta-band.html.twig` hace
+`{{ include('bootstrap_ula_lscm:ula_cta_band', { … }) }}`, pasando el título y el texto como **valor crudo**
+(`content['#block_content'].field_cta_title.value`) y el enlace como **campo renderizado**
+(`content.field_cta_link`). Pasar el valor crudo en vez del render array, además de encajar en un slot, evita
+que esos campos pasen por `field.html.twig` (que aquí sirve Bootstrap Italia por herencia de subtema). Ver
+`entities/cta_band.md` §3 y `COMPONENTS.md` §1.4. Detalle a recordar: el **nombre** de la plantilla del
+bloque (`block--block-content--type--cta-band`) hay que **confirmarlo con el debug de Twig**, porque la
+sugerencia que emite Layout Builder no es la intuitiva (`block--block-content--cta-band` **no** dispara).
+
 ---
 
 ## 6. Vistas (Views) y UI Patterns

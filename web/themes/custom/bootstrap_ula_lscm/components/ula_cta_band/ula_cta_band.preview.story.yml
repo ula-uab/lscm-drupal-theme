@@ -1,0 +1,5 @@
+name: Preview
+slots:
+  title: 'Ready to Apply?'
+  text: 'Applications are reviewed on a rolling basis. Secure your place in the next cohort and start your journey in logistics and supply chain management.'
+  actions: '<a href="#">Start your application</a>'

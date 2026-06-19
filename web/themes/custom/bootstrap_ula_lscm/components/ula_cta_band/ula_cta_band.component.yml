@@ -1,0 +1,21 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA CTA band
+status: experimental
+description: >
+  Franja / tarjeta de llamada a la acción (CTA) del design system ULA, pensada para el cierre de
+  una página (justo antes del footer). A diferencia de ula_hero, NO es una banda a todo el ancho de
+  la pantalla: es una tarjeta que ocupa el ancho de su contenedor, con borde azul marcado y fondo
+  claro (off-white), para destacar sin romper el contenedor de contenido (evita el full-bleed del
+  hero). Contenido por SLOTS: título, texto y acciones (CTAs). Autónomo: no usa markup ni clases de
+  Bootstrap Italia; colores y tipografía salen de los tokens de ula-tokens.css. Sin hover en la
+  tarjeta (el botón sí tiene su realce). Los slots vacíos no se pintan.
+slots:
+  title:
+    title: 'Title (field)'
+    description: 'Título de la llamada a la acción (p. ej. "Ready to Apply?").'
+  text:
+    title: 'Text (field)'
+    description: 'Párrafo descriptivo bajo el título. Opcional.'
+  actions:
+    title: 'Actions / CTA (field)'
+    description: 'Enlace(s) de llamada a la acción (p. ej. un campo Link). Se estilan como botón. Opcional, por presencia.'

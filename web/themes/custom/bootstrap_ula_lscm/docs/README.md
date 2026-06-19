@@ -82,8 +82,12 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
   futuro, la página Consortium). Primer cruce entre dos entidades del tema.
 - **[`entities/hero.md`](entities/hero.md)** — `hero` (+ paragraph `hero_stat`): la **cabecera/hero de
   una página de contenido** (eyebrow, título con resaltado, subtítulo, CTAs, estadísticas). Primera
-  entidad del modelo de páginas no-home: se consume por una **vista filtrada por taxonomía** que alimenta
-  el componente `ula_hero` (no por preprocess → prop como la home).
+  entidad del modelo de páginas no-home: se consume por una **vista con filtro contextual** (por el nodo
+  de la página) que alimenta el componente `ula_hero` (no por preprocess → prop como la home).
+- **[`entities/cta_band.md`](entities/cta_band.md)** — bloque de contenido `cta_band`: la **franja/tarjeta
+  de cierre (CTA)** antes del footer. Es un **tipo de bloque** (no un nodo); se consume colocándolo en
+  Layout Builder y componiéndolo con el componente `ula_cta_band` vía una plantilla del bloque. Incluye el
+  ADR que distingue `ula_hero` (cabecera) de `ula_cta_band` (cierre).
 
 ## Planes de desarrollo
 

@@ -18,6 +18,7 @@
   - [1.1. `ula_card_simple`](#11-ula_card_simple)
   - [1.2. `ula_grid_row`](#12-ula_grid_row)
   - [1.3. `ula_hero`](#13-ula_hero)
+  - [1.4. `ula_cta_band`](#14-ula_cta_band)
 - [2. Tarjetas de contenido (`ula_*`, monopropósito)](#2-tarjetas-de-contenido-ula_-monopropósito)
   - [2.1. `ula_uni_card`](#21-ula_uni_card)
   - [2.2. `ula_spec_card`](#22-ula_spec_card)
@@ -152,10 +153,42 @@ componente no los itera. El mapeo de cada estadística a `ula_hero_stat` lo hace
 `hero_stat` (ver `entities/hero.md` §3 y `CONCEPTOS-DRUPAL.md`, composición de SDC). `ula_hero_stat` se
 reutiliza sin modificar (lo usa también la home).
 
-**Consumo y full-bleed.** Se alimenta vía una **vista filtrada por taxonomía** (`entities/hero.md`,
-`CONTENT-LAYOUT.md`). En `page`, el full-bleed requiere que la página sea de **una sola columna**; los
-detalles y avisos (dependencia del `padding-top` del marco, posible scroll horizontal) están comentados en
-el propio `ula_hero.css`.
+**Consumo y full-bleed.** Se alimenta vía una **vista con filtro contextual** por el nodo de la página
+(`entities/hero.md`, `CONTENT-LAYOUT.md`). En `page`, el full-bleed requiere que la página sea de **una sola
+columna**; los detalles y avisos (dependencia del `padding-top` del marco, posible scroll horizontal) están
+comentados en el propio `ula_hero.css`.
+
+---
+
+### 1.4. `ula_cta_band`
+
+Franja / **tarjeta de llamada a la acción (CTA)** para el **cierre de una página** (justo antes del footer).
+A diferencia de `ula_hero`, **no** es una banda a todo el ancho de la pantalla: es una **tarjeta que ocupa el
+ancho de su contenedor**, con **borde azul marcado** (`--eu-blue`, 2px) y **fondo claro** (`--off-white`),
+pensada para destacar sin romper el contenedor de contenido (evita el full-bleed del hero). Autónoma (sin
+Bootstrap Italia); colores y tipografía salen de los tokens. El contenido entra por **slots**. Sin hover en
+la tarjeta (el botón sí tiene su realce).
+
+Slots:
+
+| Slot | Función |
+|---|---|
+| `title` | Título de la llamada a la acción (p. ej. «Ready to Apply?») |
+| `text` | Párrafo descriptivo. Opcional |
+| `actions` | Enlace(s) de llamada a la acción (campo Link ya renderizado); se estilan como **botón sólido dorado**. Opcional, por presencia |
+
+No tiene props: una sola presentación.
+
+**Consumo (block_content + plantilla, no Views).** A diferencia del hero (Views → UI Patterns), el CTA band
+se alimenta de un **bloque de contenido propio** (`block_content` tipo `cta_band`) colocado en Layout
+Builder; una **plantilla del bloque** (`templates/content/block--block-content--type--cta-band.html.twig`)
+compone este componente con los campos del bloque, pasando `title` y `text` como valor crudo y el enlace como
+campo renderizado. Es el patrón de **composición desde plantilla** (ver `entities/cta_band.md` y
+`CONCEPTOS-DRUPAL.md`).
+
+**Distinción con `ula_hero`.** `ula_hero` es la **cabecera** de la página (arriba, fondo azul, full-bleed);
+`ula_cta_band` es la **franja de cierre** (abajo, tarjeta clara, dentro del contenedor). No se reutiliza el
+hero para cierres ni viceversa — la decisión y su porqué están en el ADR de `entities/cta_band.md`.
 
 ---
 
