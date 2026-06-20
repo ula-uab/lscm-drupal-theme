@@ -31,6 +31,8 @@
   - [3.3. `ula_hero_stat`](#33-ula_hero_stat)
   - [3.4. `ula_timeline_item`](#34-ula_timeline_item)
 - [4. Marco propio (`lscm_*` / `lscm-*`)](#4-marco-propio-lscm_--lscm-)
+- [5. Fichas de detalle (`ula_*`)](#5-fichas-de-detalle-ula_)
+  - [5.1. `ula_faculty_detail`](#51-ula_faculty_detail)
 
 ---
 
@@ -343,3 +345,49 @@ detallado vive en su documento de elemento.
 | `lscm_page_footer` | Footer **provisional** compartido de las páginas de contenido (contenido mínimo, hasta definir el definitivo) | props: `brand_top`, `contact_email` | `elements/layout/SHARED-FRAME-LAYOUT.md` |
 | `lscm-master-page` | Marco de la **home**: compone los componentes `ula_*` en sus secciones (hero, about, journey, universities, specializations, why, admission) | props de texto editables por sección (hero/about/journey/uni/spec/adm/contact…), mapeables a campos del bloque de la home | `elements/home/HOME-ARCHITECTURE.md` |
 | `lscm-master-static` | Versión **estática** de `lscm-master-page` (todo el contenido fijo en plantilla). **No en producción**; útil para despliegue sin CMS dinámico | sin props ni slots | `elements/home/HOME-ARCHITECTURE.md` |
+
+---
+
+## 5. Fichas de detalle (`ula_*`)
+
+Componentes **bespoke** que pintan la **página de detalle completa** de una entidad (todo el bloque main
+content), no una pieza reutilizable ni una tarjeta de listado. A diferencia de los genéricos por slots (§1) y
+de las tarjetas de la home por props string (§2), reciben **datos estructurados por props** (arrays de
+etiquetas, chips, objetos) preparados por un **preprocess dedicado**, y el markup vive íntegro en el
+componente (sin pasar por `field.html.twig`, que en este subtema sirve Bootstrap Italia).
+
+### 5.1. `ula_faculty_detail`
+
+Ficha de detalle de un miembro del Faculty: todo el contenido de un nodo `ct_faculty_member` —cabecera con
+retrato (foto o **iniciales** de respaldo), nombre, título académico y pastillas de posición/rol; cuerpo con
+biografía, chips de *expertise* y *application areas*, y *courses*; rail con contacto, enlaces, *research
+profiles*, afiliación y estado «activo»—. Autónomo (sin Bootstrap Italia), sobre **fondo claro**; tokens de
+`ula-tokens.css`. Cada bloque se pinta **por presencia** (guards): la ficha degrada con elegancia ante los
+muchos campos opcionales.
+
+| Prop | Tipo | Función |
+|---|---|---|
+| `name` | string | Nombre completo (**obligatorio**) |
+| `academic_title` | string | Título académico. Opcional |
+| `initials` | string | Iniciales para el retrato de respaldo (sin foto) |
+| `photo_url` | string (URL) | Foto (media). Si falta, retrato de iniciales |
+| `positions` | array string | Pastillas de posición (sólidas) |
+| `roles` | array string | Pastillas de rol (contorno) |
+| `bio` | string (HTML) | Biografía (Basic HTML), sin escapar |
+| `expertise` | array string | Chips de *expertise* |
+| `application_areas` | array string | Chips de áreas de aplicación |
+| `courses` | array `{title, url}` | Asignaturas que imparte (enlazadas) |
+| `email` | string | Correo de contacto |
+| `website`, `linkedin` | string (URL) | Enlaces. Opcionales |
+| `research_profiles` | array `{label, url}` | Perfiles de investigación (`label` = proveedor) |
+| `affiliation` | object `{department, university_name, university_url, location}` | Afiliación; universidad enlazada si hay `university_url` (interna), texto plano si no (externa) |
+| `active` | boolean | Estado: «Currently teaching» / «Not currently teaching» |
+
+**Consumo (plantilla de nodo + preprocess).** Se alimenta desde la página canónica del nodo (view mode
+`full`): la plantilla `templates/content/node--ct-faculty-member--full.html.twig` compone este componente con
+la variable `faculty`, que prepara el preprocess `bootstrap_ula_lscm_preprocess_node__ct_faculty_member` con
+**valores crudos** (etiquetas de listas, nombres de términos, `{title,url}` de referencias, HTML saneado de
+la bio, enlaces resueltos). Ver `entities/faculty-member.md` §4.1.
+
+**Iconos de *research profiles*.** Como el proveedor es **dato** (el título del enlace), se usa un **icono
+genérico** para todos; los iconos por proveedor quedarían atados a etiquetas concretas (pendiente opcional).

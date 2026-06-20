@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * node--ct-faculty-member--full.html.twig — página de detalle de un Faculty member.
+ *
+ * Plantilla FINA: el preprocess `bootstrap_ula_lscm_preprocess_node__ct_faculty_member`
+ * prepara la variable `faculty` (los props del componente, con VALORES CRUDOS) y aquí solo
+ * se compone el SDC `ula_faculty_detail`. El markup vive en el componente; NO se pasa por
+ * field.html.twig (que en este subtema sirve Bootstrap Italia).
+ *
+ * Solo el view mode 'full' (la página canónica del nodo). El título de página y el breadcrumb
+ * de Drupal se ocultan para este tipo en bootstrap_ula_lscm_preprocess_page() (el <h1> de la
+ * ficha hace de cabecera).
+ */
+#}
+{% if faculty is defined %}
+  {{ include('bootstrap_ula_lscm:ula_faculty_detail', faculty, with_context = false) }}
+{% endif %}

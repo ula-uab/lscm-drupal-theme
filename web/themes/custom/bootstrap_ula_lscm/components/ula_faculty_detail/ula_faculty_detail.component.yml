@@ -1,0 +1,114 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Faculty detail
+status: experimental
+description: >
+  Ficha de detalle de un miembro del Faculty del design system ULA: el bloque "main content"
+  de la página de detalle (todos los campos de un nodo ct_faculty_member), tal y como se aprobó
+  en la maqueta. A diferencia de ula_section_header / ula_card_simple / ula_hero (genéricos, por
+  SLOTS, pensados para Views → UI Patterns), este componente es BESPOKE y se alimenta por PROPS
+  tipados desde una plantilla node--ct-faculty-member--full + un preprocess dedicado: así el
+  preprocess solo prepara datos limpios (valores crudos) y TODO el markup vive aquí, sin pasar
+  por field.html.twig (que en este subtema sirve Bootstrap Italia). Componente autónomo: no usa
+  markup ni clases de Bootstrap Italia; colores y tipografía salen de los tokens de ula-tokens.css
+  (librería global). Pensado para fondo claro. Cada bloque se pinta solo si su prop trae valor
+  (guards por presencia): la ficha degrada con elegancia ante los muchos campos opcionales.
+props:
+  type: object
+  required:
+    - name
+  properties:
+    name:
+      title: 'Full name'
+      description: 'Nombre completo del profesor (título del nodo).'
+      type: string
+    academic_title:
+      title: 'Academic title'
+      description: 'Título académico (p. ej. "Prof. Dr."). Opcional.'
+      type: string
+    initials:
+      title: 'Initials'
+      description: 'Iniciales para el retrato de reserva cuando no hay foto.'
+      type: string
+    photo_url:
+      title: 'Photo URL'
+      description: 'URL de la foto (media). Si está vacía, se usa el retrato de iniciales.'
+      type: string
+    positions:
+      title: 'Positions'
+      description: 'Etiquetas de posición (rango de empleo). Pastillas sólidas.'
+      type: array
+      items:
+        type: string
+    roles:
+      title: 'Roles'
+      description: 'Etiquetas de rol (función en el programa). Pastillas de contorno.'
+      type: array
+      items:
+        type: string
+    bio:
+      title: 'Short bio (HTML)'
+      description: 'Biografía en HTML saneado (Basic HTML). Se imprime con |raw. Opcional.'
+      type: string
+    expertise:
+      title: 'Expertise'
+      description: 'Nombres de términos de expertise (chips). Opcional.'
+      type: array
+      items:
+        type: string
+    application_areas:
+      title: 'Application areas'
+      description: 'Nombres de términos de áreas de aplicación (chips). Opcional.'
+      type: array
+      items:
+        type: string
+    courses:
+      title: 'Courses'
+      description: 'Asignaturas que imparte (referencias a ct_contents_subject). Opcional.'
+      type: array
+      items:
+        type: object
+        properties:
+          title:
+            type: string
+          url:
+            type: string
+    email:
+      title: 'Email'
+      description: 'Correo de contacto. Opcional.'
+      type: string
+    website:
+      title: 'Personal website'
+      description: 'URL de la web personal/institucional. Opcional.'
+      type: string
+    linkedin:
+      title: 'LinkedIn'
+      description: 'URL del perfil de LinkedIn. Opcional.'
+      type: string
+    research_profiles:
+      title: 'Research profiles'
+      description: 'Perfiles de investigación: lista de {label, url} (label = proveedor). Opcional.'
+      type: array
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+          url:
+            type: string
+    affiliation:
+      title: 'Affiliation'
+      description: 'Afiliación: departamento, universidad (con URL si es interna) y localización.'
+      type: object
+      properties:
+        department:
+          type: string
+        university_name:
+          type: string
+        university_url:
+          type: string
+        location:
+          type: string
+    active:
+      title: 'Active'
+      description: 'Si imparte actualmente. Controla el texto del bloque Status.'
+      type: boolean

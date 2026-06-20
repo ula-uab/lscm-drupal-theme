@@ -1,0 +1,56 @@
+name: Preview
+props:
+  name: 'Juan José Ramos González'
+  academic_title: 'Prof. Dr.'
+  initials: 'JR'
+  positions:
+    - 'Associate Professor'
+  roles:
+    - 'Programme Director'
+    - 'Steering Committee Member'
+    - 'Course Instructor'
+  bio: >
+    <p>Associate Professor at the Department of Telecommunications and Systems
+    Engineering, where his work bridges operations research and decision-support
+    systems for complex transportation and logistics problems.</p>
+    <p>He coordinates the LSCM European Joint Master and leads research on
+    optimization applied to unmanned traffic management and intelligent
+    transportation systems.</p>
+  expertise:
+    - 'Operations Research'
+    - 'Optimization'
+    - 'Modelling & Simulation'
+    - 'Decision Support'
+    - 'Discrete-Event Simulation'
+    - 'Systems Engineering'
+    - 'Digital Twins'
+  application_areas:
+    - 'Air Traffic Management'
+    - 'Unmanned Traffic Management'
+    - 'Intelligent Transportation Systems'
+    - 'Decision Support Systems'
+    - 'Logistics'
+    - 'Supply Chain Management'
+    - 'Transportation Systems'
+    - 'Vehicle Routing'
+  courses:
+    - title: 'Decision Making'
+      url: '#'
+    - title: 'Optimization Methods for Logistics'
+      url: '#'
+    - title: 'Simulation of Transportation Systems'
+      url: '#'
+  email: 'coord.master.lscm@uab.cat'
+  website: 'https://webs.uab.cat/intelligent-transportation-systems/'
+  linkedin: 'https://www.linkedin.com/in/jjramosgo/'
+  research_profiles:
+    - label: 'ORCID'
+      url: 'https://orcid.org/0000-0002-0881-7205'
+    - label: 'Google Scholar'
+      url: 'https://scholar.google.es/citations?user=tq2k144AAAAJ'
+  affiliation:
+    department: 'Department of Telecommunications and Systems Engineering'
+    university_name: 'Universitat Autònoma de Barcelona'
+    university_url: '#'
+    location: 'Barcelona, Catalonia, Spain'
+  active: true

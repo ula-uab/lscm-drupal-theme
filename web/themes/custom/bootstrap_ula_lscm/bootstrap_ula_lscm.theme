@@ -424,14 +424,202 @@ function bootstrap_ula_lscm_preprocess_page(array &$variables): void {
 
   // Páginas de contenido compuestas con Layout Builder: ocultar los elementos de cabecera
   // que pinta Drupal (el bloque 'page_title' y el breadcrumb del marco), que no deben
-  // mostrarse en estas páginas: el hero de la composición ya hace de cabecera. Reversible:
+  // mostrarse en estas páginas: el hero de la composición (o el nombre de la ficha de
+  // faculty) ya hace de cabecera. Reversible:
   // basta eliminar este bloque; título y breadcrumb se siguen mostrando en el resto de
   // páginas. Cuando se retire el tipo de prueba 'lb_test' (ver TODO.md #8), dejar solo el
   // tipo definitivo en la lista.
   $node = \Drupal::routeMatch()->getParameter('node');
-  $tipos_sin_cabecera_drupal = ['lb_contents', 'lb_test'];
+  $tipos_sin_cabecera_drupal = ['lb_contents', 'lb_test', 'ct_faculty_member'];
   if ($node instanceof \Drupal\node\NodeInterface && in_array($node->bundle(), $tipos_sin_cabecera_drupal, TRUE)) {
     unset($variables['page']['title']);
     unset($variables['page']['breadcrumb']);
   }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for node templates — ficha de Faculty member.
+ *
+ * Prepara la variable 'faculty' (los props del componente ula_faculty_detail) a partir de los
+ * campos del nodo, como VALORES CRUDOS: etiquetas de listas, nombres de términos, títulos+URL de
+ * referencias, HTML saneado de la bio y enlaces ya resueltos. Así el markup vive en el SDC y NO se
+ * pasa por field.html.twig (que en este subtema sirve Bootstrap Italia). Solo para el view mode
+ * 'full' (la página de detalle). La plantilla node--ct-faculty-member--full compone el SDC con esto.
+ */
+function bootstrap_ula_lscm_preprocess_node__ct_faculty_member(array &$variables): void {
+  $node = $variables['node'] ?? NULL;
+  if (!$node || ($variables['view_mode'] ?? '') !== 'full') {
+    return;
+  }
+  $variables['faculty'] = _bootstrap_ula_lscm_faculty_props($node);
+}
+
+/**
+ * Construye el array de props de ula_faculty_detail a partir de un nodo ct_faculty_member.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *
+ * @return array
+ */
+function _bootstrap_ula_lscm_faculty_props($node): array {
+  $name = $node->label();
+
+  // Afiliación: si hay referencia interna, se usa (nombre + URL); si no, el texto externo.
+  $affiliation = [
+    'department' => $node->get('field_ct_fcltmb_department')->value ?? '',
+    'university_name' => '',
+    'university_url' => '',
+    'location' => $node->get('field_ct_fcltmb_location')->value ?? '',
+  ];
+  if (!$node->get('field_ct_fcltmb_affil_internal')->isEmpty()
+      && ($uni = $node->get('field_ct_fcltmb_affil_internal')->entity)) {
+    $affiliation['university_name'] = $uni->label();
+    try {
+      $affiliation['university_url'] = $uni->toUrl()->toString();
+    }
+    catch (\Exception $e) {
+      $affiliation['university_url'] = '';
+    }
+  }
+  elseif (!$node->get('field_ct_fcltmb_affil_external')->isEmpty()) {
+    $affiliation['university_name'] = $node->get('field_ct_fcltmb_affil_external')->value ?? '';
+  }
+
+  return [
+    'name' => $name,
+    'academic_title' => $node->get('field_ct_fcltmb_academic_title')->value ?? '',
+    'initials' => _bootstrap_ula_lscm_initials($name),
+    'photo_url' => _bootstrap_ula_lscm_media_image_url($node, 'field_ct_fcltmb_photo'),
+    'positions' => _bootstrap_ula_lscm_list_labels($node, 'field_ct_fcltmb_positions'),
+    'roles' => _bootstrap_ula_lscm_list_labels($node, 'field_ct_fcltmb_roles'),
+    'bio' => _bootstrap_ula_lscm_text_value($node, 'field_ct_fcltmb_bio'),
+    'expertise' => _bootstrap_ula_lscm_term_names($node, 'field_ct_fcltmb_expertise'),
+    'application_areas' => _bootstrap_ula_lscm_term_names($node, 'field_ct_fcltmb_app_areas'),
+    'courses' => _bootstrap_ula_lscm_node_refs($node, 'field_ct_fcltmb_courses'),
+    'email' => $node->get('field_ct_fcltmb_email')->value ?? '',
+    'website' => _bootstrap_ula_lscm_link_uri($node, 'field_ct_fcltmb_website'),
+    'linkedin' => _bootstrap_ula_lscm_link_uri($node, 'field_ct_fcltmb_linkedin'),
+    'research_profiles' => _bootstrap_ula_lscm_link_list($node, 'field_ct_fcltmb_research_prof'),
+    'affiliation' => $affiliation,
+    'active' => !$node->get('field_ct_fcltmb_active')->isEmpty()
+      ? (bool) $node->get('field_ct_fcltmb_active')->value
+      : FALSE,
+  ];
+}
+
+/**
+ * Iniciales de un nombre (primera letra de la primera y de la última palabra), en mayúsculas.
+ * Reserva para el retrato cuando no hay foto.
+ */
+function _bootstrap_ula_lscm_initials(string $name): string {
+  $parts = preg_split('/\s+/', trim($name)) ?: [];
+  if (!$parts || $parts[0] === '') {
+    return '';
+  }
+  $first = mb_substr($parts[0], 0, 1);
+  $last = count($parts) > 1 ? mb_substr(end($parts), 0, 1) : '';
+  return mb_strtoupper($first . $last);
+}
+
+/**
+ * Devuelve las ETIQUETAS (no las claves) de un campo list_string multivalor, en orden.
+ * Resuelve cada clave contra los valores permitidos del campo. [] si está vacío.
+ *
+ * @return array<int, string>
+ */
+function _bootstrap_ula_lscm_list_labels($node, string $field): array {
+  if ($node->get($field)->isEmpty()) {
+    return [];
+  }
+  $allowed = $node->get($field)->getFieldDefinition()
+    ->getFieldStorageDefinition()->getSetting('allowed_values') ?? [];
+  $labels = [];
+  foreach ($node->get($field) as $item) {
+    $value = $item->value;
+    $labels[] = $allowed[$value] ?? $value;
+  }
+  return $labels;
+}
+
+/**
+ * Devuelve los NOMBRES de los términos referenciados por un campo entity_reference a taxonomía.
+ *
+ * @return array<int, string>
+ */
+function _bootstrap_ula_lscm_term_names($node, string $field): array {
+  if ($node->get($field)->isEmpty()) {
+    return [];
+  }
+  $names = [];
+  foreach ($node->get($field)->referencedEntities() as $term) {
+    $names[] = $term->label();
+  }
+  return $names;
+}
+
+/**
+ * Devuelve [{title, url}] de los nodos referenciados por un campo entity_reference a nodo.
+ *
+ * @return array<int, array{title: string, url: string}>
+ */
+function _bootstrap_ula_lscm_node_refs($node, string $field): array {
+  if ($node->get($field)->isEmpty()) {
+    return [];
+  }
+  $out = [];
+  foreach ($node->get($field)->referencedEntities() as $ref) {
+    try {
+      $url = $ref->toUrl()->toString();
+    }
+    catch (\Exception $e) {
+      $url = '';
+    }
+    $out[] = ['title' => $ref->label(), 'url' => $url];
+  }
+  return $out;
+}
+
+/**
+ * Devuelve la URL (string) del primer valor de un campo Link. '' si está vacío.
+ */
+function _bootstrap_ula_lscm_link_uri($node, string $field): string {
+  if ($node->get($field)->isEmpty()) {
+    return '';
+  }
+  $item = $node->get($field)->first();
+  if (!$item) {
+    return '';
+  }
+  try {
+    return $item->getUrl()->toString();
+  }
+  catch (\Exception $e) {
+    return $item->uri ?? '';
+  }
+}
+
+/**
+ * Devuelve [{label, url}] de un campo Link MULTIVALOR (label = título del enlace = proveedor).
+ * Omite los que no resuelvan URL. [] si está vacío.
+ *
+ * @return array<int, array{label: string, url: string}>
+ */
+function _bootstrap_ula_lscm_link_list($node, string $field): array {
+  if ($node->get($field)->isEmpty()) {
+    return [];
+  }
+  $out = [];
+  foreach ($node->get($field) as $item) {
+    try {
+      $url = $item->getUrl()->toString();
+    }
+    catch (\Exception $e) {
+      $url = $item->uri ?? '';
+    }
+    if ($url === '') {
+      continue;
+    }
+    $out[] = ['label' => $item->title ?: $url, 'url' => $url];
+  }
+  return $out;
 }

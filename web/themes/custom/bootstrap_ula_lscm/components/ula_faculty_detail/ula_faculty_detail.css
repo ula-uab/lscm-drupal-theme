@@ -1,0 +1,303 @@
+/**
+ * ula_faculty_detail — ficha de detalle de un Faculty member (bloque main content).
+ *
+ * Portado de la maqueta v2 aprobada. Componente autónomo: sin Bootstrap Italia; consume los
+ * tokens de ula-tokens.css (librería global). Los estilos del lienzo/página de la maqueta NO
+ * van aquí (los aporta el marco del sitio); aquí solo el componente.
+ *
+ * Pensado para fondo claro. Cada bloque se pinta por presencia (lo controla el Twig).
+ */
+
+.ula-faculty-detail {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-top: 2.5rem;
+}
+
+/* Eyebrow (lenguaje de section_header: rayita dorada + azul mayúsculas). */
+.ula-faculty-detail__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--eu-blue);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+}
+.ula-faculty-detail__eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 2px;
+  background: var(--eu-yellow);
+  display: inline-block;
+}
+
+/* ── Cabecera: retrato + identidad ── */
+.ula-faculty-detail__header {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 2.2rem;
+  align-items: start;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2.2rem;
+}
+
+.ula-faculty-detail__portrait {
+  width: 180px;
+  height: 180px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  display: block;
+}
+.ula-faculty-detail__portrait--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--eu-blue), var(--eu-blue-light));
+  color: var(--eu-yellow);
+  font-family: var(--font-display);
+  font-size: 3.4rem;
+  font-weight: 600;
+}
+
+.ula-faculty-detail__name {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--text-dark);
+  margin: 0 0 0.35rem;
+}
+.ula-faculty-detail__academic-title {
+  font-size: 1.05rem;
+  color: var(--text-mid);
+  font-weight: 500;
+  margin: 0 0 1.1rem;
+}
+
+/* Pastillas: posición (sólida) + rol (contorno). */
+.ula-faculty-detail__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+.ula-faculty-detail__pill {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 5px 12px;
+  border-radius: 100px;
+  line-height: 1.4;
+}
+.ula-faculty-detail__pill--position {
+  background: var(--eu-blue);
+  color: var(--white);
+}
+.ula-faculty-detail__pill--role {
+  background: rgba(0, 51, 153, 0.07);
+  color: var(--eu-blue);
+  border: 1px solid var(--border);
+}
+
+/* ── Cuerpo: columna principal + rail ── */
+.ula-faculty-detail__body {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.6rem;
+  margin-top: 1.6rem;
+}
+
+.ula-faculty-detail__card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.8rem;
+}
+.ula-faculty-detail__card + .ula-faculty-detail__card {
+  margin-top: 1.6rem;
+}
+
+.ula-faculty-detail__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--eu-blue);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+}
+.ula-faculty-detail__label::before {
+  content: '';
+  width: 22px;
+  height: 2px;
+  background: var(--eu-yellow);
+  display: inline-block;
+}
+
+/* Biografía (rich text saneado). */
+.ula-faculty-detail__bio {
+  font-size: 1rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+.ula-faculty-detail__bio p {
+  margin: 0 0 0.9rem;
+}
+.ula-faculty-detail__bio p:last-child {
+  margin-bottom: 0;
+}
+.ula-faculty-detail__bio ul,
+.ula-faculty-detail__bio ol {
+  margin: 0 0 0.9rem;
+  padding-left: 1.1rem;
+}
+.ula-faculty-detail__bio li {
+  margin-bottom: 0.3rem;
+}
+
+/* Chips de taxonomía. */
+.ula-faculty-detail__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ula-faculty-detail__chip {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: rgba(0, 51, 153, 0.06);
+  color: var(--eu-blue);
+  border: 1px solid var(--border);
+}
+.ula-faculty-detail__taxo + .ula-faculty-detail__taxo {
+  margin-top: 1.6rem;
+}
+
+/* Courses. */
+.ula-faculty-detail__courses {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ula-faculty-detail__courses li + li {
+  border-top: 1px solid var(--border);
+}
+.ula-faculty-detail__courses a {
+  display: block;
+  padding: 0.7rem 0;
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+.ula-faculty-detail__courses a:hover {
+  color: var(--eu-blue);
+}
+
+/* Rail. */
+.ula-faculty-detail__rail-block + .ula-faculty-detail__rail-block {
+  margin-top: 1.8rem;
+}
+.ula-faculty-detail__linklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.ula-faculty-detail__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text-dark);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  word-break: break-word;
+}
+.ula-faculty-detail__link:hover {
+  color: var(--eu-blue);
+}
+.ula-faculty-detail__link svg {
+  flex: none;
+  color: var(--eu-blue);
+}
+
+/* Afiliación: Departamento → Universidad (enlace si existe) → Localización. */
+.ula-faculty-detail__affil-dept {
+  font-size: 0.9rem;
+  color: var(--text-mid);
+  line-height: 1.5;
+  margin: 0 0 0.5rem;
+}
+.ula-faculty-detail__affil-uni {
+  margin: 0 0 0.5rem;
+}
+.ula-faculty-detail__affil-uni a {
+  font-weight: 700;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+.ula-faculty-detail__affil-uni a:hover {
+  color: var(--eu-blue);
+  text-decoration: underline;
+}
+.ula-faculty-detail__affil-uni-plain {
+  font-weight: 700;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+.ula-faculty-detail__affil-loc {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.9rem;
+  color: var(--text-mid);
+}
+.ula-faculty-detail__affil-loc svg {
+  flex: none;
+  color: var(--eu-blue);
+}
+
+/* Status (lectura del campo active). */
+.ula-faculty-detail__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+.ula-faculty-detail__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--eu-blue);
+  flex: none;
+}
+.ula-faculty-detail__dot--off {
+  background: var(--text-light);
+}
+
+/* Responsive. */
+@media (max-width: 860px) {
+  .ula-faculty-detail__header {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+  .ula-faculty-detail__portrait,
+  .ula-faculty-detail__portrait--placeholder {
+    width: 140px;
+    height: 140px;
+  }
+  .ula-faculty-detail__body {
+    grid-template-columns: 1fr;
+  }
+}

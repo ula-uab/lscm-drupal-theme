@@ -153,24 +153,60 @@ quedó sin asignar. El mismo enfoque cerrado se aplicó a `positions`/`roles` (c
 
 ---
 
-## 4. Cómo se consume (lógica en el tema) — pendiente de la Fase 2
+## 4. Cómo se consume (lógica en el tema)
 
-La **presentación aún no está construida**. La Fase 2 del hito definirá:
-- un **componente SDC propio** para la tarjeta de faculty (la `.person` de la maqueta: avatar circular
-  solapado + nombre + rol), nuevo en el catálogo (ver `../COMPONENTS.md`);
-- una **vista** que liste los nodos `ct_faculty_member` y los presente **sin Bootstrap Italia**, mapeando
-  campo→componente (en línea con ADR-LAYOUT-004 de `../elements/layout/CONTENT-LAYOUT.md`);
-- el **mecanismo de carrusel** (no presente en la maqueta, que es rejilla estática);
-- la **inserción** de esa vista como bloque en una sección de Layout Builder de `/about`.
+La entidad tiene **dos presentaciones**. La **página de detalle** (todos los campos) está **construida y
+validada** (§4.1). La **tarjeta** para el carrusel de la sección Faculty & Research de `/about` queda
+**pendiente** (resto de la Fase 2, §4.2).
 
-Cuando se implemente y valide, esta sección se completará y se documentará el elemento correspondiente en
-`../elements/about/` (o el que proceda), siguiendo el orden del proyecto: implementar y validar primero,
-documentar al cerrar.
+### 4.1. Página de detalle (construida)
 
-> **Decisión de presentación heredada del modelo de campos:** al renderizar, los valores de texto se
-> pasarán **crudos** a los componentes (no como render array), para no atravesar `field.html.twig`, que en
-> este subtema sirve markup de Bootstrap Italia; mismo criterio que `cta_band` y `section_header`. Esto se
-> concretará en la Fase 2.
+**Mecanismo elegido: plantilla de nodo + componente SDC** (frente a Layout Builder por *bundle* o a una
+vista). Es lo nativo para «mostrar un nodo», da control total anti-BI y reaprovecha la disciplina ya
+validada en `cta_band`/`section_header` (plantilla que compone un SDC con **valor crudo**). La página
+canónica del nodo (view mode `full`) se renderiza así, sin atravesar `field.html.twig` (que en este subtema
+sirve Bootstrap Italia).
+
+Piezas:
+- **Componente** `ula_faculty_detail` (SDC **bespoke**, por **props**; ver `../COMPONENTS.md` §5.1): pinta
+  todo el bloque main content de la ficha. A diferencia de los SDC genéricos por slots, recibe datos
+  **estructurados** (arrays de etiquetas, chips, `{title,url}`, `{label,url}`, objeto de afiliación), porque
+  lo alimenta una plantilla + preprocess dedicados (no Views → UI Patterns).
+- **Plantilla** `templates/content/node--ct-faculty-member--full.html.twig`: fina; solo compone el SDC con la
+  variable `faculty` (`with_context = false`). Acotada al view mode `full` para no interferir con otras
+  presentaciones (p. ej. la futura tarjeta).
+- **Preprocess** `bootstrap_ula_lscm_preprocess_node__ct_faculty_member` (en el `.theme`): prepara `faculty`
+  con **valores crudos**, reutilizando/añadiendo helpers: `_text_value` (bio, HTML saneado por
+  `check_markup`), `_media_image_url` (foto), `_list_labels` (clave→etiqueta de positions/roles),
+  `_term_names` (taxonomías), `_node_refs` (courses → `{title,url}`), `_link_uri` (website/linkedin) y
+  `_link_list` (research profiles → `{label,url}`). **Guards `isEmpty`** en todos los campos opcionales (la
+  lección de `section_header`: acceder a `.value` de un campo vacío rompe el render).
+- **Afiliación ramificada**: si hay referencia interna (`affil_internal`) se usa (nombre + URL del nodo de
+  universidad del consorcio); si no, el texto externo (`affil_external`), sin enlace.
+- **Sin foto**: cuando `photo` está vacío (estado actual de los 10 nodos), el componente pinta un retrato de
+  **iniciales** (calculadas en `_initials`).
+
+URL y navegación:
+- **URL legible** vía **Pathauto**: patrón `/faculty/[node:title]` acotado a `ct_faculty_member` (módulos
+  `pathauto` + `ctools`, instalados en este hito; `token` ya estaba). El patrón y los alias son
+  **configuración en BD** (no git).
+- **Fuera del menú**: la página existe por su URL pero no se añade a ningún menú; se alcanzará desde los
+  enlaces de las tarjetas (§4.2).
+- **Cabecera de Drupal oculta**: `bootstrap_ula_lscm_preprocess_page` oculta el bloque `page_title` y el
+  breadcrumb para `ct_faculty_member` (el `<h1>` de la ficha hace de cabecera), igual que para las páginas de
+  Layout Builder.
+
+Fondo: la ficha va sobre **fondo blanco** del marco. Se evaluó un lienzo `--off-white` (full-bleed en el
+componente) para resaltar las tarjetas, pero se **descartó** por la discontinuidad blanca con el footer;
+recuperar ese efecto, si se quiere, debe hacerse a **nivel de marco** (pendiente transversal), no desde el
+componente.
+
+### 4.2. Tarjeta + carrusel en `/about` (pendiente)
+
+Resto de la Fase 2: un componente de **tarjeta** de faculty (un **subconjunto** de campos) presentado en un
+**carrusel** en la sección Faculty & Research de `/about`. El mecanismo concreto (vista que liste los nodos +
+presentación sin BI; el carrusel no está en la maqueta, que es rejilla estática) se decidirá al abordarlo, y
+esta sección se ampliará entonces.
 
 ---
 
@@ -207,7 +243,8 @@ de investigación, áreas de aplicación y expertise) se cargaron desde los dato
 
 > **Configuración y contenido en BD, no en git.** El tipo de contenido `ct_faculty_member`, sus 20 campos,
 > los dos vocabularios y los 10 nodos son **configuración/contenido**: viven en la base de datos, no en el
-> repositorio (ver `../ARCHITECTURE.md`). El repo solo versionará el **código** de la presentación cuando se
-> aborde la Fase 2 (componente y, en su caso, plantilla/preprocess). Los scripts de creación (content type,
-> términos y nodos) son **de un solo uso** y **no se versionan**. Cualquier operación sobre esta
-> configuración exige **dump previo** de la BD.
+> repositorio (ver `../ARCHITECTURE.md`). El **código** de la presentación de la **página de detalle**
+> (componente `ula_faculty_detail`, plantilla `node--ct-faculty-member--full` y el preprocess del `.theme`)
+> **sí** se versiona en el repo; la **tarjeta/carrusel** de `/about` se versionará al abordarla (§4.2). Los
+> scripts de creación (content type, términos y nodos) son **de un solo uso** y **no se versionan**.
+> Cualquier operación sobre esta configuración exige **dump previo** de la BD.
