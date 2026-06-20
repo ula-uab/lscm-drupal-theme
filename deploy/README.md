@@ -124,7 +124,17 @@ Dales permiso de ejecución una vez:
 chmod +x deploy/scripts/*.sh
 ```
 
-Ejecuta desde la **raíz del proyecto**, en orden:
+Los scripts se agrupan por propósito:
+
+- **Build y empaquetado de código:** `1-build.sh` (compila el tema), `2-stage-flat.sh`
+  (arma el artefacto plano), `3-package-full.sh` (comprime el sitio completo) y
+  `4-package-theme.sh` (comprime solo el tema, para redespliegues parciales — §9).
+- **Empaquetado de datos** (no código): `5a-package-db.sh` (BD) y `5b-package-files.sh`
+  (ficheros gestionados). Generan los artefactos de la puesta en producción (§7).
+
+Todos dejan sus artefactos en `deploy/deployment-files/` (ignorada por git).
+
+Para el primer despliegue / despliegue completo, ejecuta desde la **raíz del proyecto**, en orden:
 
 ### `deploy/scripts/1-build.sh` — compilar el tema
 Compila los assets del tema con Webpack (`npm ci` + `npm run build:prod`) usando Node 22
@@ -151,11 +161,13 @@ nvm en el host).
 > not up to date". Es inofensivo: `install` **no** re-resuelve, instala las versiones del
 > lock. **No ejecutes `composer update`.**
 
-### `deploy/scripts/3-package.sh` — comprimir
-Comprime `deploy/build/` en `deploy/deployment-files/lscm-deploy.zip`, con el contenido en
-la raíz del zip para que al descomprimir en el docroot quede todo plano.
+### `deploy/scripts/3-package-full.sh` — comprimir el sitio completo
+Comprime `deploy/build/` en `deploy/deployment-files/lscm-full.zip`, con el contenido en
+la raíz del zip para que al descomprimir **en el docroot** quede todo plano.
 
-> Para **redespliegues** que solo tocan el tema existe además `4-package-theme.sh` (§9).
+> Para **redespliegues** que solo tocan el tema existe `4-package-theme.sh` (§9); para los
+> artefactos de datos (BD y ficheros gestionados), `5a-package-db.sh` y
+> `5b-package-files.sh` (§7).
 
 ---
 
@@ -168,27 +180,45 @@ la raíz del zip para que al descomprimir en el docroot quede todo plano.
 > módulos que no usas, paquetes de `vendor` distintos): un "Frankenstein" que da fallos
 > sutiles y difíciles de depurar sin shell. Hay que extraer sobre un docroot **limpio**.
 
+### Dónde se sube y se descomprime cada artefacto (¡importante!)
+
+Cada artefacto está pensado para **una carpeta concreta**. Descomprimirlo donde no toca
+deja el contenido mal anidado.
+
+| Artefacto | Lo genera | Subir a | Descomprimir / usar en |
+|---|---|---|---|
+| `lscm-full.zip` | `3-package-full.sh` | el docroot | **el docroot (raíz)** → `index.php`, `core/`, `vendor/`… quedan planos |
+| `lscm-theme.zip` | `4-package-theme.sh` | el docroot | **el docroot (raíz)** — el zip ya trae `themes/custom/bootstrap_ula_lscm/` |
+| `lscm-files.zip` | `5b-package-files.sh` | `sites/default/files/` | **dentro de `sites/default/files/`** (NO en la raíz del docroot) |
+| `lscm-db.sql.gz` | `5a-package-db.sh` | phpMyAdmin | se **importa** (no se descomprime en el sistema de ficheros) |
+
+Errores típicos a evitar: descomprimir `lscm-files.zip` en el docroot (esparciría los
+ficheros gestionados por la raíz del sitio), o `lscm-theme.zip` dentro de `themes/custom/`
+(crearía `themes/custom/themes/custom/…`).
+
 Pasos:
 
-1. Sube `deploy/deployment-files/lscm-deploy.zip` por el **gestor de ficheros** de Plesk
+1. Sube `deploy/deployment-files/lscm-full.zip` por el **gestor de ficheros** de Plesk
    al docroot.
 2. Si al descomprimir te pregunta si reemplazar ficheros existentes, **cancela**: no
    extraigas mezclando.
-3. **Vacía el docroot del Drupal de fábrica** desde el gestor de ficheros: borra
-   `core/`, `vendor/`, `modules/`, `profiles/`, `themes/`, `sites/`, `index.php`,
-   `autoload.php`, `update.php`, `.htaccess`, `robots.txt`, `composer.json`,
-   `composer.lock`, etc. Es **solo código**: la BD no se toca (los datos del Drupal de
-   fábrica están en la BD, no en estos ficheros), así que no hay nada que perder al
-   borrarlos.
+3. **Vacía el docroot del Drupal de fábrica** desde el gestor de ficheros. Es **solo
+   código**: la BD no se toca (los datos del Drupal de fábrica están en la BD, no en estos
+   ficheros), así que no hay nada que perder al borrarlos.
 
-   **CONSERVA** (no son de Drupal, son del servidor y no están en el artefacto):
+   **BORRAR** (todo lo que es Drupal):
+   - Carpetas: `core/`, `vendor/`, `modules/`, `profiles/`, `themes/`, `sites/`.
+   - Ficheros de la raíz: `index.php`, `autoload.php`, `update.php`, `.htaccess`,
+     `robots.txt`, `composer.json`, `composer.lock` y demás ficheros sueltos de Drupal.
+
+   **NO BORRAR / CONSERVAR** (no son de Drupal, son del servidor y no están en el artefacto):
    - `.well-known/` — la usa Plesk para el certificado SSL.
    - `.user.ini` — configuración de PHP por directorio de Plesk.
    - `sites/default/files/` **solo si** ya contuviera subidas reales (en una instalación
      de fábrica está vacío; si dudas, descárgalo antes como copia).
    - Cualquier otro fichero/carpeta que Plesk haya puesto y tú no hayas subido.
 
-4. **Extrae tu zip** en el docroot ya vacío. Quedará plano: `index.php`, `core/`,
+4. **Extrae `lscm-full.zip`** en el docroot ya vacío. Quedará plano: `index.php`, `core/`,
    `modules/`, `themes/`, `vendor/`, `sites/`…
 5. No hace falta tocar el document root ni añadir `.htaccess` de redirección: el
    `.htaccess` propio de Drupal, ahora en la raíz del docroot, sirve el sitio
@@ -220,21 +250,27 @@ La configuración y el contenido del sitio (módulos activos, tema, nodos, etc.)
 BD, no en git. Hay que importar tu **dump** en la BD de producción **a la que apunta
 `settings.php`** (la `DB_NAME` de tu `./.env`).
 
-**Primero, genera el dump desde tu local** (no está en el repo; `backups/` y `*.sql*` están
-en `.gitignore`). Exporta la BD de DDEV:
+**Primero, genera el artefacto de BD desde tu local** con el script:
 
 ```bash
-mkdir -p backups
-ddev export-db --file=backups/lscm-$(date +%Y%m%d).sql.gz
+deploy/scripts/5a-package-db.sh
 ```
 
-Genera uno **fresco** antes de cada despliegue de BD, para que refleje el estado actual de
-tu local. Si phpMyAdmin se queja por **tamaño**, genera una variante "lean" que vuelca las
+Genera `deploy/deployment-files/lscm-db.sql.gz` (artefacto de despliegue, ignorado por
+git). Hazlo **fresco** antes de cada despliegue de BD, para que refleje el estado actual de
+tu local.
+
+> **`deployment-files/` ≠ `backups/`.** El dump que se **sube** a producción es un
+> **artefacto de despliegue** y vive en `deploy/deployment-files/`. La carpeta `backups/`
+> queda reservada a su propósito: **copias de respaldo** (red de seguridad), no artefactos
+> de subida.
+
+Si phpMyAdmin se queja por **tamaño**, genera a mano una variante "lean" que vuelca las
 tablas de caché solo con su estructura (sin datos), mucho más pequeña:
 
 ```bash
 ddev drush sql:dump --structure-tables-key=common --gzip \
-  --result-file=/var/www/html/backups/lscm-lean.sql
+  --result-file=/var/www/html/deploy/deployment-files/lscm-lean.sql
 ```
 
 **Después, impórtalo en producción:**
@@ -260,20 +296,17 @@ ser grandes y no deben pisarse en redespliegues). El dump referencia esos ficher
 hasta limpiar caché, la página puede salir **en blanco** (los CSS/JS agregados que la BD
 referencia no existen aún en el servidor).
 
-**Empaqueta `files/` en local** (desde la raíz del proyecto):
+**Empaqueta `files/` en local** con el script (desde la raíz del proyecto):
 
 ```bash
-mkdir -p deploy/deployment-files
-rm -f deploy/deployment-files/lscm-files.zip
-( cd web/sites/default/files && \
-  zip -r -q ../../../../deploy/deployment-files/lscm-files.zip . \
-    -x 'css/*' 'js/*' 'php/*' 'styles/*' '*.DS_Store' )
+deploy/scripts/5b-package-files.sh
 ```
 
-Se **excluyen** las subcarpetas **regenerables**: `css/` y `js/` (agregados), `styles/`
-(derivados de estilos de imagen) y `php/` (caché de Twig compilado). Drupal las regenera;
-subir las locales sería arrastrar artefactos obsoletos (y `php/` stale puede dar
-problemas). El zip lleva el contenido en su raíz.
+Genera `deploy/deployment-files/lscm-files.zip`. Se **excluyen** las subcarpetas
+**regenerables**: `css/` y `js/` (agregados), `styles/` (derivados de estilos de imagen) y
+`php/` (caché de Twig compilado). Drupal las regenera; subir las locales sería arrastrar
+artefactos obsoletos (y `php/` stale puede dar problemas). El zip lleva el contenido en su
+raíz.
 
 **Súbelo y descomprímelo dentro de `sites/default/files/` del hosting.** Verifica que el
 contenido queda directamente ahí (no en una subcarpeta anidada).
@@ -366,8 +399,8 @@ bajo `themes/custom/bootstrap_ula_lscm/`; no tocan core, vendor, contrib ni `set
 ### (b) Cambio de dependencias — proceso completo
 Nuevo/actualizado módulo contrib, cambios en `composer.json`/`composer.lock`, o
 actualización de core: cambian `vendor/`, `core/` o `modules/contrib/` y el autoloader. Hay
-que **reconstruir el artefacto** (`2-stage-flat.sh`) y redesplegar el código; lo más seguro
-es el **proceso completo** de §6 (vaciar el docroot y extraer en limpio).
+que **reconstruir el artefacto** (`2-stage-flat.sh` + `3-package-full.sh`) y redesplegar el
+código; lo más seguro es el **proceso completo** de §6 (vaciar el docroot y extraer en limpio).
 
 ### (c) Cambio de configuración o contenido — es la BD, no ficheros
 Tipos de contenido, vistas, bloques, nodos creados por la interfaz: viven en la **BD**, no
