@@ -19,6 +19,7 @@
   - [1.2. `ula_grid_row`](#12-ula_grid_row)
   - [1.3. `ula_hero`](#13-ula_hero)
   - [1.4. `ula_cta_band`](#14-ula_cta_band)
+  - [1.5. `ula_section_header`](#15-ula_section_header)
 - [2. Tarjetas de contenido (`ula_*`, monopropósito)](#2-tarjetas-de-contenido-ula_-monopropósito)
   - [2.1. `ula_uni_card`](#21-ula_uni_card)
   - [2.2. `ula_spec_card`](#22-ula_spec_card)
@@ -189,6 +190,41 @@ campo renderizado. Es el patrón de **composición desde plantilla** (ver `entit
 **Distinción con `ula_hero`.** `ula_hero` es la **cabecera** de la página (arriba, fondo azul, full-bleed);
 `ula_cta_band` es la **franja de cierre** (abajo, tarjeta clara, dentro del contenedor). No se reutiliza el
 hero para cierres ni viceversa — la decisión y su porqué están en el ADR de `entities/cta_band.md`.
+
+---
+
+### 1.5. `ula_section_header`
+
+**Cabecera de sección**: el patrón reutilizable que encabeza cada sección de una página (en la maqueta,
+`.section-tag` + `.section-title` + `.section-desc`). Tres piezas: una **etiqueta corta** (tag) en azul y
+mayúsculas precedida de una **rayita dorada**, un **título grande** y una **descripción** opcional.
+Autónomo (sin Bootstrap Italia); colores y la rayita dorada de los tokens. Pensado para **fondo claro**. El
+contenido entra por **slots**.
+
+Slots:
+
+| Slot | Función |
+|---|---|
+| `tag` | Etiqueta corta de la sección (p. ej. «Admissions»); mayúsculas, azul, con rayita dorada delante. Opcional |
+| `title` | Título de la sección (p. ej. «Ideal Candidate Profile & Admissions») |
+| `description` | Párrafo descriptivo bajo el título. Opcional, por presencia |
+
+No tiene props.
+
+**Tipografía del título.** Usa la tipografía de **cuerpo** (`--font-body`, Manrope) en **negrita**, **no** la
+*display* (Playfair). Decisión deliberada: la display se reserva para el hero/portada, y el cuerpo-negrita
+distingue «cabecera de sección» de «cabecera de página» en la jerarquía tipográfica.
+
+**Consumo (block_content + plantilla, como el CTA band).** Se alimenta de un **bloque de contenido propio**
+(`block_content` tipo `section_header`) colocado en Layout Builder; la plantilla
+`templates/content/block--block-content--type--section-header.html.twig` compone este componente con los
+campos del bloque, pasando los valores como **valor crudo** (ver `entities/section-header.md`). Los campos
+opcionales (`tag`, `description`) se pasan **solo si no están vacíos** (`isEmpty`): acceder a `.value` de un
+campo vacío rompe el render (ver `CONCEPTOS-DRUPAL.md`).
+
+**Relación con el hero.** Comparte la idea «etiqueta corta + título grande» con el eyebrow del hero, pero con
+tratamiento propio (rayita dorada en vez de píldora, sobre fondo claro) y otro rol: el hero es la cabecera de
+**página**; `ula_section_header`, la cabecera de **sección** dentro de la página.
 
 ---
 

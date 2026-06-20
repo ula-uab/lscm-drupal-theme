@@ -1,0 +1,5 @@
+name: Preview
+slots:
+  tag: 'Admissions'
+  title: 'Ideal Candidate Profile &amp; Admissions'
+  description: 'Who the programme is designed for, and how to apply.'

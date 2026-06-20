@@ -29,21 +29,21 @@
 
 | Categoría | Total | Propios | Heredados en uso | Heredados muertos |
 |---|---|---|---|---|
-| **Componentes SDC** | 75 | 16 | 21 | 38 |
-| **Plantillas** (`templates/`) | 5 | 5 | 0 | (usa el `page.html.twig` de BI por herencia, sin fichero propio) |
+| **Componentes SDC** | 76 | 17 | 21 | 38 |
+| **Plantillas** (`templates/`) | 6 | 6 | 0 | (usa el `page.html.twig` de BI por herencia, sin fichero propio) |
 | **Librerías cargadas globalmente** | 6 | 3 | 3 | — |
 
 El grueso del trabajo de independencia, a nivel de componentes, se concentra en los **21 componentes
 heredados en uso**: de ellos saldrá la lista de piezas propias a crear (adaptando o rehaciendo). Los
-**38 muertos** se eliminan al final sin más. Los **16 propios** ya están (los 12 iniciales + `ula_card_simple`,
-`ula_grid_row`, `ula_hero` y `ula_cta_band`, añadidos para el modelo de contenido de páginas no-home con
-Layout Builder).
+**38 muertos** se eliminan al final sin más. Los **17 propios** ya están (los 12 iniciales + `ula_card_simple`,
+`ula_grid_row`, `ula_hero`, `ula_cta_band` y `ula_section_header`, añadidos para el modelo de contenido de
+páginas no-home con Layout Builder).
 
 ---
 
 ## 2. Componentes SDC (`components/`)
 
-### 2.1. Propios (16)
+### 2.1. Propios (17)
 
 Diseñados por nosotros. No requieren acción de independencia (ya son propios); se listan para
 completitud y para fijar la convención de nombres.
@@ -62,6 +62,7 @@ completitud y para fijar la convención de nombres.
 | `ula_grid_row` | Design system (`ula_*`, basado en slots) | Rejilla propia de columnas de igual altura; sustituye a `grid_row` (BI) como Format de vista |
 | `ula_hero` | Design system (`ula_*`, basado en slots) | Hero/cabecera de página; dos presentaciones vía prop `size` (page/home); reutiliza `ula_hero_stat` por composición para las stats |
 | `ula_cta_band` | Design system (`ula_*`, basado en slots) | Franja/tarjeta de cierre (CTA) antes del footer; borde azul + fondo claro; se alimenta de un `block_content` `cta_band` vía plantilla que lo compone (v1.6.2) |
+| `ula_section_header` | Design system (`ula_*`, basado en slots) | Cabecera de sección (tag con rayita dorada + título cuerpo-negrita + descripción opcional); se alimenta de un `block_content` `section_header` vía plantilla que lo compone (v1.6.3) |
 | `lscm_page_header` | Marco de páginas (`lscm_*` propio) | Header del marco de páginas de contenido (Fase 1) |
 | `lscm_page_footer` | Marco de páginas (`lscm_*` propio) | Footer provisional del marco (Fase 1) |
 | `lscm-master-page` | Marco de la home (`lscm-*` propio) | Marco de la home |
@@ -141,6 +142,7 @@ navbar, navbar_nav, offcanvas, pagination, progress, progress_stacked, spinner
 | `templates/content/node--landing.html.twig` | Propia | Propio | Render del nodo landing (home) |
 | `templates/content/paragraph--hero-stat.html.twig` | Propia | Propio | Render del paragraph `hero_stat`: reutiliza `ula_hero_stat` por composición (v1.6.0) |
 | `templates/content/block--block-content--type--cta-band.html.twig` | Propia | Propio | Render del bloque `cta_band`: compone `ula_cta_band` con los campos del bloque (v1.6.2) |
+| `templates/content/block--block-content--type--section-header.html.twig` | Propia | Propio | Render del bloque `section_header`: compone `ula_section_header`; guarda campos opcionales con `isEmpty` (v1.6.3) |
 
 > **Resuelto en v1.5.0 (Fase 2):** el tema **ya tiene `page.html.twig` propio**
 > (`templates/layout/page.html.twig`), que sustituye al heredado de Bootstrap Italia para todas las
@@ -194,7 +196,7 @@ eliminar del `.info.yml` en la Fase 6.
 
 ## 6. Conclusión y uso de este inventario
 
-- **Lo que ya es propio:** 16 componentes SDC + 5 plantillas + 3 librerías. No requieren acción.
+- **Lo que ya es propio:** 17 componentes SDC + 6 plantillas + 3 librerías. No requieren acción.
 - **Lo que hay que adaptar/rehacer (el trabajo de fondo):** los **21 componentes de BI en uso** y el
   `page.html.twig` (crear propio). De aquí sale la lista de piezas propias a construir, página a página.
 - **Lo que se eliminará al final (Fase 6):** los **38 componentes muertos**, las **~43 regiones**

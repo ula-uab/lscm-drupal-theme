@@ -88,6 +88,10 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
   de cierre (CTA)** antes del footer. Es un **tipo de bloque** (no un nodo); se consume colocándolo en
   Layout Builder y componiéndolo con el componente `ula_cta_band` vía una plantilla del bloque. Incluye el
   ADR que distingue `ula_hero` (cabecera) de `ula_cta_band` (cierre).
+- **[`entities/section-header.md`](entities/section-header.md)** — bloque de contenido `section_header`: la
+  **cabecera de sección** (tag con rayita dorada + título + descripción opcional). Tipo de bloque; mismo
+  mecanismo que el CTA band (block_content + plantilla que compone `ula_section_header`), con guard de campos
+  opcionales (`isEmpty`).
 
 ## Planes de desarrollo
 

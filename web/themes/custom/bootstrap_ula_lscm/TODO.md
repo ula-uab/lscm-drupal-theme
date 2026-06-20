@@ -69,19 +69,6 @@ y confirmar qué se pierde.
 **Prioridad:** baja (higiene; condicionada a decidir el tipo de contenido definitivo y a rehacer About).
 **Detalle:** ver la tabla *Inventario de gadgets del piloto* más abajo (qué purgar y qué conservar).
 
-### 11. Componente propio `ula_section_header` (cabecera + título de sección)
-Patrón reutilizable de **cabecera de sección** que aparece en toda la maqueta: una **etiqueta corta**
-precedida de una **rayita dorada** (en la maqueta, `.section-tag`: azul, mayúsculas, con `::before` dorado),
-un **título grande** (`.section-title`) y una **descripción** opcional (`.section-desc`). Es, seguramente, el
-patrón más reutilizable del sitio. Modelarlo como **componente SDC propio** (`ula_section_header`; slots
-tag/title/description).
-**A decidir en su mini-análisis:** (a) **tipografía del título** — en la maqueta usa la de cuerpo en negrita
-(`--font-body` 700), **no** la *display* (Playfair); decidir si se mantiene así o se usa la display; (b) el
-**mecanismo de alimentación/colocación**, que está atado al modelo de secciones de las páginas, aún abierto
-(ver `docs/elements/layout/CONTENT-LAYOUT.md` §9.3): no se da por resuelto copiando el del CTA band.
-**Documentación:** ficha en `COMPONENTS.md` (y `entities/` si acaba teniendo block type/entidad asociada).
-**Prioridad:** media (alto valor de reutilización; bloqueado en parte por el modelo de secciones).
-
 ## Inventario de gadgets del piloto (Paragraphs vs Layout Builder)
 
 Foto de los elementos creados durante el piloto de composición de páginas no-home, con su tipo y
@@ -100,6 +87,15 @@ git.** Antes de purgar: **dump de BD**.
 
 ## Resueltos
 
+- **Componente propio `ula_section_header` (antiguo TO-DO #11).** Construido y validado: cabecera de sección
+  (slots `tag`/`title`/`description`; tag con rayita dorada, título en cuerpo-negrita —no display—,
+  descripción opcional). Se alimenta de un **tipo de bloque de contenido** `section_header` (campos
+  `field_section_tag`/`field_section_title`/`field_section_description`) colocado en Layout Builder, compuesto
+  vía `block--block-content--type--section-header.html.twig`. La plantilla **guarda los campos opcionales con
+  `isEmpty`** (leer `.value` de un campo vacío rompía el render). Documentado en `COMPONENTS.md` §1.5,
+  `entities/section-header.md`, `CONCEPTOS-DRUPAL.md` e inventario. Los ejemplares de About se crearon con un
+  **script de un solo uso** (no versionado). **El block type y sus ejemplares son configuración (BD)**; el
+  componente y la plantilla son código (git).
 - **Componente propio `ula_cta_band` (antiguo TO-DO #10).** Construido y validado: franja/tarjeta de cierre
   (CTA) antes del footer (slots `title`/`text`/`actions`; borde azul marcado + fondo claro; **no** full-bleed,
   ocupa el ancho del contenedor). Se alimenta de un **tipo de bloque de contenido** `cta_band` (campos

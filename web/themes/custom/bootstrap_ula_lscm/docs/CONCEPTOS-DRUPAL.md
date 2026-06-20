@@ -226,6 +226,14 @@ que esos campos pasen por `field.html.twig` (que aquí sirve Bootstrap Italia po
 bloque (`block--block-content--type--cta-band`) hay que **confirmarlo con el debug de Twig**, porque la
 sugerencia que emite Layout Builder no es la intuitiva (`block--block-content--cta-band` **no** dispara).
 
+**Cuidado con los campos opcionales al pasar el valor crudo.** Cuando un campo es **opcional** y se compone
+pasando `entity.field.value`, hay que **guardar** el acceso: leer `.value` de un campo **vacío** rompe el
+render del bloque. El patrón seguro es comprobar `field.isEmpty` y pasar `null` cuando no hay valor (el
+componente, por su `{% if %}`, no pinta esa pieza). Es lo que hace la plantilla del `section_header` con sus
+campos opcionales `tag` y `description`:
+`{{ include('…:ula_section_header', { tag: sh.field_section_tag.isEmpty ? null : sh.field_section_tag.value, … }) }}`.
+Ver `entities/section-header.md` §3 y `COMPONENTS.md` §1.5.
+
 ---
 
 ## 6. Vistas (Views) y UI Patterns

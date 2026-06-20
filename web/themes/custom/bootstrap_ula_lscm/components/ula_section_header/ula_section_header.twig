@@ -1,0 +1,19 @@
+{#
+  ula_section_header — cabecera de sección (tag + título + descripción).
+
+  Slots (tag y description opcionales por presencia): cada pieza se pinta solo si su slot viene
+  relleno. Pensado para fondo claro. Autónomo: sin markup ni clases de Bootstrap Italia.
+#}
+<header class="ula-section-header">
+  {% if tag %}
+    <span class="ula-section-header__tag">{{ tag }}</span>
+  {% endif %}
+
+  {% if title %}
+    <h2 class="ula-section-header__title">{{ title }}</h2>
+  {% endif %}
+
+  {% if description %}
+    <p class="ula-section-header__description">{{ description }}</p>
+  {% endif %}
+</header>

@@ -1,0 +1,42 @@
+/**
+ * ula_section_header — cabecera de sección.
+ *
+ * Extraído de la maqueta (`.section-tag` / `.section-title` / `.section-desc`). Tokens de
+ * ula-tokens.css. Título en tipografía de CUERPO (Manrope) en negrita —no la display—, reservando
+ * la display (Playfair) para el hero/portada. Pensado para fondo claro. Sin Bootstrap Italia.
+ */
+
+.ula-section-header__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--eu-blue);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+}
+.ula-section-header__tag::before {
+  content: '';
+  width: 28px;
+  height: 2px;
+  background: var(--eu-yellow);
+  display: inline-block;
+}
+
+.ula-section-header__title {
+  font-family: var(--font-body);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 1rem;
+}
+
+.ula-section-header__description {
+  font-size: 1.05rem;
+  color: var(--text-mid);
+  max-width: 760px;
+  line-height: 1.6;
+  margin: 0;
+}

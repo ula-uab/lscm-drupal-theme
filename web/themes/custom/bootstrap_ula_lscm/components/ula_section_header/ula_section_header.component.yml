@@ -1,0 +1,20 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA section header
+status: experimental
+description: >
+  Cabecera de sección del design system ULA: el patrón reutilizable que encabeza cada sección de
+  una página (en la maqueta, `.section-tag` + `.section-title` + `.section-desc`). Tres piezas: una
+  etiqueta corta (tag) en azul y mayúsculas precedida de una rayita dorada, un título grande en
+  tipografía de cuerpo (negrita), y una descripción opcional. Autónomo: sin markup ni clases de
+  Bootstrap Italia; colores y tipografía salen de los tokens de ula-tokens.css. Pensado para fondo
+  claro. Contenido por SLOTS; los slots vacíos no se pintan.
+slots:
+  tag:
+    title: 'Tag / eyebrow (field)'
+    description: 'Etiqueta corta de la sección (p. ej. "Admissions"). Se muestra en mayúsculas, azul, con una rayita dorada delante. Opcional.'
+  title:
+    title: 'Title (field)'
+    description: 'Título de la sección (p. ej. "Ideal Candidate Profile & Admissions").'
+  description:
+    title: 'Description (field)'
+    description: 'Párrafo descriptivo bajo el título. Opcional, por presencia.'

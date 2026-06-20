@@ -1,0 +1,23 @@
+{#
+  Plantilla del bloque de contenido `section_header` (theme hook `block`).
+
+  Nombre de sugerencia: `block--block-content--type--section-header` (patrón confirmado con el CTA
+  band: Layout Builder emite `block--block-content--type--<bundle>`). Compone el componente
+  `ula_section_header` con los campos del bloque.
+
+  Campos como VALOR CRUDO (`.value`), no render array: así no pasan por `field.html.twig` (que aquí
+  sirve Bootstrap Italia por herencia de subtema) ni meten `<div class="field…">` dentro de los
+  elementos del componente. Mismo criterio que el CTA band (ver `entities/cta_band.md` §3).
+
+  IMPORTANTE — campos opcionales: `tag` y `description` son opcionales. NO se accede a su `.value`
+  si el campo está vacío (eso rompía el render); se comprueba `isEmpty` y se pasa `null`, y el
+  componente, por su `{% if %}`, no pinta esa pieza. `title` es obligatorio.
+
+  Acceso a la entidad del bloque: `content['#block_content']`.
+#}
+{% set sh = content['#block_content'] %}
+{{ include('bootstrap_ula_lscm:ula_section_header', {
+  tag: sh.field_section_tag.isEmpty ? null : sh.field_section_tag.value,
+  title: sh.field_section_title.value,
+  description: sh.field_section_description.isEmpty ? null : sh.field_section_description.value,
+}) }}
