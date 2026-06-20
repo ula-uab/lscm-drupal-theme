@@ -92,6 +92,11 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
   **cabecera de sección** (tag con rayita dorada + título + descripción opcional). Tipo de bloque; mismo
   mecanismo que el CTA band (block_content + plantilla que compone `ula_section_header`), con guard de campos
   opcionales (`isEmpty`).
+- **[`entities/faculty-member.md`](entities/faculty-member.md)** — `ct_faculty_member`: el **profesorado del
+  máster** (identidad académica, posición/roles, adscripción, áreas de aplicación y expertise, enlaces y
+  perfiles de investigación). Incluye los dos vocabularios propios `tx_application_area` y `tx_expertise`.
+  Alimenta la sección Faculty & Research de `/about`; su visualización (vista + tarjeta + carrusel) queda para
+  la Fase 2 del hito.
 
 ## Planes de desarrollo
 
