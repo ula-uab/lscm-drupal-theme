@@ -113,3 +113,34 @@ pilot:
       css/pilot.css: {}
   dependencies:
     - bootstrap_ula_lscm/ula_tokens
+
+# Artefacto de producción inline_lb_richtext (tipo A, texto enriquecido). La adjunta
+# la plantilla del bloque vía attach_library. Depende de los tokens globales.
+inline_lb_richtext:
+  version: 1.0
+  css:
+    theme:
+      css/inline-lb-richtext.css: {}
+  dependencies:
+    - bootstrap_ula_lscm/ula_tokens
+
+# Artefacto de producción inline_lb_steps (pasos / cronología). Solo aporta el
+# contenedor `.timeline`; cada paso es el SDC ula_timeline_item (autoadjunta su CSS).
+inline_lb_steps:
+  version: 1.0
+  css:
+    theme:
+      css/inline-lb-steps.css: {}
+  dependencies:
+    - bootstrap_ula_lscm/ula_tokens
+
+# Artefacto de producción inline_lb_stack (pila heterogénea de piezas). Solo aporta
+# el contenedor `.inline-lb-stack`; las piezas reutilizan inline_lb_richtext (texto) y
+# los SDC ula_pill/ula_pill_group (pastillas).
+inline_lb_stack:
+  version: 1.0
+  css:
+    theme:
+      css/inline-lb-stack.css: {}
+  dependencies:
+    - bootstrap_ula_lscm/ula_tokens

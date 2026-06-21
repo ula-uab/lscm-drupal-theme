@@ -1,0 +1,44 @@
+{#
+  Artefacto inline_lb_pills — pastillas / etiquetas.
+  Body de página: una colección de pastillas editable en la propia página como
+  INLINE BLOCK de Layout Builder. Independiente de Bootstrap Italia. Cubre «tools»
+  (§2) y, en variante tag_card, «role-grid» (§3) de la maqueta. Ver el plan
+  `docs/plans/paginas-contenido/plan-libreria-inline-blocks.md` y el catálogo §4.4.
+
+  Tipo de bloque `inline_lb_pills` (theme hook `block`). Campos:
+    - field_inline_lb_pl_labels  (string, multivalor): una etiqueta por delta.
+    - field_inline_lb_pl_variant (list_string pill/tag_card): disposición/estilo.
+
+  COMPOSICIÓN. Se recorren las etiquetas y se compone un `ula_pill` por valor,
+  acumulándolos en un array que se pasa al slot `pills` de `ula_pill_group` junto con
+  la variante. Mismo patrón que el statgrid (array → slot del contenedor).
+
+  CSS. `ula_pill` y `ula_pill_group` son SDC: autoadjuntan su CSS. Este artefacto NO
+  necesita librería propia ni attach_library.
+
+  ANTI-BI. Las etiquetas se pasan como VALOR PLANO (`.value`) a la prop del
+  componente; no se atraviesa field.html.twig (Bootstrap Italia en este subtema).
+
+  IMPRESCINDIBLE en un inline block: el armazón estándar de bloque
+  (`<div{{ attributes }}>`, `title_prefix`, `{% if label %}…{% endif %}`,
+  `title_suffix`). El control de Layout Builder (lápiz) se inyecta vía
+  `title_suffix`/`attributes`; sin ellos el inline block no se puede editar.
+#}
+{% set b = content['#block_content'] %}
+{% set variant = b.field_inline_lb_pl_variant.value|default('pill') %}
+{% set pills = [] %}
+{% for item in b.field_inline_lb_pl_labels %}
+  {% if item.value is not empty %}
+    {% set pills = pills|merge([
+      include('bootstrap_ula_lscm:ula_pill', { label: item.value })
+    ]) %}
+  {% endif %}
+{% endfor %}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  {% if pills is not empty %}
+    {{ include('bootstrap_ula_lscm:ula_pill_group', { variant: variant, pills: pills }) }}
+  {% endif %}
+</div>

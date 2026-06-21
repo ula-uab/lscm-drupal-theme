@@ -1,0 +1,46 @@
+{#
+  Artefacto inline_lb_section_header — Mecanismo B (block type + plantilla → SDC).
+  Cabecera de sección (tag + título + descripción) editable en la propia página
+  como INLINE BLOCK de Layout Builder. Independiente de Bootstrap Italia. Compone
+  el componente `ula_section_header` (mismo SDC que el bloque reutilizable
+  `section_header`, sin cambios). Ver el plan
+  `docs/plans/paginas-contenido/plan-libreria-inline-blocks.md`,
+  `docs/elements/layout/INLINE-BLOCKS-CATALOG.md` §3.1 y `entities/section-header.md`.
+
+  Tipo de bloque `inline_lb_section_header` (theme hook `block`). Campos:
+    - field_inline_lb_sh_tag         (string, opcional)      → slot `tag`
+    - field_inline_lb_sh_title       (string, requerido)     → slot `title`
+    - field_inline_lb_sh_description (string_long, opcional) → slot `description`
+
+  COMPOSICIÓN. Los campos se pasan como VALOR PLANO (`.value`) a los slots del
+  componente; no se atraviesa field.html.twig (Bootstrap Italia en este subtema).
+  Campos opcionales con guard `isEmpty`: acceder a `.value` de un campo vacío
+  rompe el render; se pasa `null` y el componente, por su `{% if %}`, no pinta esa
+  pieza. `title` es obligatorio. (Mismo criterio que `section_header`.)
+
+  IMPRESCINDIBLE en un inline block: el armazón estándar de bloque
+  (`<div{{ attributes }}>`, `title_prefix`, `{% if label %}…{% endif %}`,
+  `title_suffix`). El control de Layout Builder (lápiz Configure/Move/Remove) se
+  inyecta vía `title_suffix`/`attributes`; sin ellos el inline block no se puede
+  editar (era el motivo por el que «desaparecía el lápiz»). El `{% if label %}`
+  respeta la casilla «Display title».
+
+  RITMO (ADR-LAYOUT-006). Al envolver el componente en el armazón,
+  `.ula-section-header` deja de ser hijo directo de `.layout__region`, así que el
+  selector de ritmo no casa con él. Se añade la clase marcadora
+  `inline-lb-section-header` al <div> del bloque para que el ritmo de «tema nuevo»
+  (--lb-section-gap) se ancle en ella (regla en css/lscm-page.css). Validar sobre
+  el render real.
+#}
+{% set sh = content['#block_content'] %}
+{% set attributes = attributes.addClass('inline-lb-section-header') %}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  {{ include('bootstrap_ula_lscm:ula_section_header', {
+    tag: sh.field_inline_lb_sh_tag.isEmpty ? null : sh.field_inline_lb_sh_tag.value,
+    title: sh.field_inline_lb_sh_title.value,
+    description: sh.field_inline_lb_sh_description.isEmpty ? null : sh.field_inline_lb_sh_description.value,
+  }) }}
+</div>

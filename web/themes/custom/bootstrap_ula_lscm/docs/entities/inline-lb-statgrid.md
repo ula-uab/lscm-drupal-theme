@@ -2,8 +2,7 @@
 
 > **Tipo de documento:** diseño de **entidades propias** del tema (no heredadas). Ver `entities/`.
 >
-> **Creada en:** hito «librería de artefactos inline block» (en curso, sobre la línea v1.7.0; **el salto de
-> versión —previsiblemente v1.8.0— se hará al completar la librería**, no en este artefacto) ·
+> **Creada en:** v1.8.0 (hito «librería de artefactos inline block»; primer artefacto de la librería) ·
 > **Naturaleza:** **tipo de bloque de contenido** (`block_content`) colocado como **inline block
 > de Layout Builder**, **no** un tipo de contenido (nodo) ni un bloque reutilizable. · **Mecanismo de
 > consumo:** inline block + **plantilla del bloque que compone componentes SDC** (`ula_grid_row` +

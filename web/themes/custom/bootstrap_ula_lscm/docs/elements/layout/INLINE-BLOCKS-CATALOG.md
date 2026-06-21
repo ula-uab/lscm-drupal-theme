@@ -166,6 +166,17 @@ no git); creación con script de un solo uso (no versionado); **dump previo** ob
 
 ## 4. Catálogo de artefactos
 
+> **Estado (v1.8.0): librería COMPLETA.** Los siete artefactos están **implementados y validados** en el
+> Drupal real. Este catálogo es el documento de **diseño/especificación**; la ficha **as-built** de cada
+> artefacto (campos reales, mecanismo final, pendientes) está en `entities/inline-lb-*.md`. **Donde la
+> especificación y lo construido difieran, manda la ficha de entidad.** Resumen e índice de fichas:
+> `inline_lb_statgrid` → `entities/inline-lb-statgrid.md` · `inline_lb_section_header` (§3.1) →
+> `entities/inline-lb-section-header.md` · `inline_lb_richtext` → `entities/inline-lb-richtext.md` ·
+> `inline_lb_steps` (§4.6) → `entities/inline-lb-steps.md` · `inline_lb_pills` → `entities/inline-lb-pills.md`
+> (estrena los SDC `ula_pill`/`ula_pill_group`) · `inline_lb_cardgrid` → `entities/inline-lb-cardgrid.md`
+> (validación D3 resuelta) · `inline_lb_stack` → `entities/inline-lb-stack.md`. Pendientes conocidos: variante
+> `panel_blue` de richtext y diferencia visible de variantes de pills (en sus fichas).
+
 > El catálogo siguiente cubre **el body que va debajo** de la cabecera de sección. La cabecera en sí está en
 > §3 (`inline_lb_section_header`).
 
@@ -315,6 +326,21 @@ nivel de sección, pueden ser bloques sueltos (`richtext`, `pills`, …) en la r
 edición, no de capacidad.
 
 **Riesgo de contraste.** El de cada pieza que contenga (hereda 4.1/4.4).
+
+### 4.6. `inline_lb_steps` (C) — **implementado**
+
+**Función.** Cronología de **pasos** (timeline: punto + línea conectora + título + descripción). Cubre la
+**«Application Roadmap»** (§5). Decisión del hito: la roadmap **no** es una lista numerada en un panel
+(`inline_lb_richtext` `panel_blue`), sino un artefacto de pasos dedicado, **más impactante**.
+
+**Estructura.** Tipo de bloque con un campo Paragraphs multivalor (`inline_lb_p_step`: título + descripción).
+La plantilla compone un `ula_timeline_item` por paso dentro del contenedor `.timeline`, con
+`show_line: not loop.last` (la última línea no se dibuja).
+
+**Reutilización SDC.** `ula_timeline_item` (`COMPONENTS.md` §3.4), el componente del timeline de la landing.
+El contenedor `.timeline` lo aporta el artefacto (librería propia `inline_lb_steps`), no el componente.
+
+**Riesgo de contraste — bajo.** Sobre fondo claro. Detalle as-built en `entities/inline-lb-steps.md`.
 
 ---
 

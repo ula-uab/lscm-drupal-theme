@@ -1,0 +1,41 @@
+{#
+  Artefacto inline_lb_richtext — Mecanismo A (texto enriquecido, Core).
+  Body en prosa (párrafos, listas, encabezados) editable en la propia página como
+  INLINE BLOCK de Layout Builder. Independiente de Bootstrap Italia. Modelado sobre
+  el pilot_richtext de referencia. Ver el plan
+  `docs/plans/paginas-contenido/plan-libreria-inline-blocks.md`,
+  `docs/elements/layout/INLINE-BLOCKS-CATALOG.md` §4.1 y la guía de inline blocks de
+  `docs/elements/layout/CONTENT-LAYOUT.md` (§11, ADR-LAYOUT-005).
+
+  Tipo de bloque `inline_lb_richtext` (theme hook `block`). Campos:
+    - field_inline_lb_rt_body    (text_long, Basic HTML): el contenido enriquecido.
+    - field_inline_lb_rt_variant (list_string plain/panel_blue): presentación.
+
+  ANTI-BI. Imprime el HTML PROCESADO del campo con `|raw` (aplica el filtro del
+  formato Basic HTML, que no inyecta clases ni markup de Bootstrap Italia) sin pasar
+  por field.html.twig (que aquí sirve BI por herencia de subtema). El aspecto lo da
+  el CSS propio (librería `inline_lb_richtext`, clase `.inline-lb-richtext`).
+
+  VARIANTE. `field_inline_lb_rt_variant` (D5: opción del editor como list_string)
+  selecciona la clase modificadora: `--plain` (prosa sobre fondo claro) o
+  `--panel-blue` (caja azul con texto claro). Por defecto `plain`.
+
+  IMPRESCINDIBLE en un inline block: el armazón estándar de bloque
+  (`<div{{ attributes }}>`, `title_prefix`, `{% if label %}…{% endif %}`,
+  `title_suffix`). El control de Layout Builder (lápiz Configure/Move/Remove) se
+  inyecta vía `title_suffix`/`attributes`; sin ellos el inline block no se puede
+  editar. El `{% if label %}` respeta la casilla «Display title».
+#}
+{{ attach_library('bootstrap_ula_lscm/inline_lb_richtext') }}
+{% set b = content['#block_content'] %}
+{% set variant = b.field_inline_lb_rt_variant.value|default('plain') %}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  {% if b.field_inline_lb_rt_body.0.processed is not empty %}
+    <div class="inline-lb-richtext inline-lb-richtext--{{ variant|replace({'_': '-'}) }}">
+      {{ b.field_inline_lb_rt_body.0.processed|raw }}
+    </div>
+  {% endif %}
+</div>

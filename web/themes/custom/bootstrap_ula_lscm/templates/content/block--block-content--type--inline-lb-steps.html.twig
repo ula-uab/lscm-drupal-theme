@@ -1,0 +1,50 @@
+{#
+  Artefacto inline_lb_steps — pasos / cronología (timeline).
+  Body de página: una secuencia de pasos (punto + línea + título + descripción)
+  editable en la propia página como INLINE BLOCK de Layout Builder. Independiente
+  de Bootstrap Italia. Cubre la «Application Roadmap» de la maqueta (decisión del
+  hito: artefacto de pasos dedicado, más impactante que una lista en panel). Ver el
+  plan `docs/plans/paginas-contenido/plan-libreria-inline-blocks.md`.
+
+  Tipo de bloque `inline_lb_steps` (theme hook `block`). Campo:
+    - field_inline_lb_steps (Paragraphs `inline_lb_p_step`, multivalor): cada delta
+      es un paso {título, descripción}.
+
+  COMPOSICIÓN. Se recorren los paragraphs y se compone un `ula_timeline_item` por
+  paso dentro del contenedor `.timeline` (flex column). El contenedor lo aporta este
+  artefacto (la sección), no el componente —así lo indica ula_timeline_item—. En el
+  ÚLTIMO paso se pasa `show_line: false` (vía `not loop.last`) para no dibujar la
+  línea conectora final. Mismo patrón que la sección «Admissions» de la landing.
+
+  CSS. `ula_timeline_item` autoadjunta su CSS (SDC). El contenedor `.timeline` lo
+  aporta la librería propia `inline_lb_steps` (adjuntada aquí). Tokens de ula-tokens.
+
+  ANTI-BI. Título y descripción se pasan como VALOR PLANO (`.value`) a las props del
+  componente; no se atraviesa field.html.twig (Bootstrap Italia en este subtema).
+
+  IMPRESCINDIBLE en un inline block: el armazón estándar de bloque
+  (`<div{{ attributes }}>`, `title_prefix`, `{% if label %}…{% endif %}`,
+  `title_suffix`). El control de Layout Builder (lápiz) se inyecta vía
+  `title_suffix`/`attributes`; sin ellos el inline block no se puede editar.
+#}
+{{ attach_library('bootstrap_ula_lscm/inline_lb_steps') }}
+{% set b = content['#block_content'] %}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  {% if b.field_inline_lb_steps is not empty %}
+    <div class="timeline">
+      {% for delta in b.field_inline_lb_steps %}
+        {% set p = delta.entity %}
+        {% if p %}
+          {{ include('bootstrap_ula_lscm:ula_timeline_item', {
+            title: p.field_inline_lb_sp_title.value,
+            description: p.field_inline_lb_sp_description.value,
+            show_line: not loop.last,
+          }) }}
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

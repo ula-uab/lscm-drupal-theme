@@ -155,11 +155,15 @@ debajo.
 
 | # | Artefacto | Tipo | Cubre (maqueta About) | Estructura propuesta (a validar) | SDC | Bloqueado por |
 |---|---|---|---|---|---|---|
-| 1 | `inline_lb_richtext` | A | «Engineering Edge» (§1), «Application Roadmap» (§5), prosa/listas | 1 campo texto largo (Basic HTML) + opción de tono `plain`/`panel_blue` | — | D4, D5 |
-| 2 | `inline_lb_statgrid` | B | `highlight-grid` (§1, 4 cifras), `stat-row` (§3, 3 cifras) | paragraph multivalor {número, etiqueta} + columnas | `ula_grid_row` + `ula_hero_stat` (props) | ✅ **implementado** — ver `entities/inline-lb-statgrid.md` |
-| 3 | `inline_lb_pills` | B | `tools` (§2), `role-grid` (§3) como variante | 1 campo string multivalor + opción `pill`/`tag_card` | según D2 | **D2**, D5 |
-| 4 | `inline_lb_cardgrid` | C | `card-grid` (§2, 3 tarjetas), `adm-cols` (§5, 2 col.) | stack de paragraph «tarjeta» (título + cuerpo rich) + columnas | `ula_grid_row` + `ula_card_simple` (slots) | **D3** |
-| 5 | `inline_lb_stack` | C | secciones que mezclen piezas en un único bloque | campo Paragraphs multivalor: pieza texto + pieza pastilla (ampliable) | reusa piezas de 1 y 3 | requiere 1 y 3 |
+| 1 | `inline_lb_richtext` | A | «Engineering Edge» (§1), «Application Roadmap» (§5), prosa/listas | 1 campo texto largo (Basic HTML) + opción de tono `plain`/`panel_blue` | — | ✅ **implementado** — `entities/inline-lb-richtext.md` (pendiente: `panel_blue`) |
+| 2 | `inline_lb_statgrid` | B | `highlight-grid` (§1, 4 cifras), `stat-row` (§3, 3 cifras) | paragraph multivalor {número, etiqueta} + columnas | `ula_grid_row` + `ula_hero_stat` (props) | ✅ **implementado** — `entities/inline-lb-statgrid.md` |
+| 3 | `inline_lb_pills` | B | `tools` (§2), `role-grid` (§3) como variante | 1 campo string multivalor + opción `pill`/`tag_card` | `ula_pill` + `ula_pill_group` (nuevos) | ✅ **implementado** — `entities/inline-lb-pills.md` (pendiente: variantes) |
+| 4 | `inline_lb_cardgrid` | C | `card-grid` (§2, 3 tarjetas), `adm-cols` (§5, 2 col.) | paragraph «tarjeta» (título + cuerpo rich) + columnas | `ula_grid_row` + `ula_card_simple` (slots) | ✅ **implementado** — `entities/inline-lb-cardgrid.md` (D3 resuelta) |
+| 5 | `inline_lb_stack` | C | secciones que mezclen piezas en un único bloque | campo Paragraphs multivalor: pieza texto + pieza pastilla (ampliable) | reusa piezas de 1 y 3 | ✅ **implementado** — `entities/inline-lb-stack.md` |
+
+> Además, fuera de la tabla original (se incorporaron después): **`inline_lb_section_header`** (cabecera como
+> inline block, `entities/inline-lb-section-header.md`) e **`inline_lb_steps`** (pasos/cronología,
+> `entities/inline-lb-steps.md`). **Los 7 artefactos de la librería quedan implementados y validados.**
 
 **Puntos abiertos por artefacto, a validar en el paso (a) antes de codificar:**
 
@@ -225,19 +229,18 @@ Mayoritariamente **reutilización**; **0–2 SDC nuevos/modificados** según se 
 
 ## 9. Estado y próximos pasos
 
-- **Estado:** decisiones transversales **resueltas** (ver §4.bis). **Implementado y validado:**
-  `inline_lb_statgrid` (primer artefacto, patrón B) y el **ritmo vertical del body** (ADR-LAYOUT-006).
-  Documentado y consolidado.
-- **Versión del tema — salto diferido (decisión).** El tema **no** sube de versión por artefactos sueltos:
-  permanece en **v1.7.0** mientras la librería de inline blocks está en desarrollo. El salto
-  (previsiblemente **v1.8.0**, MINOR) se hará **al completar la librería**, en un único hito de versión que
-  recoja todos los artefactos. Por eso `.info.yml` y la tabla de versiones de `ARCHITECTURE.md` no se tocan
-  en cada artefacto.
-- **Próximo paso:** implementar el resto de la librería de lo simple a lo complejo —
-  `inline_lb_section_header` (cabecera como inline block, §3.1 del catálogo; incluye ajustar el selector de
-  ritmo), `inline_lb_richtext` (+ artefacto de pasos `ula_timeline_item`), `inline_lb_pills` (con el nuevo
-  SDC `ula_pill`/`ula_pill_group`), `inline_lb_cardgrid` (validando el slot `body` rich, D3) y, al final,
-  `inline_lb_stack`.
+- **Estado (v1.8.0 — LIBRERÍA COMPLETA):** decisiones transversales **resueltas** (ver §4.bis) y los **siete
+  artefactos implementados y validados** en el Drupal real: `inline_lb_statgrid`, `inline_lb_section_header`,
+  `inline_lb_richtext`, `inline_lb_steps`, `inline_lb_pills` (con los SDC `ula_pill`/`ula_pill_group`),
+  `inline_lb_cardgrid` (validación D3 resuelta) e `inline_lb_stack`. Más el **ritmo vertical del body**
+  (ADR-LAYOUT-006). Documentado (fichas `entities/inline-lb-*.md`, catálogo, COMPONENTS, ARCHITECTURE) y
+  consolidado.
+- **Versión del tema — salto hecho.** Completada la librería, se sube a **v1.8.0** (MINOR): `.info.yml` y la
+  tabla de versiones de `ARCHITECTURE.md`, coherentes.
+- **Pendientes (en las fichas):** variante `panel_blue` de `inline_lb_richtext` y diferencia visible de
+  variantes de `inline_lb_pills`. **Mejora:** ampliar los tipos de pieza de `inline_lb_stack`.
+- **Posible siguiente paso (fuera de este hito):** usar la librería para **rehacer secciones reales** de
+  `/about` (mapa maqueta→artefactos, §5) sustituyendo lo que aún dependa de Bootstrap Italia.
 
 > **Recordatorios de método (del proyecto):** dump de BD antes de tocar configuración; commit + push por
 > hito; documentar al cerrar (no antes); no subir versión del tema sin permiso explícito; trabajar de lo

@@ -1,0 +1,17 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Pill
+status: experimental
+description: >
+  Pastilla / etiqueta individual del design system ULA (una palabra o expresión
+  corta: una herramienta, una habilidad, un rol). Componente autónomo, sin markup
+  ni clases de Bootstrap Italia; colores y tipografía de ula-tokens.css. Aspecto por
+  defecto = chip (fondo azul tenue, texto azul, borde, radio completo), tomado de los
+  chips de ula_faculty_detail. Se compone dentro del slot 'pills' de ula_pill_group;
+  la variante 'tag_card' del grupo reestila la pastilla como tarjeta-etiqueta.
+props:
+  type: object
+  properties:
+    label:
+      type: string
+      title: Label
+      description: 'Texto de la pastilla (p. ej. "Python", "SAP", "Supply Chain Manager").'

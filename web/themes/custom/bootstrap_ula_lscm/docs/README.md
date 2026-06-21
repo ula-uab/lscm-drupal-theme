@@ -106,6 +106,21 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
   `inline_lb_statgrid` (+ paragraph `inline_lb_p_stat`): la **rejilla de cifras** del body, primer artefacto
   de la **librería de inline blocks** (patrón B: campos → composición de `ula_grid_row` + `ula_hero_stat`).
   Inline block de Layout Builder; opciones `tone`/`cols` por `list_string`.
+- **[`entities/inline-lb-section-header.md`](entities/inline-lb-section-header.md)** — `inline_lb_section_header`:
+  la **cabecera de sección** como inline block (reutiliza `ula_section_header`; el reutilizable
+  `section_header` se conserva).
+- **[`entities/inline-lb-richtext.md`](entities/inline-lb-richtext.md)** — `inline_lb_richtext`: **texto
+  enriquecido** (patrón A) con variantes `plain` / `panel_blue`. CSS propio + librería.
+- **[`entities/inline-lb-steps.md`](entities/inline-lb-steps.md)** — `inline_lb_steps` (+ paragraph
+  `inline_lb_p_step`): **cronología de pasos** (timeline) que compone `ula_timeline_item`.
+- **[`entities/inline-lb-pills.md`](entities/inline-lb-pills.md)** — `inline_lb_pills`: **pastillas/etiquetas**
+  que componen los SDC propios `ula_pill` / `ula_pill_group` (variantes `pill` / `tag_card`).
+- **[`entities/inline-lb-cardgrid.md`](entities/inline-lb-cardgrid.md)** — `inline_lb_cardgrid` (+ paragraph
+  `inline_lb_p_card`): **rejilla de tarjetas** (título + cuerpo rich text) que compone `ula_card_simple` en
+  `ula_grid_row`. Resuelve la validación D3 (cuerpo rico por slot vía `processed_text`).
+- **[`entities/inline-lb-stack.md`](entities/inline-lb-stack.md)** — `inline_lb_stack` (+ paragraphs
+  `inline_lb_p_text` / `inline_lb_p_pills`): **pila heterogénea** que mezcla piezas de texto y pastillas en un
+  bloque editable.
 - **[`entities/faculty-member.md`](entities/faculty-member.md)** — `ct_faculty_member`: el **profesorado del
   máster** (identidad académica, posición/roles, adscripción, áreas de aplicación y expertise, enlaces y
   perfiles de investigación). Incluye los dos vocabularios propios `tx_application_area` y `tx_expertise`.

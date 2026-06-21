@@ -1,0 +1,59 @@
+{#
+  Artefacto inline_lb_cardgrid — rejilla de tarjetas simples (tipo C).
+  Body de página: una colección de tarjetas (título + cuerpo rich text) editable en
+  la propia página como INLINE BLOCK de Layout Builder. Independiente de Bootstrap
+  Italia. Cubre «card-grid» (§2) y «adm-cols» (§5) de la maqueta. Ver el plan
+  `docs/plans/paginas-contenido/plan-libreria-inline-blocks.md` y el catálogo §4.3.
+
+  Tipo de bloque `inline_lb_cardgrid` (theme hook `block`). Campos:
+    - field_inline_lb_cards   (Paragraphs `inline_lb_p_card`, multivalor): cada delta
+      es una tarjeta {título, cuerpo}.
+    - field_inline_lb_cg_cols (integer 1–4): columnas en escritorio → prop `columns`
+      de `ula_grid_row`.
+
+  COMPOSICIÓN. Se recorren los paragraphs y se compone un `ula_card_simple` por
+  tarjeta dentro de `ula_grid_row` (array → slot `content`, como el statgrid).
+
+  D3 — CUERPO RICO POR SLOT. `ula_card_simple` pinta `body` con `{{ body }}` (sin
+  |raw). Para que el HTML del Basic HTML se renderice (y no se escape) sin tocar el
+  SDC ni atravesar field.html.twig (Bootstrap Italia), `body` se pasa como render
+  array `processed_text` (elemento de core que aplica el filtro del formato). El
+  `title` se pasa como VALOR PLANO (`.value`): es texto, se escapa correctamente.
+  ESTE es el punto a validar en el Drupal real (decisión D3); si fallara, plan B =
+  plantilla de tarjeta propia sin reutilizar el SDC.
+
+  IMPRESCINDIBLE en un inline block: el armazón estándar de bloque
+  (`<div{{ attributes }}>`, `title_prefix`, `{% if label %}…{% endif %}`,
+  `title_suffix`). El control de Layout Builder (lápiz) se inyecta vía
+  `title_suffix`/`attributes`; sin ellos el inline block no se puede editar.
+#}
+{% set b = content['#block_content'] %}
+{% set cols = (b.field_inline_lb_cg_cols.value|default(3)) ~ '' %}
+{% set cards = [] %}
+{% for delta in b.field_inline_lb_cards %}
+  {% set p = delta.entity %}
+  {% if p %}
+    {% set body = null %}
+    {% if p.field_inline_lb_cd_body.0.value is not empty %}
+      {% set body = {
+        '#type': 'processed_text',
+        '#text': p.field_inline_lb_cd_body.0.value,
+        '#format': p.field_inline_lb_cd_body.0.format,
+      } %}
+    {% endif %}
+    {% set cards = cards|merge([
+      include('bootstrap_ula_lscm:ula_card_simple', {
+        title: p.field_inline_lb_cd_title.isEmpty ? null : p.field_inline_lb_cd_title.value,
+        body: body,
+      })
+    ]) %}
+  {% endif %}
+{% endfor %}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  {% if cards is not empty %}
+    {{ include('bootstrap_ula_lscm:ula_grid_row', { columns: cols, content: cards }) }}
+  {% endif %}
+</div>

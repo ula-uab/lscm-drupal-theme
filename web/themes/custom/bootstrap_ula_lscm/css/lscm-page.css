@@ -113,3 +113,11 @@
 .lscm-page__content .layout__region > * + .ula-section-header {
   margin-top: var(--lb-section-gap, 2.5rem);
 }
+
+/* Variante inline block de la cabecera (inline_lb_section_header): su armazón de
+ * bloque envuelve el componente, así que .ula-section-header ya no es hijo directo
+ * de .layout__region. El ritmo de "tema nuevo" se ancla en la clase marcadora del
+ * <div> del bloque (ver ADR-LAYOUT-006 y la plantilla del artefacto). */
+.lscm-page__content .layout__region > * + .inline-lb-section-header {
+  margin-top: var(--lb-section-gap, 2.5rem);
+}

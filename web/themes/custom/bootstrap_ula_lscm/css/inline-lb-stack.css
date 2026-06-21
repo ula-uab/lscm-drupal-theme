@@ -1,0 +1,14 @@
+/**
+ * inline_lb_stack — contenedor de la pila heterogénea de piezas.
+ *
+ * Registrado como librería `inline_lb_stack` en bootstrap_ula_lscm.libraries.yml y
+ * adjuntado por la plantilla del bloque vía attach_library. Solo aporta el
+ * contenedor `.inline-lb-stack`; cada pieza trae su propio estilo (las de texto vía
+ * la librería inline_lb_richtext; las pastillas vía los SDC ula_pill/ula_pill_group).
+ * Independiente de Bootstrap Italia; usa tokens de ula-tokens.css.
+ */
+.inline-lb-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}

@@ -1,0 +1,39 @@
+/**
+ * ula_pill_group — disposición y variantes del contenedor de pastillas.
+ * Consume tokens de ula-tokens.css. Sin Bootstrap Italia.
+ *
+ *  --pill       fila de chips compactos (la pastilla mantiene su aspecto de ula_pill).
+ *  --tag-card   rejilla de tarjetas-etiqueta; reestila cada .ula-pill como tarjeta
+ *               (fondo blanco, acento dorado a la izquierda, sombra suave), según el
+ *               spec del catálogo §4.4 para los roles.
+ */
+.ula-pill-group--pill {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ula-pill-group--tag-card {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.ula-pill-group--tag-card .ula-pill {
+  display: block;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--eu-yellow);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  color: var(--text-dark);
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 1px 3px rgba(13, 27, 62, 0.06);
+}
+
+@media (max-width: 900px) {
+  .ula-pill-group--tag-card { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .ula-pill-group--tag-card { grid-template-columns: 1fr; }
+}

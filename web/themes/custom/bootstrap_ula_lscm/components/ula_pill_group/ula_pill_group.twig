@@ -1,0 +1,13 @@
+{#
+  ula_pill_group — contenedor de pastillas.
+  Slot: pills (secuencia de ula_pill ya renderizados). Prop: variant (pill/tag_card).
+  Se normaliza 'pills' a secuencia y se itera (igual que ula_grid_row con 'content').
+  La disposición y el estilo los da ula_pill_group.css según la clase de variante.
+  El default de variant se fija aquí con |default('pill') (los default del
+  .component.yml no se inyectan de forma fiable en runtime).
+#}
+{% set variant = variant|default('pill') %}
+{% set items = (pills and pills is not sequence) ? [pills] : pills %}
+<div class="ula-pill-group ula-pill-group--{{ variant|replace({'_': '-'}) }}">
+  {% for item in items %}{{ item }}{% endfor %}
+</div>

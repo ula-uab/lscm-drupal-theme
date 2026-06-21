@@ -261,6 +261,32 @@ autoplay** (decisión de diseño: el avance es siempre acción del usuario).
 **Primer uso.** La sección Faculty & Research de `/about`, con `ula_faculty_card` como Nivel 2 (ver §2.5 y
 `entities/faculty-member.md` §4.2).
 
+### 1.7. `ula_pill`
+
+Pastilla / etiqueta individual (una palabra o expresión corta: una herramienta, una habilidad, un rol).
+Aspecto por defecto = **chip** (fondo azul tenue, texto `--eu-blue`, borde, radio completo), tomado de los
+chips de `ula_faculty_detail`. Se compone dentro del slot `pills` de `ula_pill_group`.
+
+| Prop | Tipo | Función |
+|---|---|---|
+| `label` | string | Texto de la pastilla |
+
+**Primer uso.** El artefacto `inline_lb_pills` (ver `entities/inline-lb-pills.md`).
+
+### 1.8. `ula_pill_group`
+
+Contenedor de una colección de pastillas (`ula_pill`). Recibe las pastillas ya renderizadas en el slot
+`pills` y las dispone según la variante. Autónomo, sin Bootstrap Italia; disposición y estilo por su CSS.
+
+Slot: `pills` (las pastillas; una por elemento de la secuencia).
+
+| Prop | Tipo | Función |
+|---|---|---|
+| `variant` | enum `pill`/`tag_card` | `pill` (por defecto): fila de chips compactos (p. ej. herramientas). `tag_card`: rejilla de tarjetas-etiqueta más grandes con acento dorado (p. ej. roles). La variante reestila cada `.ula-pill` por descendencia |
+
+Decisión transversal **D2** de la librería de inline blocks (estilo de pastilla = chips de
+`ula_faculty_detail`, no el botón «View profile»). **Primer uso.** `inline_lb_pills`.
+
 ---
 
 ## 2. Tarjetas de contenido (`ula_*`, monopropósito)

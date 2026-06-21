@@ -1,0 +1,73 @@
+{#
+  Artefacto inline_lb_stack — pila heterogénea de piezas (tipo C).
+  Body de página que MEZCLA varias piezas (texto enriquecido, pastillas) en un único
+  bloque editable, en el orden que el editor decida. Inline block de Layout Builder.
+  Independiente de Bootstrap Italia. Ver el plan
+  `docs/plans/paginas-contenido/plan-libreria-inline-blocks.md` y el catálogo §4.5.
+
+  Tipo de bloque `inline_lb_stack` (theme hook `block`). Campo:
+    - field_inline_lb_stack (Paragraphs HETEROGÉNEO, multivalor): admite dos tipos de
+      pieza, apiladas en el orden del editor:
+        · inline_lb_p_text  → field_inline_lb_pt_body   (text_long, Basic HTML)
+        · inline_lb_p_pills → field_inline_lb_pp_labels (string, multivalor)
+
+  COMPOSICIÓN. Se itera el campo y, según el bundle de cada paragraph, se compone la
+  pieza EN ESTA PLANTILLA (mismo patrón que statgrid/steps/cardgrid; no se usa
+  `{{ content.field }}`, que pasaría por field.html.twig = Bootstrap Italia):
+    · texto:   render array `processed_text` dentro de `.inline-lb-richtext--plain`
+               (reutiliza el CSS del artefacto inline_lb_richtext).
+    · pastillas: array de `ula_pill` → slot `pills` de `ula_pill_group` (variante pill).
+
+  CSS. El contenedor `.inline-lb-stack` lo aporta la librería propia `inline_lb_stack`.
+  Las piezas de texto reutilizan la librería `inline_lb_richtext`. Las pastillas son
+  SDC (autoadjuntan su CSS). Se adjuntan ambas librerías aquí.
+
+  IMPRESCINDIBLE en un inline block: el armazón estándar de bloque
+  (`<div{{ attributes }}>`, `title_prefix`, `{% if label %}…{% endif %}`,
+  `title_suffix`). El control de Layout Builder (lápiz) se inyecta vía
+  `title_suffix`/`attributes`; sin ellos el inline block no se puede editar.
+#}
+{{ attach_library('bootstrap_ula_lscm/inline_lb_stack') }}
+{{ attach_library('bootstrap_ula_lscm/inline_lb_richtext') }}
+{% set b = content['#block_content'] %}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  {% if b.field_inline_lb_stack is not empty %}
+    <div class="inline-lb-stack">
+      {% for delta in b.field_inline_lb_stack %}
+        {% set p = delta.entity %}
+        {% if p %}
+
+          {% if p.bundle == 'inline_lb_p_text' %}
+            {% if p.field_inline_lb_pt_body.0.value is not empty %}
+              <div class="inline-lb-richtext inline-lb-richtext--plain">
+                {{ {
+                  '#type': 'processed_text',
+                  '#text': p.field_inline_lb_pt_body.0.value,
+                  '#format': p.field_inline_lb_pt_body.0.format,
+                } }}
+              </div>
+            {% endif %}
+
+          {% elseif p.bundle == 'inline_lb_p_pills' %}
+            {% set pills = [] %}
+            {% for item in p.field_inline_lb_pp_labels %}
+              {% if item.value is not empty %}
+                {% set pills = pills|merge([
+                  include('bootstrap_ula_lscm:ula_pill', { label: item.value })
+                ]) %}
+              {% endif %}
+            {% endfor %}
+            {% if pills is not empty %}
+              {{ include('bootstrap_ula_lscm:ula_pill_group', { variant: 'pill', pills: pills }) }}
+            {% endif %}
+
+          {% endif %}
+
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

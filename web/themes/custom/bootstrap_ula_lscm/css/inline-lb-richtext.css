@@ -1,0 +1,43 @@
+/**
+ * inline_lb_richtext — CSS de producción del artefacto de texto enriquecido (tipo A).
+ *
+ * Registrado como librería `inline_lb_richtext` en bootstrap_ula_lscm.libraries.yml
+ * y adjuntado por la plantilla del bloque vía attach_library (no por carga global).
+ * Independiente de Bootstrap Italia; usa los tokens de ula-tokens.css.
+ *
+ * Dos variantes (campo field_inline_lb_rt_variant → clase modificadora):
+ *   .inline-lb-richtext--plain       prosa sobre el fondo claro de la sección.
+ *   .inline-lb-richtext--panel-blue  caja azul con texto claro (panel destacado,
+ *                                    p. ej. «The Engineering Edge» de la maqueta).
+ */
+
+/* Base / variante plain — prosa sobre fondo claro (calcado del piloto). */
+.inline-lb-richtext { color: var(--text-mid); }
+.inline-lb-richtext h2,
+.inline-lb-richtext h3,
+.inline-lb-richtext h4 { font-family: var(--font-display); color: var(--text-dark); margin: 0 0 .5rem; }
+.inline-lb-richtext p { margin: .5rem 0; }
+.inline-lb-richtext ul,
+.inline-lb-richtext ol { margin: .5rem 0 .5rem 1.25rem; }
+.inline-lb-richtext li { margin: .2rem 0; }
+.inline-lb-richtext a { color: var(--eu-blue); }
+
+/* Variante panel azul — caja destacada con texto claro. El punto de contraste:
+ * todo el texto va en claro; el CSS lo fuerza, no se hereda del tema. */
+.inline-lb-richtext--panel-blue {
+  background: linear-gradient(135deg, var(--eu-blue), var(--eu-blue-light));
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  color: var(--white);
+}
+.inline-lb-richtext--panel-blue h2,
+.inline-lb-richtext--panel-blue h3,
+.inline-lb-richtext--panel-blue h4 { color: var(--white); }
+.inline-lb-richtext--panel-blue strong { color: var(--white); }
+.inline-lb-richtext--panel-blue a { color: var(--eu-yellow); }
+/* Viñetas con acento dorado (la prosa va clara, el marcador en --eu-yellow). */
+.inline-lb-richtext--panel-blue li::marker { color: var(--eu-yellow); }
+
+@media (max-width: 600px) {
+  .inline-lb-richtext--panel-blue { padding: 1.5rem; }
+}

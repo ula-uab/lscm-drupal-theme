@@ -1,0 +1,17 @@
+/**
+ * inline_lb_steps — CSS del contenedor de la cronología (tipo C / pasos).
+ *
+ * Registrado como librería `inline_lb_steps` en bootstrap_ula_lscm.libraries.yml y
+ * adjuntado por la plantilla del bloque vía attach_library. Solo aporta el
+ * contenedor `.timeline`; cada paso es `ula_timeline_item` (SDC), que autoadjunta
+ * su propio CSS. Independiente de Bootstrap Italia; usa tokens de ula-tokens.css.
+ *
+ * NOTA: replica el `.timeline` de la landing (lscm-master-page.css) SIN su
+ * `margin-top`: en las páginas de contenido el ritmo vertical lo aporta el marco
+ * (ADR-LAYOUT-006), no el contenedor.
+ */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}

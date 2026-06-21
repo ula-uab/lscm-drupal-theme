@@ -1,0 +1,31 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Pill Group
+status: experimental
+description: >
+  Contenedor del design system ULA para una colección de pastillas (ula_pill).
+  Recibe las pastillas ya renderizadas en el slot 'pills' y las dispone según la
+  variante. Componente autónomo, sin Bootstrap Italia; el aspecto y la disposición
+  los controla su CSS con tokens de ula-tokens.css.
+slots:
+  pills:
+    title: Pills
+    description: >
+      Las pastillas a disponer (cada elemento, un ula_pill ya renderizado). Una por
+      elemento de la secuencia.
+props:
+  type: object
+  properties:
+    variant:
+      type: string
+      title: Variant
+      description: >
+        Disposición y estilo. "pill" (por defecto): fila de chips compactos (p. ej.
+        herramientas). "tag_card": rejilla de tarjetas-etiqueta más grandes con acento
+        dorado (p. ej. roles profesionales).
+      enum:
+        - pill
+        - tag_card
+      'meta:enum':
+        pill: 'Pill (fila de chips)'
+        tag_card: 'Tag card (rejilla de tarjetas-etiqueta)'
+      default: pill

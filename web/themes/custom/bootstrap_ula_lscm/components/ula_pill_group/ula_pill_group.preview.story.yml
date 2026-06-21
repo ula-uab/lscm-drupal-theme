@@ -1,0 +1,10 @@
+name: Preview
+props:
+  variant: pill
+slots:
+  pills:
+    - '<span class="ula-pill" style="display:inline-block;font-size:13px;font-weight:600;line-height:1.4;padding:5px 12px;border-radius:100px;background:rgba(0,51,153,0.06);color:#003399;border:1px solid #d0d9ef;">SAP</span>'
+    - '<span class="ula-pill" style="display:inline-block;font-size:13px;font-weight:600;line-height:1.4;padding:5px 12px;border-radius:100px;background:rgba(0,51,153,0.06);color:#003399;border:1px solid #d0d9ef;">AnyLogic</span>'
+    - '<span class="ula-pill" style="display:inline-block;font-size:13px;font-weight:600;line-height:1.4;padding:5px 12px;border-radius:100px;background:rgba(0,51,153,0.06);color:#003399;border:1px solid #d0d9ef;">Python</span>'
+    - '<span class="ula-pill" style="display:inline-block;font-size:13px;font-weight:600;line-height:1.4;padding:5px 12px;border-radius:100px;background:rgba(0,51,153,0.06);color:#003399;border:1px solid #d0d9ef;">R</span>'
+    - '<span class="ula-pill" style="display:inline-block;font-size:13px;font-weight:600;line-height:1.4;padding:5px 12px;border-radius:100px;background:rgba(0,51,153,0.06);color:#003399;border:1px solid #d0d9ef;">Arena Simulation</span>'
