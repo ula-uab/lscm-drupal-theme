@@ -127,6 +127,37 @@ de modo que el off-white sea continuo bajo todo el contenido hasta el footer.
 verificar que no rompe páginas que hoy asumen fondo blanco.
 **Prioridad:** media (afecta a la presentación de todas las páginas de contenido).
 
+### 13. Retirar la plantilla obsoleta de cabecera de sección (bloque reutilizable `section_header`)
+La plantilla `block--block-content--type--section-header.html.twig` y el **tipo de bloque reutilizable**
+`section_header` son un mecanismo **obsoleto** tras implementar la **librería de inline blocks de Layout
+Builder** (Core, v1.8.0): el artefacto `inline_lb_section_header` cubre ahora la cabecera de sección como
+inline block. No es solo borrar el fichero: hay que **eliminar también la documentación donde se explicaba**
+(`docs/entities/section-header.md`, `docs/COMPONENTS.md` §1.5, y la narrativa del catálogo
+`docs/elements/layout/INLINE-BLOCKS-CATALOG.md` §3, que describe el paso «del reutilizable al inline block»).
+**Es configuración (BD):** el tipo de bloque, su campo y los **ejemplares ya colocados** (p. ej. en `/about`)
+viven en la base de datos. Orden seguro: **dump previo → analizar qué cabeceras de `/about` usan aún el
+reutilizable y migrarlas a `inline_lb_section_header` → recién entonces eliminar tipo de bloque + campo +
+plantilla + documentación**. La ficha `docs/entities/inline-lb-section-header.md` deja constancia de que el
+reutilizable se conservaba a propósito y de que esta migración era tarea posterior.
+**Prioridad:** media (deuda de obsolescencia tras la librería de inline blocks).
+
+### 14. Auditar que el deber de documentación se cumple en el inventario de elementos propios
+Las instrucciones del proyecto establecen que **registrar** cada artefacto, componente o elemento nuevo en la
+documentación es parte del trabajo de su hito —un deber permanente, no una tarea suelta—. Este TO-DO **no es
+«registrar»**, sino **asegurar** que ese deber se ha venido cumpliendo: auditar el **inventario de elementos
+propios** (`docs/analysis/inventario-bi.md`) y comprobar que **todos** los artefactos, componentes y elementos
+ya implementados están correctamente registrados ahí, corrigiendo lo que falte. (Recoge, entre otras, la
+deuda detectada tras v1.8.0: los siete `inline_lb_*` y los SDC `ula_pill`/`ula_pill_group` aún no reflejados
+en los conteos/listado del inventario.)
+**Prioridad:** media (higiene documental; el inventario es fuente de consulta del proyecto).
+
+### 15. Personalizar los layouts de sección de Layout Builder (hoy de Bootstrap Italia)
+Analizar los **layouts de fila/columna** que se pueden asignar a una sección en Layout Builder (una columna,
+dos columnas, etc.). Actualmente la mayoría de los disponibles provienen de **Bootstrap Italia**, lo que
+reintroduce dependencia de BI en la composición de las páginas. Estudiar cómo **definir layouts propios** del
+tema (anti-BI) que sustituyan a los de BI para las secciones de LB.
+**Prioridad:** media (encaja en la independencia de BI; afecta a la composición de todas las páginas con LB).
+
 ## Inventario de gadgets del piloto (Paragraphs vs Layout Builder)
 
 Foto de los elementos creados durante el piloto de composición de páginas no-home, con su tipo y
