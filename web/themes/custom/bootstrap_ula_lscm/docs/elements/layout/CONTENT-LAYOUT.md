@@ -799,6 +799,12 @@ desarrolladores/editores—, **no** como funcionalidad de producción.
 > una **fuente de consulta**: ilustra cómo se construye un body de sección con inline blocks sin
 > Bootstrap Italia.
 
+> **Catálogo de artefactos a desarrollar.** El inventario concreto de artefactos `inline_lb_*` para
+> cubrir el body de las páginas (derivado de las maquetas de About y la landing), con su tipo A/B/C, el
+> componente `ula_*` reutilizable, el fondo previsto, el riesgo de contraste y las specs mínimas de
+> estilo, está en **[`INLINE-BLOCKS-CATALOG.md`](INLINE-BLOCKS-CATALOG.md)**. Es el documento de
+> referencia para implementar la librería de artefactos sobre el mecanismo descrito en esta sección.
+
 ---
 
 ## 12. ADR-LAYOUT-005 — Inline blocks de Layout Builder como mecanismo complementario para el body de sección

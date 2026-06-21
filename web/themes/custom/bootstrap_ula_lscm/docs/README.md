@@ -36,6 +36,12 @@ Management). Organizada en **dos niveles**:
     C stack de paragraphs), con Gutenberg descartado y Layout Paragraphs congelado— en su guía (§11) y el
     **ADR-LAYOUT-005** (§12), ilustrados con el **piloto A/B/C de `/about-lb` versionado como caso de uso
     de consulta**.
+  - **[`elements/layout/INLINE-BLOCKS-CATALOG.md`](elements/layout/INLINE-BLOCKS-CATALOG.md)** —
+    **catálogo de artefactos de inline block** (`inline_lb_*`) a desarrollar para cubrir el **body** de las
+    páginas, derivado de las maquetas de About y la landing: tabla por artefacto (tipo A/B/C, qué cubre,
+    componente `ula_*` reutilizado, fondo y **riesgo de contraste**) y specs mínimas de estilo. Es el
+    documento a leer para **implementar la librería** de artefactos; se apoya en la guía y los ADR de
+    `CONTENT-LAYOUT.md`.
 
 > A medida que se desarrollen otras secciones del sitio, cada una tendrá su documentación en
 > `docs/elements/<elemento>/`, referenciando a `ARCHITECTURE.md` para lo común.
@@ -124,5 +130,8 @@ completados se archivan en el subdirectorio `archive/` de cada elemento.
 - **¿Componer el body de una sección (texto, listas, cifras, body mixto) sin una vista?** → los **inline
   blocks de Layout Builder**: `elements/layout/CONTENT-LAYOUT.md` §11 (guía A/B/C) y §12 (ADR-LAYOUT-005);
   el piloto `/about-lb` como caso de uso.
+- **¿Implementar los artefactos de inline block (`inline_lb_*`) del body?** →
+  `elements/layout/INLINE-BLOCKS-CATALOG.md` (catálogo con tipos, reutilización de `ula_*`, fondos y
+  contraste, y specs de estilo).
 - **¿Hacer cambios de configuración (campos, tipos de contenido, vistas)?** → leer antes
   `ARCHITECTURE.md` §6 (restricciones del entorno: config/sync, dumps, crear campos por código).
