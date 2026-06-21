@@ -342,3 +342,80 @@ analizan y se resuelven caso a caso), y es el comportamiento esperado de un `pag
 transición, con consolidación futura en un `page.html.twig` propio único. Este ADR materializa ese
 `page.html.twig` propio. La consolidación de las plantillas específicas (eliminar `page--about` si
 procede) queda como pendiente (§7.3) y como parte de la Fase 5 del plan.
+
+---
+
+## 9. ADR-LAYOUT-006 — El ritmo vertical del body lo aporta el marco, no los componentes
+
+**Contexto.** El body de las páginas no-home se compone con Layout Builder: el `page.html.twig` propio
+sirve el contenido del nodo dentro de `.lscm-page__content`, y ese contenido es una pila de **secciones**
+de Layout Builder (`div.layout.layout--onecol`, hermanas dentro de `.node__content`), cada una con su
+**región** (`.layout__region--content`) que contiene uno o varios **bloques** hermanos (cabecera de
+sección, rejillas de cifras, vistas, franja de cierre…). Al montar el body de About con los primeros
+artefactos (el inline block `inline_lb_statgrid`) se observó que los bloques quedaban **pegados** entre sí:
+no había un espaciado vertical definido por el tema. El único hueco existente lo aportaba, de forma
+incidental, el `padding-top: 2.5rem` que el componente `ula_section_header` se aplicaba a sí mismo; los
+demás bloques (statgrid, cta_band…) no aportaban ninguno, de modo que el ritmo era inconsistente: una
+cabecera se separaba, pero la cifra que iba debajo de ella quedaba flush.
+
+**Decisión.** El **ritmo vertical del body lo define el marco de páginas** (en `css/lscm-page.css`,
+librería `lscm_page`), **no** cada componente. En consecuencia:
+
+1. Se **retira** el `padding-top: 2.5rem` de `ula_section_header` (el componente deja de auto-espaciarse).
+2. El marco define **dos** ritmos, mediante tokens en `ula-tokens.css`:
+   - `--lb-section-gap: 2.5rem` — antes de cada **sección / tema nuevo** (cabecera de sección).
+   - `--lb-block-gap: 1.5rem` — entre **bloques dentro de una misma sección**.
+3. Las reglas usan **solo combinadores de hermano adyacente (`+`)**, de modo que el margen recae siempre en
+   un elemento que tiene un hermano anterior. Esto evita el **colapso de márgenes de «primer hijo»** a
+   través de los envoltorios `.layout` / `.layout__region`:
+   - `.lscm-page__content .layout + .layout { margin-top: var(--lb-section-gap); }` — entre secciones.
+   - `.lscm-page__content .layout__region > * + * { margin-top: var(--lb-block-gap); }` — entre bloques de
+     una sección.
+   - `.lscm-page__content .layout__region > * + .ula-section-header { margin-top: var(--lb-section-gap); }`
+     — una cabecera que sigue a otro bloque marca «tema nuevo»: ritmo mayor (gana por especificidad).
+
+**Motivos.**
+
+- **Principio del design system.** El hueco entre piezas es **responsabilidad del contenedor**, no de la
+  pieza. Un componente no debe saber qué tiene encima ni cuánto separarse; eso depende del contexto, que es
+  el marco. Que `ula_section_header` se auto-empujara era una fuga de esa responsabilidad y producía sumas
+  imprevistas (p. ej. 2,5rem del componente + cualquier ritmo del marco = 4rem).
+- **Un solo lugar para ajustar el ritmo.** Dos tokens controlan todo el ritmo del body; ajustar la
+  separación es cambiar un valor, no editar componente por componente.
+- **Robustez ante el colapso de márgenes.** Limitar los márgenes a hermanos adyacentes (`+`) evita que un
+  `margin-top` de primer hijo se colapse hacia arriba y escape de la sección a través de `.layout` /
+  `.layout__region` (footgun clásico de Drupal/Layout Builder).
+
+**Consecuencia / regla.**
+
+- Los componentes de contenido (`ula_*`) **no** aportan espaciado vertical externo propio; lo aporta el
+  marco. Si en el futuro un componente se usa fuera de `.lscm-page__content` (p. ej. en una galería de
+  previsualización), no recibirá ese ritmo: es esperado, no un defecto.
+- **Interacción conocida, abierta:** las reglas asumen que la cabecera de sección se renderiza como
+  `.ula-section-header` **hijo directo** de `.layout__region`. Esto es cierto mientras `section_header` sea
+  el bloque **reutilizable** actual (su plantilla emite el `<header>` pelado). Cuando se adopte
+  `inline_lb_section_header` (inline block, que **debe** envolver el componente en el armazón estándar de
+  bloque `<div{{ attributes }}>` para conservar la edición — ver §11.3–§11.4.1 de `CONTENT-LAYOUT.md`), la
+  cabecera dejará de ser hijo directo y el selector `> * + .ula-section-header` **dejará de casar** para esa
+  variante. El daño se limita al caso «cabecera que sigue a otro bloque dentro de la misma sección» (las que
+  abren su propia sección reciben los 2,5rem de `.layout + .layout`, no afectada). El ajuste del selector
+  (p. ej. una clase marcadora en el `<div>` del armazón) se resolverá **al implementar
+  `inline_lb_section_header`**, validándolo sobre el render real.
+
+**Alternativas consideradas.**
+
+- *Mantener el `padding-top` en `ula_section_header` y añadir solo el hueco entre hermanos (1,5rem).*
+  Descartada: deja el ritmo a medio camino entre componente y marco (el componente sigue auto-espaciándose,
+  con riesgo de sumas), e incumple el principio; además un bloque solo en su sección y sin auto-espaciado
+  (p. ej. `cta_band`) seguiría pegado a la sección anterior.
+- *Un único ritmo uniforme (un solo token) entre todo bloque adyacente.* Descartada: pierde la jerarquía
+  tipográfica deseada (separación mayor «antes de un tema nuevo» que «entre piezas de un mismo tema»).
+- *`gap` en un contenedor flex/grid (`.node__content` / `.layout__region`).* Evitaría el colapso de
+  márgenes, pero da **un** hueco uniforme por contenedor, no los dos ritmos en jerarquía, y obligaría a
+  convertir en flex/grid contenedores generados por Core/Layout Builder. La vía de hermanos adyacentes
+  consigue la jerarquía sin tocar la naturaleza de esos contenedores.
+
+**Validado** sobre el render real de `/about` (ritmo correcto entre secciones, entre cabecera y cifras, y
+en las secciones con carrusel/rejilla; sin colapsos ni sumas). Implementado en `css/ula-tokens.css`,
+`css/lscm-page.css` y `components/ula_section_header/ula_section_header.css`. Referencia cruzada desde
+`CONTENT-LAYOUT.md` (§11, mecanismo de body con inline blocks).

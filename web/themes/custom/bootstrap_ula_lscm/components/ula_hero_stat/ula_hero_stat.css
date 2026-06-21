@@ -19,3 +19,12 @@
   text-transform: uppercase;
   margin-top: 4px;
 }
+
+/**
+ * Variante 'light' (fondo claro). La base de arriba es la paleta 'dark' (hero),
+ * que NO se toca; aquí solo se sobreescribe el color para fondos claros: número
+ * azul corporativo y etiqueta atenuada. El resto (tipografía, tamaños, espaciado)
+ * se hereda de la base. Lo usa, p. ej., el artefacto inline_lb_statgrid.
+ */
+.hero-stat--light .hero-stat-num { color: var(--eu-blue); }
+.hero-stat--light .hero-stat-label { color: var(--text-light); }

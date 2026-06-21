@@ -102,6 +102,10 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
   **cabecera de sección** (tag con rayita dorada + título + descripción opcional). Tipo de bloque; mismo
   mecanismo que el CTA band (block_content + plantilla que compone `ula_section_header`), con guard de campos
   opcionales (`isEmpty`).
+- **[`entities/inline-lb-statgrid.md`](entities/inline-lb-statgrid.md)** — bloque de contenido
+  `inline_lb_statgrid` (+ paragraph `inline_lb_p_stat`): la **rejilla de cifras** del body, primer artefacto
+  de la **librería de inline blocks** (patrón B: campos → composición de `ula_grid_row` + `ula_hero_stat`).
+  Inline block de Layout Builder; opciones `tone`/`cols` por `list_string`.
 - **[`entities/faculty-member.md`](entities/faculty-member.md)** — `ct_faculty_member`: el **profesorado del
   máster** (identidad académica, posición/roles, adscripción, áreas de aplicación y expertise, enlaces y
   perfiles de investigación). Incluye los dos vocabularios propios `tx_application_area` y `tx_expertise`.

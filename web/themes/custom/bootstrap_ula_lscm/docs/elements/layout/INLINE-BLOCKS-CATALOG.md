@@ -105,18 +105,69 @@ número azul** (`--eu-blue`). Reutilizar `ula_hero_stat` tal cual sobre fondo cl
 
 ---
 
-## 3. Elemento recurrente ya cubierto: la cabecera de sección
+## 3. La cabecera de sección: del bloque reutilizable al inline block
 
 Todas las secciones de la maqueta abren con el mismo patrón: **tag corto** (mayúsculas, azul, rayita
-dorada) + **título** + **descripción**. **No es un artefacto nuevo**: ya existe en producción el bloque
-de contenido **`section_header`** compuesto con el componente **`ula_section_header`** (slots
-`tag`/`title`/`description`; ver `entities/section-header.md` y `COMPONENTS.md` §1.5). Se reutiliza tal
-cual, colocándolo como bloque al inicio de cada sección. El catálogo siguiente cubre **el body que va
-debajo** de esa cabecera.
+dorada) + **título** + **descripción**. La **presentación** de ese patrón ya existe y **se reutiliza tal
+cual**: el componente **`ula_section_header`** (slots `tag`/`title`/`description`; ver
+`../../COMPONENTS.md` §1.5).
+
+**Lo que cambia es el artefacto que lo coloca.** Hasta ahora la cabecera se sirve con el bloque de
+contenido **reutilizable** `section_header` (ver `entities/section-header.md`), colocado al inicio de cada
+sección. Funciona, pero se modeló **antes** de adoptar el modelo de **inline blocks** de Layout Builder
+(§4, ADR-LAYOUT-005). Para el body de página, el inline block es el mecanismo **más natural** (la cabecera
+es contenido específico de la página, no una pieza compartida entre páginas). Por eso se añade al catálogo
+un artefacto **inline block** para la cabecera de sección, **`inline_lb_section_header`**, aprovechando el
+SDC y la composición ya existentes.
+
+### 3.1. `inline_lb_section_header` (cabecera de sección, inline block)
+
+**Función.** Cabecera de sección (tag + título + descripción) como **inline block** del body, editable en
+la propia página por el lápiz de Layout Builder. Misma presentación que el `section_header` reutilizable
+(mismo SDC), distinto **mecanismo de colocación**.
+
+**Estructura.** Tipo de bloque `inline_lb_section_header` con campos `field_inline_lb_sh_tag` (string,
+opcional), `field_inline_lb_sh_title` (string, requerido) y `field_inline_lb_sh_description` (string_long,
+opcional) — convención **D6**. La plantilla compone `ula_section_header` pasando los campos como **valor
+plano** (`.value`, anti-BI) con **guard `isEmpty`** en los opcionales (igual que el `section_header`
+reutilizable; ver `entities/section-header.md` §3).
+
+**Reutilización.** `ula_section_header` **sin cambios** (el SDC ya expone los tres slots). La composición se
+copia de la plantilla del bloque reutilizable; lo único que se **añade** es el **armazón estándar de
+bloque** (ver más abajo).
+
+**Lección imprescindible — el armazón (si no, desaparece la edición).** Un inline block **solo** se edita
+por el lápiz de Layout Builder, y ese lápiz viaja en `<div{{ attributes }}>` (`data-contextual-id`) y
+`{{ title_suffix }}`. La plantilla del `section_header` **reutilizable** emite el `<header>` **pelado** (sin
+armazón): como bloque reutilizable se edita desde `/admin/content/block`, así que no lo necesita; pero
+colocado **como inline block**, sin armazón, **se renderiza pero desaparece el lápiz** y no se puede editar.
+La plantilla de `inline_lb_section_header` **debe** envolver el `include` del SDC en el armazón estándar
+(`<div{{ attributes }}>` + `title_prefix` + `{% if label %}…{% endif %}` + `title_suffix`), igual que hace
+`inline_lb_statgrid`. Detalle en `CONTENT-LAYOUT.md` §11.3–§11.4.1.
+
+**Opción 1 — tipo nuevo, sin romper lo existente.** Se crea un tipo de bloque **nuevo**
+(`inline_lb_section_header`) y se deja **intacto** el reutilizable `section_header` y su plantilla. Las
+cabeceras ya colocadas en `/about` siguen funcionando; la migración de las existentes al modelo inline es
+una tarea de **contenido** posterior, no forzada. (Alternativa descartada de momento: arreglar el tipo
+existente para que sirva como reutilizable e inline a la vez — aprovecharía más, pero cambia el DOM de todas
+las cabeceras ya colocadas y obliga a revalidarlas.)
+
+**Interacción con el ritmo del body — a resolver al implementar.** Al envolver la cabecera en el armazón,
+`.ula-section-header` deja de ser **hijo directo** de `.layout__region` (pasa a serlo el `<div>` del
+armazón). Eso rompe el selector de ritmo `.layout__region > * + .ula-section-header` (ADR-LAYOUT-006), que
+dejaría esa cabecera en `--lb-block-gap` (1,5rem) en vez de `--lb-section-gap` (2,5rem). Alcance limitado al
+caso «cabecera que sigue a otro bloque en la misma sección». Se ajustará el selector (p. ej. clase marcadora
+en el `<div>` del armazón) **al implementar el artefacto**, validándolo sobre el render real.
+
+**Configuración en BD.** Tipo de bloque, campos, form display y ejemplares son configuración/contenido (BD,
+no git); creación con script de un solo uso (no versionado); **dump previo** obligatorio.
 
 ---
 
 ## 4. Catálogo de artefactos
+
+> El catálogo siguiente cubre **el body que va debajo** de la cabecera de sección. La cabecera en sí está en
+> §3 (`inline_lb_section_header`).
 
 Tabla resumen (las especificaciones de estilo y las decisiones de contraste se detallan en las
 subsecciones 4.1–4.5):
@@ -155,41 +206,36 @@ contraste): el CSS del artefacto fuerza el color del texto dentro del panel, no 
 **Reutilización SDC.** Ninguna (es texto enriquecido). 
 
 **Contraste — a evaluar por quien implemente.** Confirmar que en `panel_blue` ningún color heredado deja
-texto oscuro sobre azul. La «Application Roadmap» es una **lista numerada** (`<ol>`): decidir si basta
-Basic HTML dentro del panel o si conviene un artefacto de pasos dedicado (ver `ula_timeline_item` en §6).
+texto oscuro sobre azul. **Resuelto (decisión del hito):** la «Application Roadmap» **no** se cubre con una
+lista numerada en Basic HTML, sino con un **artefacto de pasos dedicado** basado en `ula_timeline_item`
+(`COMPONENTS.md` §3.4) — más impactante visualmente. Es decir, `inline_lb_richtext` cubre la prosa y los
+paneles de texto; los «pasos» van a su propio artefacto (a catalogar al planificarlo).
 
-### 4.2. `inline_lb_statgrid` (B)
+### 4.2. `inline_lb_statgrid` (B) — **implementado** (v1.8.0)
+
+> **Estado:** implementado y validado. Detalle completo en `entities/inline-lb-statgrid.md`. Esta entrada se
+> conserva como referencia de catálogo; las decisiones abiertas que listaba quedaron resueltas como se indica.
 
 **Función.** Rejilla de **cifras** (número grande + etiqueta). Cubre `highlight-grid` (§1: 2 / 120 / EN /
 MSc) y `stat-row` (§3: 92% / 40+ / 15).
 
-**Estructura.** Campos estructurados {número, etiqueta} (pares fijos, como el piloto B, o multivalor) +
-una selección de **columnas**. La plantilla compone `ula_grid_row` con N `ula_hero_stat`.
+**Estructura (resuelta: multivalor).** Paragraph `inline_lb_p_stat` **multivalor** (`field_inline_lb_stats`),
+un delta por par {número, etiqueta} → **número variable** de cifras. Opciones del editor como `list_string`
+en el bloque (D5-mecanismo): `field_inline_lb_sg_tone` (`light`/`dark`, def. `light`) y
+`field_inline_lb_sg_cols` (`1`–`4`, def. `3`). La plantilla recorre los paragraphs, arma un **array** de
+`ula_hero_stat` y lo pasa al slot `content` de `ula_grid_row`.
 
-**Reutilización SDC.** `ula_grid_row` (prop `columns`, valores `1`–`4`) como contenedor + `ula_hero_stat`
-(props `number`/`label`) por celda. **Ambos por props → validado en el piloto.** En la maqueta:
-`columns: 4` para `highlight-grid`, `columns: 3` para `stat-row`.
+**Reutilización SDC.** `ula_grid_row` (prop `columns`) como contenedor + `ula_hero_stat` (props
+`number`/`label`/`tone`) por celda. En la maqueta: `columns: 4` para `highlight-grid`, `columns: 3` para
+`stat-row`.
 
-**Specs mínimas de estilo (según maqueta).** Celdas con fondo `--white`, `border: 1px solid
-var(--border)`, `border-radius: var(--radius-lg)`, contenido centrado; número en `--font-display`, ~2.2–
-2.8rem, `--eu-blue`; etiqueta ~0.9rem, `--text-light`, peso 600.
+**Specs de estilo.** Las del componente `ula_hero_stat` (paleta `light`: número `--eu-blue`, etiqueta
+`--text-light`) dentro de las celdas de `ula_grid_row`.
 
-**Riesgo de contraste — ALTO, decisión obligatoria.** `ula_hero_stat` está diseñado para el **hero
-(fondo azul)**: su número usa `--eu-yellow` y su etiqueta blanco al 65 %. Sobre el **fondo claro** de
-estas secciones, **ambos quedan invisibles** (es el fallo que ya se observó en el piloto). Opciones para
-quien implemente (elegir una):
-
-1. **Añadir una variante/prop de tono a `ula_hero_stat`** (p. ej. `tone: light|dark`): en `light`, número
-   `--eu-blue` y etiqueta `--text-light`. Es la solución más limpia y reutilizable, pero **modifica un
-   componente compartido** (revisar que no afecte al hero).
-2. **Clase envolvente del artefacto** que sobreescriba el color de `.hero-stat-num` / `.hero-stat-label`
-   dentro del `statgrid` (sin tocar el componente). Aislado al artefacto, pero acopla el CSS del
-   artefacto al markup interno del componente.
-3. **Crear un componente de cifra propio para fondo claro** (`ula_stat` claro) y no reutilizar
-   `ula_hero_stat`. Más trabajo; evita supuestos de color cruzados.
-
-> Recomendación a validar: opción 1 si `ula_hero_stat` va a usarse en ambos fondos a futuro; opción 2 si
-> se quiere cero impacto en el hero a corto plazo.
+**Riesgo de contraste — resuelto (D1, opción 1).** `ula_hero_stat` estaba pensado para fondo oscuro (número
+dorado, etiqueta blanca al 65 %), invisible sobre claro. Se resolvió **añadiendo la prop `tone` al
+componente** (opción 1): `dark` es la base (hero intacto), `light` un override aditivo (número azul,
+etiqueta atenuada) que usa este artefacto. Ver `entities/inline-lb-statgrid.md` §4 y `COMPONENTS.md` §3.3.
 
 ### 4.3. `inline_lb_cardgrid` (C)
 
@@ -227,12 +273,17 @@ pinta una pastilla por valor (es el patrón `pilot_p_pill` del piloto, ahora com
 **opción de variante** distingue `pill` (pastilla inline) de `tag_card` (etiqueta-tarjeta en rejilla,
 para roles).
 
-**Reutilización SDC.** **No existe** un componente `ula_*` de pastilla; el piloto las pintó con CSS
-propio (`.pilot-pill`). Dos caminos para quien implemente:
+**Reutilización SDC — resuelto (D2): crear SDC `ula_pill` / `ula_pill_group`.** No existe un componente
+`ula_*` de pastilla (el piloto las pintó con CSS propio `.pilot-pill`). Se decide **crear un SDC
+reutilizable** `ula_pill` / `ula_pill_group` (más alineado con el design system; reutilizable en otras
+páginas), **no** CSS propio del artefacto. **Referencia de estilo:** las **pastillas/chips** de
+`ula_faculty_detail` (las de expertise/rol), **no** el botón «View profile» de la faculty card. El estilo
+exacto se extraerá del CSS real de esos componentes al implementar.
 
-- **CSS propio del artefacto** (rápido, sin nuevo SDC), o
-- **Crear un SDC `ula_pill` / `ula_pill_group`** reutilizable (más alineado con el design system; permite
-  reutilizar la pastilla en otras páginas). Decisión a tomar según cuánto se vaya a reutilizar.
+**Variante `pill` vs `tag_card` — resuelto (D5): prop `variant` en `ula_pill_group`.** La distinción entre
+pastilla inline (`pill`) y etiqueta-tarjeta en rejilla (`tag_card`, roles) se modela como **prop `variant`**
+del grupo. (Pendiente menor a decidir al implementar: si se prevé ya una variante clara para uso sobre panel
+oscuro o no se contempla aún.)
 
 **Specs mínimas de estilo (según maqueta).** `pill`: fondo `--white`, `border: 1px solid var(--border)`,
 `border-radius: 100px`, padding ~8px 20px, texto `--eu-blue`, peso 600; fila con `flex-wrap` y `gap`

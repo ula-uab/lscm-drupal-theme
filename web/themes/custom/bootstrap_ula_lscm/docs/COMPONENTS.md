@@ -381,12 +381,22 @@ Piezas pequeñas de las secciones de la home/landing, basadas en **props string*
 
 ### 3.3. `ula_hero_stat`
 
-Estadística individual del hero de la landing (un número grande + una etiqueta). Slot: `hero_stats`.
+Estadística individual: un número grande + una etiqueta. Origen: el hero de la landing (slot `hero_stats`).
+**Reutilizado** por el artefacto `inline_lb_statgrid` en el body de las páginas (ver
+`entities/inline-lb-statgrid.md`), de ahí la prop `tone`.
 
 | Prop | Tipo | Función |
 |---|---|---|
 | `number` | string | Texto grande destacado |
 | `label` | string | Etiqueta bajo el número |
+| `tone` | string (`dark`/`light`) | Paleta según el fondo. `dark` (por defecto): número dorado, etiqueta clara (hero / fondo oscuro). `light`: número `--eu-blue`, etiqueta `--text-light` (fondo claro). Por defecto `dark` |
+
+**Tono — `dark` es la base, `light` un override aditivo.** La paleta `dark` es el CSS base del componente
+(sin cambios respecto al diseño original del hero); `light` solo sobreescribe los colores del número y la
+etiqueta. Así, quien no pasa `tone` (el hero) queda **intacto**. El default se fija en el `.twig` con
+`|default('dark')` porque los `default` del `.component.yml` no se inyectan de forma fiable en runtime (ver
+`ARCHITECTURE.md` §6.4). Decisión transversal **D1** de la librería de inline blocks (ver
+`elements/layout/INLINE-BLOCKS-CATALOG.md` §4.2 y el plan).
 
 ### 3.4. `ula_timeline_item`
 

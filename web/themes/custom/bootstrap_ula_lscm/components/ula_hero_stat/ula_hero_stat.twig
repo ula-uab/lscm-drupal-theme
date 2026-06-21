@@ -1,8 +1,16 @@
 {#
   ula_hero_stat — una estadística del hero.
-  Props: number, label. Markup y clases idénticos a la maqueta para fidelidad visual.
+  Props: number, label, tone. Markup y clases idénticos a la maqueta para fidelidad visual.
+
+  'tone' elige la paleta según el fondo: 'dark' (por defecto, hero / fondo oscuro:
+  número dorado, etiqueta clara) o 'light' (fondo claro: número azul, etiqueta
+  atenuada). El default se fija aquí con |default('dark') porque los default del
+  .component.yml no se inyectan de forma fiable en runtime (ver ARCHITECTURE §6.4).
+  La paleta 'dark' es la BASE del CSS (sin cambios); 'light' es un override aditivo,
+  así que el hero (que no pasa 'tone') queda intacto.
 #}
-<div class="hero-stat">
+{% set tone = tone|default('dark') %}
+<div class="hero-stat hero-stat--{{ tone }}">
   <span class="hero-stat-num">{{ number }}</span>
   <span class="hero-stat-label">{{ label }}</span>
 </div>

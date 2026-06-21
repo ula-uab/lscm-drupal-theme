@@ -16,3 +16,20 @@ props:
       type: string
       title: Label
       description: 'Etiqueta descriptiva bajo el número (p. ej. "ECTS Credits").'
+    tone:
+      type: string
+      title: Tone
+      description: >
+        Paleta de color según el fondo sobre el que se muestra la cifra. "dark"
+        (por defecto): número dorado y etiqueta clara, para el hero / fondos
+        oscuros. "light": número azul y etiqueta atenuada, para fondos claros
+        (p. ej. el artefacto inline_lb_statgrid en el body de las páginas). El
+        default se aplica en el .twig con |default('dark') (los default del
+        .component.yml no se inyectan de forma fiable en runtime).
+      enum:
+        - dark
+        - light
+      'meta:enum':
+        dark: 'Dark (fondo oscuro: número dorado, etiqueta clara)'
+        light: 'Light (fondo claro: número azul, etiqueta atenuada)'
+      default: dark

@@ -108,6 +108,43 @@ Bloquean varios artefactos; se resuelven primero. Las marcadas como **estructura
 | **D5** | **Modelado de variantes/opciones.** Cómo elige el editor (`plain`/`panel_blue`; `pill`/`tag_card`; nº de columnas/cifras). | Campo de opción (`list_string`) en el bloque, variantes del SDC, o tipos de bloque separados. | richtext, pills, statgrid | No |
 | **D6** | **Convención de nombres, campos y librería.** | `inline_lb_*` (block type), `inline_lb_p_*` (paragraph), `field_inline_lb_*` (campos), `.inline-lb-*` (CSS); **una** librería `inline_lb` vs. una por artefacto. | Todos | No |
 
+### 4.bis. Estado de resolución (actualizado en el hito v1.8.0)
+
+Las decisiones transversales se han ido resolviendo. Resumen vivo (la tabla de arriba es el enunciado
+original; esto es el resultado):
+
+- **D1 — Cifra sobre fondo claro: RESUELTA (opción 1).** Prop `tone: light|dark` en `ula_hero_stat`
+  (`dark` base = hero intacto; `light` override aditivo). Implementada en `inline_lb_statgrid`. Registrada
+  en `COMPONENTS.md` §3.3 y `entities/inline-lb-statgrid.md` §4.
+- **D2 — Pastilla: RESUELTA.** Se crea un **SDC reutilizable `ula_pill` / `ula_pill_group`** (no CSS propio
+  del artefacto). **Referencia de estilo:** chips/pastillas de `ula_faculty_detail` (no el botón «View
+  profile»). Pendiente de implementar (lo necesita `inline_lb_pills`); ADR estructural al implementarlo.
+- **D3 — Slots en `ula_card_simple`: RECONVERTIDA en validación diferida.** El mecanismo de paso por slots
+  desde la plantilla de un bloque está **confirmado en producción** (`section_header`/`cta_band`), pero con
+  **string plano**. Queda validar **solo** el slot `body` con **HTML rico** al construir
+  `inline_lb_cardgrid`; **plan B** (plantilla de tarjeta propia) si fallara. No bloquea nada hasta `cardgrid`.
+- **D4 — Texto en `panel_blue`: pendiente de implementación (no es decisión).** El CSS del artefacto fuerza
+  el color claro dentro del panel; se confirma al implementar `inline_lb_richtext`.
+- **D5 — Modelado de opciones: RESUELTO (mecanismo).** Las opciones del editor se modelan como **campo
+  `list_string` en el bloque** (fijado por precedente de `statgrid`: `tone`, `cols`). Queda aplicar el
+  mecanismo a cada artefacto (qué opciones expone cada uno), no el mecanismo en sí.
+- **D6 — Nomenclatura: RESUELTA.** `inline_lb_*` / `inline_lb_p_*` / `field_inline_lb_*` / `.inline-lb-*`.
+
+**Decisiones nuevas del hito (no estaban en la tabla original):**
+
+- **Ritmo vertical del body: RESUELTO → ADR-LAYOUT-006** (`SHARED-FRAME-LAYOUT.md` §9). El marco aporta el
+  ritmo (tokens `--lb-section-gap` 2,5rem / `--lb-block-gap` 1,5rem); se retira el `padding-top` de
+  `ula_section_header`. Implementado y validado.
+- **«Application Roadmap» (richtext): RESUELTA.** No es lista numerada en Basic HTML, sino un **artefacto de
+  pasos dedicado** con `ula_timeline_item` (más impactante). A catalogar/planificar como artefacto propio.
+- **`inline_lb_pills` — variante: RESUELTA (mecanismo).** `pill` vs `tag_card` mediante **prop `variant`** en
+  `ula_pill_group`. Pendiente menor (al implementar): si se contempla ya variante clara para panel oscuro.
+- **Cabecera de sección como inline block: AÑADIDA al catálogo** como `inline_lb_section_header` (Opción 1:
+  tipo nuevo, reutilizable `section_header` intacto). Ver `INLINE-BLOCKS-CATALOG.md` §3.1. Pendiente de
+  implementar; incluye ajustar el selector de ritmo (interacción con ADR-LAYOUT-006).
+- **`inline_lb_stack` — composición:** se decide **al implementar** `stack` (qué piezas admite, reutilizar o
+  duplicar plantillas).
+
 ---
 
 ## 5. Desglose de artefactos — alcance inmediato (body de About)
@@ -119,7 +156,7 @@ debajo.
 | # | Artefacto | Tipo | Cubre (maqueta About) | Estructura propuesta (a validar) | SDC | Bloqueado por |
 |---|---|---|---|---|---|---|
 | 1 | `inline_lb_richtext` | A | «Engineering Edge» (§1), «Application Roadmap» (§5), prosa/listas | 1 campo texto largo (Basic HTML) + opción de tono `plain`/`panel_blue` | — | D4, D5 |
-| 2 | `inline_lb_statgrid` | B | `highlight-grid` (§1, 4 cifras), `stat-row` (§3, 3 cifras) | pares {número, etiqueta} (¿fijos N o multivalor?) + columnas | `ula_grid_row` + `ula_hero_stat` (props) | **D1**, D5 |
+| 2 | `inline_lb_statgrid` | B | `highlight-grid` (§1, 4 cifras), `stat-row` (§3, 3 cifras) | paragraph multivalor {número, etiqueta} + columnas | `ula_grid_row` + `ula_hero_stat` (props) | ✅ **implementado (v1.8.0)** — ver `entities/inline-lb-statgrid.md` |
 | 3 | `inline_lb_pills` | B | `tools` (§2), `role-grid` (§3) como variante | 1 campo string multivalor + opción `pill`/`tag_card` | según D2 | **D2**, D5 |
 | 4 | `inline_lb_cardgrid` | C | `card-grid` (§2, 3 tarjetas), `adm-cols` (§5, 2 col.) | stack de paragraph «tarjeta» (título + cuerpo rich) + columnas | `ula_grid_row` + `ula_card_simple` (slots) | **D3** |
 | 5 | `inline_lb_stack` | C | secciones que mezclen piezas en un único bloque | campo Paragraphs multivalor: pieza texto + pieza pastilla (ampliable) | reusa piezas de 1 y 3 | requiere 1 y 3 |
@@ -188,10 +225,14 @@ Mayoritariamente **reutilización**; **0–2 SDC nuevos/modificados** según se 
 
 ## 9. Estado y próximos pasos
 
-- **Estado:** plan validado por el usuario. **Aún no se ha tomado ninguna decisión** (D1–D6 abiertas) ni
-  escrito código/configuración.
-- **Próximo paso:** resolver las **decisiones transversales D1–D6** (registrando como ADR las
-  estructurales) y, a continuación, arrancar la implementación por `inline_lb_richtext`.
+- **Estado (v1.8.0):** decisiones transversales **resueltas** (ver §4.bis). **Implementado y validado:**
+  `inline_lb_statgrid` (primer artefacto, patrón B) y el **ritmo vertical del body** (ADR-LAYOUT-006).
+  Documentado y consolidado en este hito.
+- **Próximo paso:** implementar el resto de la librería de lo simple a lo complejo —
+  `inline_lb_section_header` (cabecera como inline block, §3.1 del catálogo; incluye ajustar el selector de
+  ritmo), `inline_lb_richtext` (+ artefacto de pasos `ula_timeline_item`), `inline_lb_pills` (con el nuevo
+  SDC `ula_pill`/`ula_pill_group`), `inline_lb_cardgrid` (validando el slot `body` rich, D3) y, al final,
+  `inline_lb_stack`.
 
 > **Recordatorios de método (del proyecto):** dump de BD antes de tocar configuración; commit + push por
 > hito; documentar al cerrar (no antes); no subir versión del tema sin permiso explícito; trabajar de lo

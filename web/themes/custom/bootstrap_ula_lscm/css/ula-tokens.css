@@ -22,4 +22,9 @@
   --font-body: 'Manrope', sans-serif;
   --radius: 12px;
   --radius-lg: 20px;
+
+  /* Ritmo vertical del body de las páginas (Layout Builder). El espaciado entre
+     piezas lo aporta el marco, no los componentes (ver SHARED-FRAME-LAYOUT, ADR-LAYOUT-006). */
+  --lb-section-gap: 2.5rem; /* antes de cada sección / tema nuevo (cabecera de sección) */
+  --lb-block-gap: 1.5rem;   /* entre bloques dentro de una misma sección */
 }

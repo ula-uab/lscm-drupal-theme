@@ -4,11 +4,11 @@
  * Extraído de la maqueta (`.section-tag` / `.section-title` / `.section-desc`). Tokens de
  * ula-tokens.css. Título en tipografía de CUERPO (Manrope) en negrita —no la display—, reservando
  * la display (Playfair) para el hero/portada. Pensado para fondo claro. Sin Bootstrap Italia.
+ *
+ * NOTA (ADR-LAYOUT-006): este componente NO aporta su propio espaciado superior. El ritmo vertical
+ * (separación respecto a lo que tiene encima) lo define el MARCO de páginas en lscm-page.css
+ * (`--lb-section-gap`), coherente con el principio "el hueco lo aporta el contenedor, no la pieza".
  */
-
-.ula-section-header {
-  padding-top: 2.5rem;
-}
 
 .ula-section-header__tag {
   display: inline-flex;

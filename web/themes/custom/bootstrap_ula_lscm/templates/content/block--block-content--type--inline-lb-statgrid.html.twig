@@ -1,0 +1,60 @@
+{#
+  Artefacto inline_lb_statgrid — Mecanismo B (campos → composición de SDC).
+  Body de página: rejilla de CIFRAS (número grande + etiqueta) editable en la
+  propia página como inline block de Layout Builder. Independiente de Bootstrap
+  Italia. Ver el plan `docs/plans/paginas-contenido/plan-libreria-inline-blocks.md`
+  y `docs/elements/layout/CONTENT-LAYOUT.md` (§11, ADR-LAYOUT-005).
+
+  Tipo de bloque `inline_lb_statgrid` (theme hook `block`). Campos:
+    - field_inline_lb_stats   (Paragraphs `inline_lb_p_stat`, multivalor): cada
+      delta es un par {número, etiqueta}.
+    - field_inline_lb_sg_tone (list_string light/dark): paleta de las cifras según
+      el fondo de la sección. Se pasa a la prop `tone` de `ula_hero_stat`.
+    - field_inline_lb_sg_cols (list_string 1-4): columnas en escritorio; se pasa a
+      la prop `columns` de `ula_grid_row`.
+
+  COMPOSICIÓN. El body se arma AQUÍ (no con {{ content.field } }): se recorren los
+  paragraphs y se construye un ARRAY (`stats`) de `ula_hero_stat` ya renderizados,
+  que se pasa al slot `content` de `ula_grid_row`. El slot espera una SECUENCIA
+  (una celda por elemento); un único string concatenado se trataría como UNA celda.
+  Por eso este artefacto NO usa una plantilla de paragraph ni el view display del
+  campo: lee los valores planos de cada paragraph y compone los SDC directamente.
+
+  CSS. No lleva librería ni CSS propios: `ula_grid_row` y `ula_hero_stat`
+  autoadjuntan el suyo (SDC), y la paleta `light` vive en `ula_hero_stat.css`. Por
+  eso este artefacto no toca la mecánica de carga de CSS que dio problemas en el
+  piloto (librería registrada + attach_library): aquí no hay CSS propio que cargar.
+
+  ANTI-BI. Número y etiqueta se pasan como VALORES PLANOS (`.value`) a props del
+  componente; no se atraviesa field.html.twig (Bootstrap Italia en este subtema).
+
+  IMPRESCINDIBLE en un inline block: el armazón estándar de bloque
+  (`<div{{ attributes }}>`, `title_prefix`, `{% if label %}…{% endif %}`,
+  `title_suffix`). El control de Layout Builder (lápiz Configure/Move/Remove) se
+  inyecta vía `title_suffix`/`attributes`; sin ellos el inline block no se puede
+  editar. El `{% if label %}` respeta la casilla «Display title».
+#}
+{% set b = content['#block_content'] %}
+{% set tone = b.field_inline_lb_sg_tone.value|default('light') %}
+{% set cols = b.field_inline_lb_sg_cols.value|default('3') %}
+{% set stats = [] %}
+{% for item in b.field_inline_lb_stats %}
+  {% set p = item.entity %}
+  {% if p %}
+    {% set stats = stats|merge([
+      include('bootstrap_ula_lscm:ula_hero_stat', {
+        number: p.field_inline_lb_st_number.value,
+        label: p.field_inline_lb_st_label.value,
+        tone: tone,
+      })
+    ]) %}
+  {% endif %}
+{% endfor %}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  {% if stats is not empty %}
+    {{ include('bootstrap_ula_lscm:ula_grid_row', { columns: cols, content: stats }) }}
+  {% endif %}
+</div>

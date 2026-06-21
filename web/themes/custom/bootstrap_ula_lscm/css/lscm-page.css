@@ -78,3 +78,38 @@
     order: 3;
   }
 }
+
+/* ============================================================================
+ * Ritmo vertical del BODY de las páginas (contenido compuesto con Layout Builder)
+ * ----------------------------------------------------------------------------
+ * El espaciado entre piezas del body lo aporta EL MARCO, no los componentes
+ * (ADR-LAYOUT-006). Estructura real (ver SHARED-FRAME-LAYOUT.md):
+ *   .lscm-page__content > … > .node__content
+ *       └── .layout.layout--onecol            ← cada SECCIÓN de Layout Builder
+ *             └── .layout__region--content
+ *                   └── [bloques hermanos]    ← section_header, statgrid, vistas, cta_band…
+ *
+ * Dos ritmos (tokens en ula-tokens.css):
+ *   --lb-section-gap (2.5rem): antes de cada sección / tema nuevo (cabecera de sección).
+ *   --lb-block-gap   (1.5rem): entre bloques dentro de una misma sección.
+ *
+ * Se usan SOLO combinadores de hermano adyacente (+): el margen recae siempre en
+ * un elemento que tiene un hermano anterior, evitando el colapso de márgenes de
+ * "primer hijo" a través de los envoltorios .layout / .layout__region.
+ * ========================================================================== */
+
+/* Separación entre secciones de Layout Builder. */
+.lscm-page__content .layout + .layout {
+  margin-top: var(--lb-section-gap, 2.5rem);
+}
+
+/* Separación entre bloques hermanos dentro de una misma sección. */
+.lscm-page__content .layout__region > * + * {
+  margin-top: var(--lb-block-gap, 1.5rem);
+}
+
+/* Una cabecera de sección que sigue a otro bloque marca "tema nuevo": ritmo mayor
+ * (mayor especificidad que la regla anterior, así que prevalece sobre --lb-block-gap). */
+.lscm-page__content .layout__region > * + .ula-section-header {
+  margin-top: var(--lb-section-gap, 2.5rem);
+}

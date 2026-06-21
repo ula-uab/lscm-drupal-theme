@@ -650,6 +650,11 @@ tarjetas (Views → UI Patterns) y la siguiente, un inline block de texto enriqu
 
 La decisión formal está en el [ADR-LAYOUT-005](#12-adr-layout-005--inline-blocks-de-layout-builder-como-mecanismo-complementario-para-el-body-de-sección).
 
+> **Ritmo vertical del body.** La separación entre secciones y entre bloques del body **la aporta el marco
+> de páginas**, no los componentes (tokens `--lb-section-gap` / `--lb-block-gap` en `lscm-page.css`). La
+> decisión y sus reglas están en **ADR-LAYOUT-006** (`SHARED-FRAME-LAYOUT.md` §9), que incluye una
+> interacción abierta con `inline_lb_section_header` a resolver cuando se implemente.
+
 ### 11.1. Cuándo usar cada mecanismo
 
 La pregunta que decide el mecanismo es **«¿el contenido es una entidad del sitio?»**:
