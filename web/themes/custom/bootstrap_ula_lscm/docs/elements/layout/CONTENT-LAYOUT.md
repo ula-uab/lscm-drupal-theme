@@ -42,6 +42,13 @@
 - [8. Implicación para la configuración (sitio sin config/sync)](#8-implicación-para-la-configuración-sitio-sin-configsync)
 - [9. Pendientes específicos de este elemento](#9-pendientes-específicos-de-este-elemento)
 - [10. ADR-LAYOUT-004 — Adopción de Layout Builder como mecanismo de composición de páginas no-home](#10-adr-layout-004--adopción-de-layout-builder-como-mecanismo-de-composición-de-páginas-no-home)
+- [11. Mecanismo complementario: body de sección con inline blocks de Layout Builder](#11-mecanismo-complementario-body-de-sección-con-inline-blocks-de-layout-builder)
+  - [11.1. Cuándo usar cada mecanismo](#111-cuándo-usar-cada-mecanismo)
+  - [11.2. Los tres patrones (A, B, C)](#112-los-tres-patrones-a-b-c)
+  - [11.3. Inline block vs bloque reutilizable](#113-inline-block-vs-bloque-reutilizable)
+  - [11.4. Lecciones de implementación](#114-lecciones-de-implementación)
+  - [11.5. El piloto A/B/C en `/about-lb` como caso de uso](#115-el-piloto-abc-en-about-lb-como-caso-de-uso)
+- [12. ADR-LAYOUT-005 — Inline blocks de Layout Builder como mecanismo complementario para el body de sección](#12-adr-layout-005--inline-blocks-de-layout-builder-como-mecanismo-complementario-para-el-body-de-sección)
 
 ---
 
@@ -153,7 +160,9 @@ Una región de una sección puede contener distintos tipos de bloque. Los releva
 - **Bloque de campo (`field_block:*`)** — pinta un campo concreto del propio nodo de la página.
 - **Bloque de campo extra (`extra_field_block:*`)** — elementos "pseudo-campo" del nodo (p. ej. los
   enlaces).
-- **Bloque de contenido / bloque personalizado** — un bloque de texto o markup reutilizable.
+- **Bloque de contenido / bloque personalizado** — un bloque de texto o markup reutilizable. Incluye
+  los **inline blocks de Layout Builder**, que son el mecanismo para el **body de sección**
+  (complementario al flujo Views → UI Patterns); ver §11 y el [ADR-LAYOUT-005](#12-adr-layout-005--inline-blocks-de-layout-builder-como-mecanismo-complementario-para-el-body-de-sección).
 - **Componente UI Patterns directo (`ui_patterns:*`)** — un componente SDC insertado directamente como
   bloque en la sección, sin pasar por una vista (útil para piezas sueltas no ligadas a una colección de
   entidades).
@@ -625,3 +634,219 @@ en consecuencia.
   ella.
 - **ADR-LAYOUT-001/-003** — el marco (`page--<ruta>` → `page.html.twig` propio) envuelve estas páginas;
   LB compone su contenido interno. Marco y composición son complementarios.
+
+---
+
+## 11. Mecanismo complementario: body de sección con inline blocks de Layout Builder
+
+El flujo **Views → UI Patterns** (§5) es el mecanismo para **colecciones de entidades del sitio**
+(nodos que una vista selecciona y un componente pinta como tarjetas) y para **instancias únicas
+emparejadas por argumento** (el hero de página, §5.7). Pero buena parte del **body** de una sección no
+es una entidad del sitio ni justifica definir una vista: es **contenido editorial propio de esa
+página** — prosa, listas, encabezados, grids de cifras/pastillas, cards sueltas. Para ese body se
+adopta un **segundo mecanismo, complementario** al de §5: los **inline blocks de Layout Builder
+(Core)**. Los dos mecanismos **coexisten** en una misma página: una sección puede ser una vista de
+tarjetas (Views → UI Patterns) y la siguiente, un inline block de texto enriquecido.
+
+La decisión formal está en el [ADR-LAYOUT-005](#12-adr-layout-005--inline-blocks-de-layout-builder-como-mecanismo-complementario-para-el-body-de-sección).
+
+### 11.1. Cuándo usar cada mecanismo
+
+La pregunta que decide el mecanismo es **«¿el contenido es una entidad del sitio?»**:
+
+- **Views → UI Patterns (§5).** El contenido **es una colección de entidades del sitio** (nodos
+  reutilizables: universidades, faculty…) **o una instancia única emparejada por argumento** (el hero
+  de la página). El contenido vive en **nodos** editables, una **vista** los selecciona y ordena, y un
+  **componente** propio los pinta. Reutilizable en varias páginas y contextos.
+- **Inline blocks de Layout Builder (§11.2).** El contenido **es body específico de esa página** —copy
+  que no es una entidad del sitio—, que se quiere **editar en la propia página** sin definir una vista
+  ni tocar el tipo de contenido genérico de la página (`lb_contents`). Vive **con el layout del nodo**
+  (ver §11.3).
+
+> No es «uno u otro» a nivel de página: es por **sección**. Cada sección elige el mecanismo que
+> corresponde a su contenido.
+
+### 11.2. Los tres patrones (A, B, C)
+
+Un inline block para el body admite tres modalidades, según la naturaleza del contenido. Las tres se
+validaron en el piloto (§11.5) y las tres pueden convivir en una misma página:
+
+- **A — Texto enriquecido.** Tipo de bloque con un **campo de texto largo** (Basic HTML). La plantilla
+  del bloque **no compone ningún SDC**: imprime el HTML procesado del campo. Es el patrón para **prosa,
+  listas y encabezados**. Anti-BI: se imprime el **valor procesado** del campo
+  (`campo.0.processed|raw`), no el render array del campo (que pasaría por `field.html.twig` →
+  Bootstrap Italia). El aspecto lo da el **CSS propio**.
+
+- **B — Campos estructurados → composición de SDC `ula_*`.** Tipo de bloque con **campos
+  estructurados**; la plantilla **compone componentes propios** con esos campos, exactamente como el
+  patrón de composición de §5.1, pero alimentado por **campos del bloque** en vez de por filas de una
+  vista. Es el patrón para **grids de cifras, stats y piezas estructuradas** cuyo contenido no es una
+  entidad del sitio. En el piloto, cuatro pares fijos {número, etiqueta} se componen como un
+  `ula_grid_row` (Nivel 1) con cuatro `ula_hero_stat`.
+
+- **C — Stack de paragraphs heterogéneos.** Tipo de bloque con un **campo Paragraphs**
+  (`entity_reference_revisions`, multivalor) que admite **varios paragraph types**; el editor **apila
+  piezas en el orden que decida**, y cada paragraph se pinta con **su propia plantilla** (anti-BI). Es
+  el patrón para **body mixto y flexible** (p. ej. alternar bloques de texto y filas de pastillas). En
+  el piloto, el stack admite dos piezas: un paragraph de **texto** (Basic HTML) y un paragraph de
+  **pastillas** (campo string multivalor pintado como una fila de pastillas).
+
+### 11.3. Inline block vs bloque reutilizable
+
+Un bloque de contenido (`block_content`) puede colocarse en Layout Builder de **dos maneras**, y la
+diferencia es **determinante para la edición**:
+
+- **Inline block.** Se crea **desde el propio Layout Builder** (*Add block → Create custom block*).
+  **Vive con el layout del nodo** (no aparece en la biblioteca de bloques) y **solo se edita desde el
+  lápiz de Layout Builder** sobre la página. Es lo apropiado para **body específico de una página**:
+  no contamina la biblioteca de bloques con piezas de un solo uso.
+- **Bloque reutilizable.** Se crea en `/admin/content/block`, se coloca en el layout y **se edita
+  también desde ahí**, independientemente de la página. Es lo apropiado para piezas **compartidas entre
+  páginas** (p. ej. `cta_band`/`section_header`).
+
+> **Consecuencia práctica (clave para §11.4).** Como el inline block **solo** se edita por el lápiz de
+> LB, **depende por completo de que la plantilla emita el armazón estándar de bloque** (que es lo que
+> trae ese lápiz). Un bloque reutilizable sobrevive a la omisión de ese armazón porque se puede editar
+> desde `/admin/content/block`; un inline block, no.
+
+### 11.4. Lecciones de implementación
+
+Lecciones validadas (todas, contra el comportamiento real en el Drupal del sitio; varias se
+diagnosticaron por comparación con el bloque básico nativo de Core):
+
+1. **Armazón estándar de bloque, imprescindible en la plantilla de un inline block.** La plantilla de
+   un `block_content` colocado como inline block **debe** emitir el armazón que trae la plantilla de
+   bloque de Core, o el bloque pierde el **control de Layout Builder** (el lápiz Configure/Move/Remove)
+   y **no se puede editar** (ni completa bien el «Add block»):
+
+   ```twig
+   <div{{ attributes }}>
+     {{ title_prefix }}
+     {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+     {{ title_suffix }}
+     {# … composición del contenido … #}
+   </div>
+   ```
+
+   El control de LB viaja en **`title_suffix`** y en **`attributes`** (`data-contextual-id`): son las
+   variables que el módulo Contextual Links usa para inyectar su desplegable. El **`{% if label %}`**
+   es lo que respeta la casilla **«Display title»** del bloque; omitirlo desactiva esa casilla de
+   hecho. El bloque básico nativo de Core no sufre nada de esto porque usa la plantilla de Core, que ya
+   trae el armazón.
+
+2. **CSS del inline block: librería registrada + `attach_library` en la plantilla.** Para estilar el
+   bloque con CSS propio: (a) la librería **debe estar registrada** en `bootstrap_ula_lscm.libraries.yml`
+   (si no, `getLibraryByName` devuelve `false` y el CSS **nunca** se carga, ni global ni por
+   `attach_library`); (b) se adjunta con **`attach_library` en la plantilla** que introduce las clases.
+   La **carga global en `.info.yml` es innecesaria** (resultó redundante). Aviso de método: **no** se
+   verifica buscando el nombre del fichero CSS en el código fuente de la página, porque con la
+   **agregación de CSS activada** (`system.performance: css.preprocess = true`) los ficheros se sirven
+   concatenados y el nombre **no aparece**; se verifica inspeccionando el elemento en el navegador o con
+   `library.discovery`.
+
+3. **Patrón C: el campo Paragraphs debe estar en el VIEW DISPLAY del tipo de bloque.** Para que
+   `{{ content.field_<stack> }}` pinte algo, el campo Paragraphs tiene que estar **habilitado en el
+   display por defecto** del tipo de bloque (formatter `entity_reference_revisions_entity_view`, *label*
+   *hidden*). Si no, el campo existe pero el display lo omite y el bloque sale **vacío**. Se renderiza
+   el **campo completo** (Drupal pinta cada paragraph con su plantilla), **no** delta a delta.
+
+4. **Texto enriquecido anti-BI.** En A y en el paragraph de texto de C, se imprime el valor
+   **procesado** del campo Basic HTML con `campo.0.processed|raw`. **Nunca** `content.<campo>` (render
+   array), que atraviesa `field.html.twig` —Bootstrap Italia por herencia de subtema—. El formato Basic
+   HTML no inyecta clases ni markup de BI; el aspecto lo da el CSS propio.
+
+5. **Todo es configuración en BD; cada campo necesita sus tres pasos.** Tipos de bloque, paragraph
+   types, campos e inline blocks colocados son **configuración** (no git; ver §8): **dump antes de
+   tocar**. Al crear un campo por API hay que hacer **storage + field config + form display** (y, para
+   el patrón C, además el **view display**, lección 3), o el campo existirá sin aparecer en el
+   formulario de edición.
+
+### 11.5. El piloto A/B/C en `/about-lb` como caso de uso
+
+Los tres patrones se validaron con un **piloto** sobre el mismo banco de pruebas `/about-lb` (el nodo
+`lb_test` descrito en §6), montando un inline block de cada modalidad y comprobando, en el Drupal real,
+que se crean, editan, persisten y renderizan sin Bootstrap Italia. Resuelto el piloto, **su material se
+conserva versionado como CASO DE USO DOCUMENTAL** —única finalidad: servir de referencia a futuros
+desarrolladores/editores—, **no** como funcionalidad de producción.
+
+**Mapa del piloto:**
+
+| Patrón | Tipo de bloque | Campos | Render |
+| --- | --- | --- | --- |
+| **A** | `pilot_richtext` | `field_pilot_body` (texto largo, Basic HTML) | imprime `…processed|raw`; clase `.pilot-richtext` |
+| **B** | `pilot_card` | 4 pares `field_pilot_b_num{1..4}` / `field_pilot_b_lbl{1..4}` (string) | compone `ula_grid_row` (4 col.) con 4 `ula_hero_stat` |
+| **C** | `pilot_stack` | `field_pilot_stack` (Paragraphs, multivalor) → `pilot_p_text` (`field_pilot_pt_body`, texto largo) y `pilot_p_pill` (`field_pilot_pp_labels`, string multivalor) | renderiza el campo completo; cada paragraph con su plantilla; pastillas con clase `.pilot-pill` |
+
+**Qué se versiona (código), marcado en cabecera como material de referencia del piloto:**
+
+- Cinco plantillas en `templates/content/`:
+  `block--block-content--type--pilot-richtext.html.twig`, `…--pilot-card.html.twig`,
+  `…--pilot-stack.html.twig`, `paragraph--pilot-p-text.html.twig`, `paragraph--pilot-p-pill.html.twig`.
+- `css/pilot.css` (estilos de A y de las piezas de C; B usa el CSS de sus SDC).
+- La librería **`pilot`** en `bootstrap_ula_lscm.libraries.yml` (registra `css/pilot.css`).
+
+**Qué NO se versiona:**
+
+- **Configuración (vive en BD, red de seguridad = dump):** los tipos de bloque `pilot_richtext` /
+  `pilot_card` / `pilot_stack`, los paragraph types `pilot_p_text` / `pilot_p_pill`, sus campos
+  (storage + field config + form display, y el **view display** de `field_pilot_stack`), y los inline
+  blocks colocados en `/about-lb`.
+- **El script de creación** de esa configuración (de un solo uso; no se versiona, conforme a la
+  convención del proyecto).
+
+> **Lectura recomendada del caso.** Para entender los tres patrones, leer las cinco plantillas (sus
+> cabeceras explican el mecanismo de cada una) junto con esta sección y el ADR-LAYOUT-005. El piloto es
+> una **fuente de consulta**: ilustra cómo se construye un body de sección con inline blocks sin
+> Bootstrap Italia.
+
+---
+
+## 12. ADR-LAYOUT-005 — Inline blocks de Layout Builder como mecanismo complementario para el body de sección
+
+**Contexto.** El ADR-LAYOUT-004 adoptó Layout Builder para componer páginas no-home, y §5 documenta el
+flujo **Views → UI Patterns** como caso central de bloque: una vista que pinta **colecciones de
+entidades del sitio** con componentes propios (y, en su variante §5.7, una instancia única emparejada
+por argumento). Ese flujo **no** es el mecanismo adecuado para el **body editorial** de muchas
+secciones (prosa, listas, grids de cifras, body mixto): ese contenido **no es una entidad del sitio** y
+no justifica definir una vista por sección. Hacía falta un mecanismo **complementario** para componer
+ese body **en la propia página**, sin tocar el tipo de contenido genérico de las páginas.
+
+**Decisión.**
+1. **Adoptar los inline blocks de Layout Builder (Core) como mecanismo complementario** —no sustituto—
+   del flujo Views → UI Patterns, para el **body de sección** de las páginas no-home. Ambos mecanismos
+   **coexisten**, elegidos **por sección** según el criterio de §11.1.
+2. **Tres modalidades** (§11.2), combinables en una misma página: **A** texto enriquecido (Basic HTML),
+   **B** campos estructurados → composición de SDC `ula_*`, **C** stack de paragraphs heterogéneos.
+3. **Independencia de Bootstrap Italia:** texto por valor **procesado** (`…processed|raw`, sin
+   `field.html.twig`), composición de SDC propios y CSS propio; sin dependencias nuevas de BI (§7).
+
+**Alternativas consideradas.**
+- **Gutenberg (contrib) — descartado** como modelo viable para este propósito. Es un paradigma de
+  edición a nivel de **nodo** que compite con Layout Builder por la composición de la página, en vez de
+  complementarlo dentro del modelo de secciones/bloques ya adoptado (ADR-LAYOUT-004).
+- **Layout Paragraphs (contrib) — congelado.** No se adopta ahora; queda en reserva, no descartado de
+  forma definitiva. La composición por secciones la da Layout Builder, y el body por inline blocks
+  (incl. el patrón C, que ya usa Paragraphs **dentro** de un bloque) cubre la necesidad actual sin
+  introducir esta dependencia.
+
+**Consecuencias.**
+- **Composición del body en la propia página**, editable por un site builder, sin definir una vista por
+  sección ni modificar el tipo de contenido genérico.
+- **Lecciones de implementación** que pasan a ser requisitos del mecanismo (detalladas en §11.4):
+  armazón estándar de bloque imprescindible en la plantilla del inline block (o se pierde la edición en
+  LB); CSS vía **librería registrada + `attach_library`** en la plantilla (carga global innecesaria);
+  patrón C exige el **view display** del campo Paragraphs; texto anti-BI con `…processed|raw`.
+- **Coste de configuración en BD** (sitio sin `config/sync`): los tipos de bloque, paragraph types,
+  campos e inline blocks colocados son configuración no versionada; red de seguridad = **dump** (§8).
+- **Distinción inline vs reutilizable** (§11.3) como criterio de colocación: body específico de página
+  → inline; pieza compartida → bloque reutilizable.
+
+**Validación y material.** Validado con el piloto A/B/C sobre `/about-lb` (§11.5). El material del
+piloto (cinco plantillas, `css/pilot.css`, librería `pilot`) se **versiona como caso de uso
+documental**; la configuración y los inline blocks colocados viven en BD; el script de creación no se
+versiona.
+
+**Relación con otros ADR.**
+- **ADR-LAYOUT-004** — adopta Layout Builder para componer las páginas no-home; este ADR **se apoya en
+  él** y añade el mecanismo de body **complementario** al flujo Views → UI Patterns de §5.
+- **ADR-001 (home)** — la home se sirve con nodo + plantilla Twig; este ADR no la afecta.

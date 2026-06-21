@@ -1,0 +1,18 @@
+{#
+  MATERIAL DE REFERENCIA DEL PILOTO — Mecanismo C, pieza de pastillas.
+  Versionado como CASO DE USO DOCUMENTAL (no producción). Ver
+  `docs/elements/layout/CONTENT-LAYOUT.md` (ADR-LAYOUT-005 y guía de inline blocks).
+
+  Paragraph `pilot_p_pill`: recorre el campo string multivalor y pinta una pastilla
+  por valor, con markup y CSS propios (anti-BI). No hay SDC de pastilla, así que el
+  aspecto lo da el CSS del piloto (`.pilot-pill`); por eso esta plantilla adjunta la
+  librería `pilot` (la librería debe estar registrada en `.libraries.yml`).
+#}
+{{ attach_library('bootstrap_ula_lscm/pilot') }}
+{% if paragraph.field_pilot_pp_labels is not empty %}
+  <div class="pilot-p-pill">
+    {% for item in paragraph.field_pilot_pp_labels %}
+      <span class="pilot-pill">{{ item.value }}</span>
+    {% endfor %}
+  </div>
+{% endif %}

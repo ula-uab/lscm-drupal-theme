@@ -1,0 +1,36 @@
+/**
+ * MATERIAL DE REFERENCIA DEL PILOTO — CSS de los inline blocks A/B/C (banco /about-lb).
+ * Versionado como CASO DE USO DOCUMENTAL del modelo de inline blocks de Layout
+ * Builder (no es CSS de producción). Ver `docs/elements/layout/CONTENT-LAYOUT.md`
+ * (ADR-LAYOUT-005 y guía de inline blocks).
+ *
+ * Registrado como librería `pilot` en bootstrap_ula_lscm.libraries.yml y adjuntado
+ * por las plantillas del piloto vía attach_library (no por carga global en .info.yml).
+ * Estiliza A (prosa Basic HTML) y C (texto + pastillas). B no usa este CSS:
+ * ula_grid_row y ula_hero_stat autoadjuntan el suyo. Usa tokens de ula-tokens.css.
+ */
+
+/* A — prosa enriquecida */
+.pilot-richtext { color: var(--text-mid); }
+.pilot-richtext h3 { font-family: var(--font-display); color: var(--text-dark); margin: 0 0 .5rem; }
+.pilot-richtext ul,
+.pilot-richtext ol { margin: .5rem 0 .5rem 1.25rem; }
+.pilot-richtext li { margin: .2rem 0; }
+.pilot-richtext p { margin: .5rem 0; }
+
+/* C — stack de paragraphs */
+.pilot-stack { display: flex; flex-direction: column; gap: 1rem; }
+.pilot-p-text { color: var(--text-mid); }
+
+/* C — pastillas */
+.pilot-p-pill { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pilot-pill {
+  display: inline-block;
+  padding: .35rem .8rem;
+  border-radius: 999px;
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  color: var(--eu-blue);
+  font-size: .85rem;
+  font-weight: 600;
+}

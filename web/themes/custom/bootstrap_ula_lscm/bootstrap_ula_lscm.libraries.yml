@@ -100,3 +100,16 @@ lscm_page:
       css/lscm-page.css: {}
   dependencies:
     - bootstrap_ula_lscm/ula_tokens
+
+# MATERIAL DE REFERENCIA DEL PILOTO — librería del CSS de los inline blocks A/B/C
+# (banco /about-lb). Versionada como CASO DE USO DOCUMENTAL del modelo de inline
+# blocks de Layout Builder, no como librería de producción. La adjuntan las
+# plantillas del piloto vía attach_library. Ver docs/elements/layout/CONTENT-LAYOUT.md
+# (ADR-LAYOUT-005 y guía «Body de sección con inline blocks»).
+pilot:
+  version: 1.0
+  css:
+    theme:
+      css/pilot.css: {}
+  dependencies:
+    - bootstrap_ula_lscm/ula_tokens

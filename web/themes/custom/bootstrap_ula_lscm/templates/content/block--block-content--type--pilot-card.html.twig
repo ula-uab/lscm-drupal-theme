@@ -1,0 +1,35 @@
+{#
+  MATERIAL DE REFERENCIA DEL PILOTO — Mecanismo B (campos → composición de SDC).
+  Versionado como CASO DE USO DOCUMENTAL del modelo de inline blocks de Layout
+  Builder (no es contenido de producción). Ver
+  `docs/elements/layout/CONTENT-LAYOUT.md`: ADR-LAYOUT-005 y la guía «Body de
+  sección con inline blocks».
+
+  Bloque de contenido `pilot_card` (theme hook `block`), colocado como inline
+  block en el banco de pruebas `/about-lb`.
+
+  Mecanismo B: campos estructurados del bloque (4 pares fijos {num,lbl}) que se
+  componen como una rejilla `ula_grid_row` (Nivel 1) con 4 `ula_hero_stat`. Es el
+  mismo patrón de composición de SDC validado en producción (cta_band/hero_stat):
+  valores CRUDOS (`.value`) a las props del componente.
+
+  `content` de `ula_grid_row` se pasa como SECUENCIA (array) de includes ya
+  renderizados, para que el grid envuelva cada uno en su celda; un único string
+  concatenado se trataría como UNA sola celda.
+
+  No necesita CSS del piloto: `ula_grid_row` y `ula_hero_stat` autoadjuntan su CSS
+  (SDC). El armazón estándar de bloque es imprescindible (ver nota en pilot_richtext).
+#}
+{% set b = content['#block_content'] %}
+{% set stats = [
+  include('bootstrap_ula_lscm:ula_hero_stat', { number: b.field_pilot_b_num1.value, label: b.field_pilot_b_lbl1.value }),
+  include('bootstrap_ula_lscm:ula_hero_stat', { number: b.field_pilot_b_num2.value, label: b.field_pilot_b_lbl2.value }),
+  include('bootstrap_ula_lscm:ula_hero_stat', { number: b.field_pilot_b_num3.value, label: b.field_pilot_b_lbl3.value }),
+  include('bootstrap_ula_lscm:ula_hero_stat', { number: b.field_pilot_b_num4.value, label: b.field_pilot_b_lbl4.value }),
+] %}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  {{ include('bootstrap_ula_lscm:ula_grid_row', { columns: '4', content: stats }) }}
+</div>

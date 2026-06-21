@@ -31,7 +31,11 @@ Management). Organizada en **dos niveles**:
   - **[`elements/layout/CONTENT-LAYOUT.md`](elements/layout/CONTENT-LAYOUT.md)** — El **diseño del
     contenido** de las páginas no-home basado en **Drupal Layout Builder**: modelo de composición de
     páginas con secciones + bloques (vistas que pintan entidades con componentes vía UI Patterns) y su
-    ADR (ADR-LAYOUT-004).
+    ADR (ADR-LAYOUT-004). Documenta además el **mecanismo complementario para el body de sección** —los
+    **inline blocks de Layout Builder** en tres modalidades (A texto enriquecido, B campos → SDC `ula_*`,
+    C stack de paragraphs), con Gutenberg descartado y Layout Paragraphs congelado— en su guía (§11) y el
+    **ADR-LAYOUT-005** (§12), ilustrados con el **piloto A/B/C de `/about-lb` versionado como caso de uso
+    de consulta**.
 
 > A medida que se desarrollen otras secciones del sitio, cada una tendrá su documentación en
 > `docs/elements/<elemento>/`, referenciando a `ARCHITECTURE.md` para lo común.
@@ -117,5 +121,8 @@ completados se archivan en el subdirectorio `archive/` de cada elemento.
 - **¿Componer una página no-home (secciones, grids de tarjetas con Layout Builder)?** →
   `elements/layout/CONTENT-LAYOUT.md`. El marco (header/footer) que la envuelve, en
   `elements/layout/SHARED-FRAME-LAYOUT.md`.
+- **¿Componer el body de una sección (texto, listas, cifras, body mixto) sin una vista?** → los **inline
+  blocks de Layout Builder**: `elements/layout/CONTENT-LAYOUT.md` §11 (guía A/B/C) y §12 (ADR-LAYOUT-005);
+  el piloto `/about-lb` como caso de uso.
 - **¿Hacer cambios de configuración (campos, tipos de contenido, vistas)?** → leer antes
   `ARCHITECTURE.md` §6 (restricciones del entorno: config/sync, dumps, crear campos por código).

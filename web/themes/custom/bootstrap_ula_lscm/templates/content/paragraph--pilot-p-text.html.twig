@@ -1,0 +1,15 @@
+{#
+  MATERIAL DE REFERENCIA DEL PILOTO — Mecanismo C, pieza de texto.
+  Versionado como CASO DE USO DOCUMENTAL (no producción). Ver
+  `docs/elements/layout/CONTENT-LAYOUT.md` (ADR-LAYOUT-005 y guía de inline blocks).
+
+  Paragraph `pilot_p_text`: imprime el HTML procesado del campo Basic HTML con
+  `|raw` (anti-BI, sin pasar por field.html.twig). El aspecto lo da el CSS propio
+  (`.pilot-p-text`). Siempre se renderiza dentro de `pilot_stack`, que adjunta la
+  librería `pilot`.
+#}
+{% if paragraph.field_pilot_pt_body.0.processed is not empty %}
+  <div class="pilot-p-text">
+    {{ paragraph.field_pilot_pt_body.0.processed|raw }}
+  </div>
+{% endif %}

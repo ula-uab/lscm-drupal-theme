@@ -1,0 +1,32 @@
+{#
+  MATERIAL DE REFERENCIA DEL PILOTO — Mecanismo C (stack de paragraphs).
+  Versionado como CASO DE USO DOCUMENTAL del modelo de inline blocks de Layout
+  Builder (no es contenido de producción). Ver
+  `docs/elements/layout/CONTENT-LAYOUT.md`: ADR-LAYOUT-005 y la guía «Body de
+  sección con inline blocks».
+
+  Bloque de contenido `pilot_stack` (theme hook `block`), colocado como inline
+  block en el banco de pruebas `/about-lb`.
+
+  Mecanismo C: un bloque con un campo Paragraphs (`field_pilot_stack`) de tipos
+  heterogéneos (pilot_p_text, pilot_p_pill) apilados en el orden que el editor
+  decida, editable en la propia página. Cada paragraph se pinta con su plantilla
+  propia (anti-BI).
+
+  REQUISITO de configuración (BD): el campo `field_pilot_stack` debe estar en el
+  VIEW DISPLAY del block type (formatter `entity_reference_revisions_entity_view`),
+  o `{{ content.field_pilot_stack }}` sale vacío. Se renderiza el campo COMPLETO,
+  no por-delta. El envoltorio de field.html.twig (BI) sobre el campo es el punto a
+  observar; los paragraphs de dentro sí usan plantillas propias.
+
+  Armazón estándar de bloque imprescindible (ver nota en pilot_richtext).
+#}
+{{ attach_library('bootstrap_ula_lscm/pilot') }}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  <div class="pilot-stack">
+    {{ content.field_pilot_stack }}
+  </div>
+</div>

@@ -33,6 +33,11 @@
 | **Plantillas** (`templates/`) | 7 | 7 | 0 | (usa el `page.html.twig` de BI por herencia, sin fichero propio) |
 | **Librerías cargadas globalmente** | 6 | 3 | 3 | — |
 
+> Estas cifras cuentan **elementos de producción**. Aparte, el repositorio versiona **material de
+> referencia del piloto** de inline blocks —5 plantillas en `templates/content/` (§3) y la librería
+> `pilot` (§4)—, marcado como **caso de uso documental, no producción** (ver
+> `../elements/layout/CONTENT-LAYOUT.md` §11–§12); **no** se suma a estos totales.
+
 El grueso del trabajo de independencia, a nivel de componentes, se concentra en los **21 componentes
 heredados en uso**: de ellos saldrá la lista de piezas propias a crear (adaptando o rehaciendo). Los
 **38 muertos** se eliminan al final sin más. Los **20 propios** ya están (los 12 iniciales + `ula_card_simple`,
@@ -156,6 +161,17 @@ navbar, navbar_nav, offcanvas, pagination, progress, progress_stacked, spinner
 > `page.html.twig` de BI (sus 5 partials) y el diseño del propio están en
 > `../elements/layout/SHARED-FRAME-LAYOUT.md` §7–8 (ADR-LAYOUT-003).
 
+> **Material de referencia del piloto (no producción).** Además de las 7 plantillas propias de
+> producción de la tabla, en `templates/content/` viven **5 plantillas del piloto de inline blocks**
+> (mecanismo de body de sección; ver `../elements/layout/CONTENT-LAYOUT.md` §11–§12), versionadas como
+> **caso de uso documental**: `block--block-content--type--pilot-richtext.html.twig`,
+> `…--pilot-card.html.twig`, `…--pilot-stack.html.twig`, `paragraph--pilot-p-text.html.twig`,
+> `paragraph--pilot-p-pill.html.twig`. **No** cuentan como plantillas de producción y **no** dependen de
+> Bootstrap Italia (texto por `…processed|raw`, composición de SDC propios, CSS propio); su única
+> finalidad es servir de referencia. Su CSS es `css/pilot.css` (librería `pilot`, §4). La configuración
+> asociada (tipos de bloque/paragraph, campos, inline blocks colocados en `/about-lb`) vive en BD, no en
+> git, y el script de creación no se versiona.
+
 ---
 
 ## 4. Librerías (assets CSS/JS)
@@ -175,6 +191,12 @@ Cargadas globalmente desde el `.info.yml` (ver concepto en `../CONCEPTOS-DRUPAL.
 > **Declaradas pero NO cargadas** (comentadas en el `.info.yml`): `vanilla`, `cdn`, `hot`, `ddev`.
 > También hay declarada en el `.libraries.yml` `ula_landing_base`, cuyo uso conviene aclarar. Pendiente
 > de revisar su propósito y vigencia.
+
+> **Librería del piloto (no global, material de referencia).** El `.libraries.yml` declara también la
+> librería **`pilot`** (`css/pilot.css`), que **no** se carga globalmente desde el `.info.yml`: la
+> adjuntan con `attach_library` las plantillas del piloto de inline blocks (§3, caso de uso documental;
+> ver `../elements/layout/CONTENT-LAYOUT.md` §11–§12). No es CSS de producción, **no** cuenta en la tabla
+> de librerías globales de arriba y depende solo de `ula_tokens` (cero Bootstrap Italia).
 
 ---
 

@@ -180,6 +180,19 @@ Sustituir la capa de presentación dependiente de BI de las vistas por presentac
 >   Views → UI Patterns, slots por `view_field`) insertada como **bloque** en una sección. Registrado en
 >   **ADR-LAYOUT-004** (`../../elements/layout/CONTENT-LAYOUT.md`). Se descartó Paragraphs (no produce
 >   página/ruta) y replicar el mecanismo Twig de la home (costoso para muchas páginas).
+> - **§1bis (mecanismo complementario para el body de sección): analizado, validado y adoptado.** Sobre
+>   la composición con Layout Builder, el flujo Views → UI Patterns (§1) resuelve **colecciones de
+>   entidades del sitio** e instancias únicas emparejadas; el **body editorial** de muchas secciones
+>   (prosa, listas, grids de cifras, body mixto) **no es una entidad del sitio** y no justifica una vista
+>   por sección. Para ese body se adopta un **segundo mecanismo, complementario** —no sustituto—: los
+>   **inline blocks de Layout Builder (Core)**, en tres modalidades (A texto enriquecido, B campos →
+>   composición de SDC `ula_*`, C stack de paragraphs heterogéneos), combinables en una misma página.
+>   Validado con un piloto A/B/C sobre `/about-lb`, cuyo material se conserva **versionado como caso de
+>   uso documental**. Registrado en **ADR-LAYOUT-005** (`../../elements/layout/CONTENT-LAYOUT.md`, §11–§12).
+>   En esta decisión se **descartó Gutenberg (contrib)** como modelo viable para este propósito (paradigma
+>   a nivel de nodo que compite con LB en vez de complementarlo) y se **congeló Layout Paragraphs
+>   (contrib)** (en reserva, no descartado: la composición la da LB y el body por inline blocks cubre la
+>   necesidad actual sin esa dependencia).
 > - **§2 (requisito de secciones heterogéneas apiladas, algunas como listados mapeados a un componente):
 >   satisfecho** por el modelo de secciones + bloques de LB. *Sub-cuestión aclarada:* las secciones
 >   dinámicas listan **nodos** (la vista del consorcio lista nodos `ct_about_consortium_university`).

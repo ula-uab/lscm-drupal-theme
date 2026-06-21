@@ -1,0 +1,33 @@
+{#
+  MATERIAL DE REFERENCIA DEL PILOTO — Mecanismo A (texto enriquecido).
+  Versionado como CASO DE USO DOCUMENTAL del modelo de inline blocks de Layout
+  Builder (no es contenido de producción). Ver
+  `docs/elements/layout/CONTENT-LAYOUT.md`: ADR-LAYOUT-005 y la guía «Body de
+  sección con inline blocks».
+
+  Bloque de contenido `pilot_richtext` (theme hook `block`), colocado como inline
+  block en el banco de pruebas `/about-lb`.
+
+  Mecanismo A: texto enriquecido (Basic HTML) editable en la propia página. NO
+  compone SDC: imprime el HTML PROCESADO del campo con `|raw` (anti-BI, sin pasar
+  por field.html.twig, que en este subtema sirve Bootstrap Italia). El aspecto lo
+  da el CSS propio (librería `pilot`, clase `.pilot-richtext`).
+
+  IMPRESCINDIBLE en un inline block: el armazón estándar de bloque
+  (`<div{{ attributes }}>`, `title_prefix`, `{% if label %}…{% endif %}`,
+  `title_suffix`). El control de Layout Builder (lápiz Configure/Move/Remove) se
+  inyecta vía `title_suffix`/`attributes`; sin ellos el inline block no se puede
+  editar. El `{% if label %}` respeta la casilla «Display title».
+#}
+{{ attach_library('bootstrap_ula_lscm/pilot') }}
+{% set b = content['#block_content'] %}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  {% if b.field_pilot_body.0.processed is not empty %}
+    <div class="pilot-richtext">
+      {{ b.field_pilot_body.0.processed|raw }}
+    </div>
+  {% endif %}
+</div>
