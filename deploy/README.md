@@ -212,11 +212,20 @@ Pasos:
      `robots.txt`, `composer.json`, `composer.lock` y demás ficheros sueltos de Drupal.
 
    **NO BORRAR / CONSERVAR** (no son de Drupal, son del servidor y no están en el artefacto):
-   - `.well-known/` — la usa Plesk para el certificado SSL.
+   - `.well-known/` — la usa Plesk para el certificado SSL (puede no existir; si no está, no
+     pasa nada).
    - `.user.ini` — configuración de PHP por directorio de Plesk.
    - `sites/default/files/` **solo si** ya contuviera subidas reales (en una instalación
      de fábrica está vacío; si dudas, descárgalo antes como copia).
    - Cualquier otro fichero/carpeta que Plesk haya puesto y tú no hayas subido.
+
+   > **Si el gestor no te deja borrar una carpeta** (típicamente `sites/`) pero su contenido
+   > sí se ha vaciado, **no es problema**: el objetivo es eliminar los **ficheros viejos de
+   > Drupal**, no las carpetas contenedoras. `lscm-full.zip` recrea lo que va dentro al
+   > extraer (incluido `sites/default/settings.php`). Causas habituales de que no deje borrar
+   > el contenedor: **ficheros ocultos** que el gestor no lista (activa "mostrar ocultos") o
+   > permisos/propietario en `sites/default/files/`. Basta con confirmar que no quedan
+   > ficheros viejos dentro (sobre todo un `settings.php` o `services.yml` antiguos).
 
 4. **Extrae `lscm-full.zip`** en el docroot ya vacío. Quedará plano: `index.php`, `core/`,
    `modules/`, `themes/`, `vendor/`, `sites/`…
@@ -229,13 +238,29 @@ Pasos:
    ficheros —sobre todo los **ocultos**, como `.htaccess` o `.user.ini`— con permisos
    restrictivos (p. ej. `600`: `rw- --- ---`). Apache, que no puede leer el `.htaccess`,
    responde 403 a todo, con un error de Apache del tipo
-   `(13) Permission denied: AH00529: .htaccess not readable`. Corrige a:
-   - directorios → `755`, ficheros → `644` (incluidos los ocultos `.htaccess`, `.user.ini`);
-   - `sites/default/settings.php` → al contrario, restrictivo es bueno (`644`, idealmente
-     `444` solo lectura).
+   `(13) Permission denied: AH00529: .htaccess not readable`.
+
+   **Sin SSH los permisos se ajustan por la rejilla del gestor de Plesk** (Propietario /
+   Grupo / Otros × Lectura / Escritura / Ejecución), no por comando. Equivalencia de los
+   valores numéricos (regla: 1er dígito = Propietario, 2º = Grupo, 3º = Otros; y
+   **4 = Lectura, 2 = Escritura, 1 = Ejecución**, se suman):
+
+   | Numérico | Propietario | Grupo | Otros | Uso |
+   |---|---|---|---|---|
+   | `755` | L✓ E✓ X✓ | L✓ E✗ X✓ | L✓ E✗ X✓ | **directorios** (X = entrar/atravesar) |
+   | `644` | L✓ E✓ X✗ | L✓ E✗ X✗ | L✓ E✗ X✗ | **ficheros** normales |
+   | `444` | L✓ E✗ X✗ | L✓ E✗ X✗ | L✓ E✗ X✗ | solo lectura (opción para `settings.php`) |
+
+   Permiso que debe tener **cada elemento** (en el docroot):
+   - `.htaccess` → **644** (¡clave! necesita **Lectura en Grupo y Otros**; es la causa del 403).
+   - `.user.ini` → **644**.
+   - `sites/default/settings.php` → **644** (o **444** si lo quieres solo lectura).
+   - Resto de ficheros (`index.php`, `autoload.php`, `robots.txt`, `.php`/`.yml`/`.twig`/`.css`…) → **644**.
+   - Todos los directorios (`core/`, `modules/`, `themes/`, `vendor/`, `sites/`, `sites/default/`…) → **755**.
+   - `sites/default/files/` → **755** y **escribible por el propietario** (Drupal escribe ahí).
 
    Lo más rápido, si tu Plesk lo ofrece, es su función **«Restablecer permisos»** del
-   docroot (reasigna propietario y permisos correctos de golpe).
+   docroot (reasigna propietario y pone `755` a directorios y `644` a ficheros de golpe).
 
 ---
 
