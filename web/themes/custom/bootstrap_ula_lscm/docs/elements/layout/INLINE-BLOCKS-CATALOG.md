@@ -211,7 +211,7 @@ lista numerada en Basic HTML, sino con un **artefacto de pasos dedicado** basado
 (`COMPONENTS.md` §3.4) — más impactante visualmente. Es decir, `inline_lb_richtext` cubre la prosa y los
 paneles de texto; los «pasos» van a su propio artefacto (a catalogar al planificarlo).
 
-### 4.2. `inline_lb_statgrid` (B) — **implementado** (v1.8.0)
+### 4.2. `inline_lb_statgrid` (B) — **implementado**
 
 > **Estado:** implementado y validado. Detalle completo en `entities/inline-lb-statgrid.md`. Esta entrada se
 > conserva como referencia de catálogo; las decisiones abiertas que listaba quedaron resueltas como se indica.

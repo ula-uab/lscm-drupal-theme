@@ -108,7 +108,7 @@ Bloquean varios artefactos; se resuelven primero. Las marcadas como **estructura
 | **D5** | **Modelado de variantes/opciones.** Cómo elige el editor (`plain`/`panel_blue`; `pill`/`tag_card`; nº de columnas/cifras). | Campo de opción (`list_string`) en el bloque, variantes del SDC, o tipos de bloque separados. | richtext, pills, statgrid | No |
 | **D6** | **Convención de nombres, campos y librería.** | `inline_lb_*` (block type), `inline_lb_p_*` (paragraph), `field_inline_lb_*` (campos), `.inline-lb-*` (CSS); **una** librería `inline_lb` vs. una por artefacto. | Todos | No |
 
-### 4.bis. Estado de resolución (actualizado en el hito v1.8.0)
+### 4.bis. Estado de resolución (actualizado al implementar el primer artefacto)
 
 Las decisiones transversales se han ido resolviendo. Resumen vivo (la tabla de arriba es el enunciado
 original; esto es el resultado):
@@ -156,7 +156,7 @@ debajo.
 | # | Artefacto | Tipo | Cubre (maqueta About) | Estructura propuesta (a validar) | SDC | Bloqueado por |
 |---|---|---|---|---|---|---|
 | 1 | `inline_lb_richtext` | A | «Engineering Edge» (§1), «Application Roadmap» (§5), prosa/listas | 1 campo texto largo (Basic HTML) + opción de tono `plain`/`panel_blue` | — | D4, D5 |
-| 2 | `inline_lb_statgrid` | B | `highlight-grid` (§1, 4 cifras), `stat-row` (§3, 3 cifras) | paragraph multivalor {número, etiqueta} + columnas | `ula_grid_row` + `ula_hero_stat` (props) | ✅ **implementado (v1.8.0)** — ver `entities/inline-lb-statgrid.md` |
+| 2 | `inline_lb_statgrid` | B | `highlight-grid` (§1, 4 cifras), `stat-row` (§3, 3 cifras) | paragraph multivalor {número, etiqueta} + columnas | `ula_grid_row` + `ula_hero_stat` (props) | ✅ **implementado** — ver `entities/inline-lb-statgrid.md` |
 | 3 | `inline_lb_pills` | B | `tools` (§2), `role-grid` (§3) como variante | 1 campo string multivalor + opción `pill`/`tag_card` | según D2 | **D2**, D5 |
 | 4 | `inline_lb_cardgrid` | C | `card-grid` (§2, 3 tarjetas), `adm-cols` (§5, 2 col.) | stack de paragraph «tarjeta» (título + cuerpo rich) + columnas | `ula_grid_row` + `ula_card_simple` (slots) | **D3** |
 | 5 | `inline_lb_stack` | C | secciones que mezclen piezas en un único bloque | campo Paragraphs multivalor: pieza texto + pieza pastilla (ampliable) | reusa piezas de 1 y 3 | requiere 1 y 3 |
@@ -225,9 +225,14 @@ Mayoritariamente **reutilización**; **0–2 SDC nuevos/modificados** según se 
 
 ## 9. Estado y próximos pasos
 
-- **Estado (v1.8.0):** decisiones transversales **resueltas** (ver §4.bis). **Implementado y validado:**
+- **Estado:** decisiones transversales **resueltas** (ver §4.bis). **Implementado y validado:**
   `inline_lb_statgrid` (primer artefacto, patrón B) y el **ritmo vertical del body** (ADR-LAYOUT-006).
-  Documentado y consolidado en este hito.
+  Documentado y consolidado.
+- **Versión del tema — salto diferido (decisión).** El tema **no** sube de versión por artefactos sueltos:
+  permanece en **v1.7.0** mientras la librería de inline blocks está en desarrollo. El salto
+  (previsiblemente **v1.8.0**, MINOR) se hará **al completar la librería**, en un único hito de versión que
+  recoja todos los artefactos. Por eso `.info.yml` y la tabla de versiones de `ARCHITECTURE.md` no se tocan
+  en cada artefacto.
 - **Próximo paso:** implementar el resto de la librería de lo simple a lo complejo —
   `inline_lb_section_header` (cabecera como inline block, §3.1 del catálogo; incluye ajustar el selector de
   ritmo), `inline_lb_richtext` (+ artefacto de pasos `ula_timeline_item`), `inline_lb_pills` (con el nuevo
