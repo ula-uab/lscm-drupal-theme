@@ -39,7 +39,8 @@
         "drupal/ui_patterns": "^2.0",
         "drupal/ui_patterns_paragraphs": "^1.0@alpha",
         "drupal/ui_patterns_settings": "^2.4",
-        "drupal/views_field_view": "^1.0@beta"
+        "drupal/views_field_view": "^1.0@beta",
+        "guzzlehttp/psr7": "2.12.1 as 2.10.4"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -58,7 +59,15 @@
             "phpstan/extension-installer": true,
             "tbachert/spi": true
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "policy": {
+            "advisories": {
+                "ignore-id": {
+                    "PKSA-93qv-9n9h-6k6p": "guzzle CVE-2026-55767 (dot-only cookie domains, severidad media). drupal/core-recommended 11.3.12 clava guzzle a ~7.10.0; el fix esta en 7.12.1, que exige promises ^2.5 y choca con el promises ~2.3.0 que clava core (rangos disjuntos, no aliasable). Excepcion temporal: retirar al pasar a 11.4.0 (o a un 11.3.x que reempaquete guzzle). Ver TODO #2.",
+                    "PKSA-k22t-f949-t9g6": "guzzle CVE-2026-55568 (downgrade silencioso de proxy HTTPS, severidad media). Misma causa y misma condicion de retirada que la anterior. Ver TODO #2."
+                }
+            }
+        }
     },
     "extra": {
         "drupal-scaffold": {

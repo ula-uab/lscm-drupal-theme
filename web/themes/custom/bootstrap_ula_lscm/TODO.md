@@ -8,15 +8,57 @@
 
 ### 1. Avisos `Deprecated` de Gutenberg en la salida de drush
 Cada comando `ddev drush ...` imprime avisos de obsolescencia del módulo `gutenberg`
-(`_gutenberg_is_gutenberg_enabled()` y otros), que ensucian la salida.
-**Opciones a explorar:** actualizar el módulo `gutenberg` a una versión compatible con
-la versión de PHP del entorno, o ajustar `error_reporting` para ocultar `E_DEPRECATED`.
+(`_gutenberg_is_gutenberg_enabled()` línea 1405 de `gutenberg.module`, y otros en
+`MappingFieldsHelper`, `BlockParser`…), que ensucian la salida. Es el patrón PHP 8.4
+«Implicitly marking parameter $x as nullable is deprecated, the explicit nullable type
+must be used instead» (parámetros con default `null` sin tipo nullable explícito `?Tipo`).
+
+**Análisis (jun-2026, verificado en drupal.org):**
+- Incidencia oficial: **#3536161** «[PHP 8.4] Deprecation warning at
+  `_gutenberg_is_gutenberg_enabled()` and other places» — estado **Closed (fixed)**.
+- El arreglo (marcar los parámetros como nullable explícitos) se **comiteó a la rama
+  `3.0.x`** el **19-feb-2026** (commit `3d26a06d`, vía MR !243; también a `4.0.x`).
+- PERO la última **release etiquetada** de la 3.x es **3.0.6 (23-ene-2025)**, anterior al
+  fix. No existe 3.0.7. Por eso la 3.0.6 instalada **sigue** emitiendo el aviso: el fix
+  vive solo en `3.0.x-dev`, sin publicar.
+
+**Decisión: Vía D — esperar la release.** No se introduce infraestructura de parcheo solo
+por un aviso cosmético. Cuando los mantenedores etiqueten una **3.0.7+** (o al migrar a
+4.x) con el fix, resolver con un simple `ddev composer update drupal/gutenberg -W` y
+validar el editor en un nodo que use Gutenberg.
+
+**Alternativa descartada (por desproporcionada para algo cosmético):** aplicar el diff del
+fix (MR !243 / commit `3d26a06d`) sobre 3.0.6 mediante `cweagans/composer-patches`. Solo
+reconsiderar si el ruido llega a estorbar de verdad en el día a día; verificar entonces que
+el parche aplica limpio sobre la versión instalada.
+
 **Prioridad:** baja (es ruido, no afecta a funcionalidad).
 
 ### 2. Actualización de seguridad de Drupal
-Considerar aplicar las actualizaciones de seguridad de Drupal core/contrib cuando proceda.
-**Antes de hacerlo:** commit + push del estado actual y dump de BD, como red de seguridad.
-**Prioridad:** media (revisar periódicamente).
+**Hecho (jun-2026):** core actualizado **11.3.8 → 11.3.12**, que cierra lo crítico de core
+—SA-CORE-2026-004 (SQL injection, altamente crítica), 005 (PHP object injection), 006, 007,
+008, 009— y arrastra twig y symfony/* a versiones parcheadas. `guzzlehttp/psr7` subido a
+**2.12.1** mediante alias en línea (`2.12.1 as 2.10.4`), parcheado de verdad.
+
+**Residuo aceptado a sabiendas:** quedan **dos advisories de severidad MEDIA en
+`guzzlehttp/guzzle`** —`PKSA-93qv-9n9h-6k6p` (CVE-2026-55767, dot-only cookie domains) y
+`PKSA-k22t-f949-t9g6` (CVE-2026-55568, downgrade silencioso de proxy HTTPS)— exceptuadas vía
+`config.policy.advisories.ignore-id` en `composer.json` (con su motivo documentado). Causa: el
+fix de guzzle (7.12.1) exige `promises ^2.5`, que choca con el `promises ~2.3.0` que clava
+`drupal/core-recommended` 11.3.12 (rangos disjuntos, no resoluble con alias sin abandonar
+core-recommended). Las dos son medias y de bajo impacto para este sitio.
+
+**Condición de cierre:** al pasar a **11.4.0** (programada para la semana del 22-jun-2026) o a
+un **11.3.x que reempaquete guzzle/promises**, (a) retirar las dos entradas de `ignore-id` de
+`composer.json`, (b) subir guzzle a ≥7.12.1 (y quitar el alias de psr7 si core ya lo cubre), y
+(c) verificar que `ddev exec composer audit` queda **limpio** (0 advisories, ni ignoradas).
+Incidencias drupal.org de seguimiento: #3599842 (psr7), #3600889 (quitar restricciones de minor
+de core-recommended).
+
+**Antes de cualquier actualización futura:** commit + push del estado actual y dump de BD, como
+red de seguridad.
+**Prioridad:** media (revisar periódicamente; lo crítico ya está cerrado, queda el residuo de
+guzzle).
 
 ### 3. Errores de renderizado en la galería UI Patterns
 En `/admin/appearance/ui/components` la previsualización de algunos componentes muestra
