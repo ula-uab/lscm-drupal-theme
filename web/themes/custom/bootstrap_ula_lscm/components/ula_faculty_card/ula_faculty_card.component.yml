@@ -1,0 +1,37 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Faculty card
+status: experimental
+description: >
+  Tarjeta de un miembro del Faculty para el carrusel de la sección Faculty & Research de /about.
+  Diseñada para el flujo **Views → UI Patterns** (como ula_card_simple en la vista
+  consortium_universities): el contenido entra por **slots**, alimentados por `view_field` desde una
+  vista que lista nodos ct_faculty_member. Componente autónomo: sin markup ni clases de Bootstrap
+  Italia; colores y tipografía de los tokens de ula-tokens.css. Pensado para **fondo claro**.
+  Cada bloque se pinta **por presencia** (slot vacío → no se pinta). El retrato muestra la **foto**
+  (slot `image`) si viene, y si no, las **iniciales** calculadas del nombre. El contenedor en
+  carrusel NO vive aquí (lo aporta el Nivel 1 de la vista).
+slots:
+  image:
+    title: 'Photo (field)'
+    description: 'Foto del profesor (campo imagen/media ya renderizado por su formatter en la vista). Opcional: si está vacío, se muestra el retrato de iniciales.'
+  name:
+    title: 'Full name (field)'
+    description: 'Nombre completo (campo título de la vista; con «Link to the original entity» enlaza a la ficha de detalle). De su texto se calculan las iniciales del retrato de respaldo.'
+  academic_title:
+    title: 'Academic title (field)'
+    description: 'Título académico (p. ej. «Prof. Dr.»); se muestra integrado en la línea del nombre, atenuado. Opcional.'
+  position:
+    title: 'Position (field)'
+    description: 'Posición principal (en la vista, el campo positions limitado a 1 valor). Opcional.'
+  affiliation:
+    title: 'Affiliation (field)'
+    description: 'Afiliación compacta: acrónimo de la universidad (interna, vía relación al nodo de universidad → field_uni_abbr) o texto externo. Opcional.'
+  expertise:
+    title: 'Expertise (field)'
+    description: 'Áreas de expertise como chips (en la vista, el campo expertise limitado a 3 valores, cada valor como elemento). Opcional.'
+  expertise_more:
+    title: 'Expertise overflow (field/textfield)'
+    description: 'Indicador «+N» cuando hay más expertise de las mostradas (p. ej. un textfield «+4» o un rewrite en la vista). Opcional; se pinta como chip de contorno discontinuo.'
+  link:
+    title: 'Link / View profile (field)'
+    description: 'Botón a la ficha de detalle (un campo con «Link to the original entity» y texto reescrito «View profile», o un enlace propio). Opcional.'

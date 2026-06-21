@@ -1,0 +1,9 @@
+name: Preview
+slots:
+  name: 'Juan José Ramos González'
+  academic_title: 'Prof. Dr.'
+  position: 'Associate Professor'
+  affiliation: 'UAB'
+  expertise: '<span>Operations Research</span><span>Optimization</span><span>Modelling &amp; Simulation</span>'
+  expertise_more: '+4'
+  link: '<a href="#">View profile</a>'

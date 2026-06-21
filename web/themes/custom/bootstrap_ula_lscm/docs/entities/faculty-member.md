@@ -155,9 +155,9 @@ quedó sin asignar. El mismo enfoque cerrado se aplicó a `positions`/`roles` (c
 
 ## 4. Cómo se consume (lógica en el tema)
 
-La entidad tiene **dos presentaciones**. La **página de detalle** (todos los campos) está **construida y
-validada** (§4.1). La **tarjeta** para el carrusel de la sección Faculty & Research de `/about` queda
-**pendiente** (resto de la Fase 2, §4.2).
+La entidad tiene **dos presentaciones**, ambas **construidas y validadas**. La **página de detalle** (todos
+los campos) se documenta en §4.1. La **tarjeta** para el carrusel de la sección Faculty & Research de
+`/about` (un subconjunto de campos, vía Views → UI Patterns) se documenta en §4.2.
 
 ### 4.1. Página de detalle (construida)
 
@@ -201,12 +201,69 @@ componente) para resaltar las tarjetas, pero se **descartó** por la discontinui
 recuperar ese efecto, si se quiere, debe hacerse a **nivel de marco** (pendiente transversal), no desde el
 componente.
 
-### 4.2. Tarjeta + carrusel en `/about` (pendiente)
+### 4.2. Tarjeta + carrusel en `/about` (construida)
 
-Resto de la Fase 2: un componente de **tarjeta** de faculty (un **subconjunto** de campos) presentado en un
-**carrusel** en la sección Faculty & Research de `/about`. El mecanismo concreto (vista que liste los nodos +
-presentación sin BI; el carrusel no está en la maqueta, que es rejilla estática) se decidirá al abordarlo, y
-esta sección se ampliará entonces.
+**Mecanismo elegido: Views → UI Patterns** (el flujo transversal documentado en
+`../elements/layout/CONTENT-LAYOUT.md` §5), a diferencia de la página de detalle (§4.1, plantilla + SDC por
+props). Aquí el contenido lo selecciona una **vista** y lo pinta un **componente por slots**, porque es una
+**colección** de profesores embebida en el Layout Builder de `/about`, no un nodo individual. La receta
+genérica vive en `CONTENT-LAYOUT.md` §5; aquí se documenta la **instancia concreta** de Faculty y las
+decisiones propias.
+
+**La vista `faculty_cards`** (configuración en BD, no git). Lista los nodos `ct_faculty_member` y los pinta
+como tarjetas en un carrusel:
+- **Base**: Content (nodo). **Displays**: `default` + `block_1` (display de **bloque**, el que se embebe en
+  Layout Builder).
+- **Filtros**: `status = 1` (publicado) y `type = ct_faculty_member`.
+- **Orden**: `field_ct_fcltmb_priority` en **DESC** — **intencional**: la prioridad es un **peso**, el de
+  número más alto va primero (100, luego 99, 98…). No es un error a "corregir" a ASC.
+- **Pager**: `none` (muestra **todos** los nodos; el carrusel los pagina visualmente, no la vista).
+- **Relación** (`Advanced → Relationships`): sobre `field_ct_fcltmb_affil_internal` hacia el nodo de
+  universidad, marcada **NO requerida** (`required: false`, *left join*). Es lo que permite traer el
+  **acrónimo** desde el nodo universidad **sin perder** los profesores que no tienen afiliación interna (ver
+  `CONTENT-LAYOUT.md` §5.11). Si fuese requerida, el preview se vaciaría (hoy los 10 son externos).
+
+**Campos de la vista y su mapeo a los slots de la tarjeta** (todos con la etiqueta desactivada; todos
+alimentan el slot vía `view_field`):
+
+| Campo en la vista | Configuración relevante | Slot de `ula_faculty_card` |
+|---|---|---|
+| `title` | *Link to the original entity* (enlaza a la ficha) | `name` |
+| `field_ct_fcltmb_academic_title` | — | `academic_title` |
+| `field_ct_fcltmb_positions` | 1 valor desde el 0 (la posición principal) | `position` |
+| `field_uni_abbr` | **vía la relación** (acrónimo del nodo universidad) | `affiliation` (fuente 1) |
+| `field_ct_fcltmb_affil_external` | texto externo | `affiliation` (fuente 2) |
+| `field_ct_fcltmb_expertise` | 3 valores desde el 0, sin separador, sin enlazar | `expertise` |
+| `field_ct_fcltmb_photo` | **formatter `media_thumbnail`** + image style `medium`, *Link* = *Nothing* | `image` |
+| **«Link to Content»** (`view_node`) | *Text to display* = «View profile» | `link` |
+
+Dos decisiones que se salen del patrón base de `consortium_universities` y que conviene resaltar (ambas
+documentadas como receta genérica en `CONTENT-LAYOUT.md`):
+- **`affiliation` con dos fuentes** (acrónimo interno + texto externo, mutuamente excluyentes por nodo): UI
+  Patterns las concatena por peso y, como en cada nodo solo una tiene valor, el slot pinta la correcta (ver
+  `CONTENT-LAYOUT.md` §5.10).
+- **El botón usa «Link to Content»**, no `title` con `link_to_entity` + texto reescrito: ese combinado pierde
+  el `<a>` y deja texto plano. «Link to Content» emite el `<a href="/faculty/…">View profile</a>` ya hecho
+  (ver `CONTENT-LAYOUT.md` §5.9). El slot `expertise_more` («+N») queda **sin alimentar** (no es directo en
+  Views; pendiente).
+
+**La foto, anti-BI.** El campo `field_ct_fcltmb_photo` es una **referencia a media**; se usa el formatter
+**`media_thumbnail`** (con image style `medium` y sin enlace), que emite **solo la `<img>`**, en vez de
+«Rendered entity», que renderizaría la entidad media con plantillas de **Bootstrap Italia**. El recorte
+circular (84px) lo aporta el CSS del componente (ver `CONTENT-LAYOUT.md` §5.4).
+
+**Los componentes** (código, versionado en el repo):
+- **Nivel 1 — `ula_carousel`** (contenedor; ver `../COMPONENTS.md` §1.6): es el *Format/Style* de la vista,
+  con el slot `content` ← `view_rows`, prop `visible = 3` y `label = «Faculty & Research»`. Pagina las
+  tarjetas (flechas, puntos, swipe; sin autoplay).
+- **Nivel 2 — `ula_faculty_card`** (tarjeta; ver `../COMPONENTS.md` §2.5): es el *Row* de la vista, con sus
+  slots alimentados según la tabla de arriba. Slot-based, anti-BI; si no hay foto pinta un retrato de
+  **iniciales** calculadas del nombre (con el guard de presencia de `CONTENT-LAYOUT.md` §5.8).
+
+**Inserción en `/about`.** El display de bloque `faculty_cards:block_1` se añade a la sección **Faculty &
+Research** del Layout Builder de `/about` (operación de **configuración en BD**, con **dump previo**). El
+contenido heredado que dependía de Bootstrap Italia en esa sección, si lo hubiera, se sustituye/elimina como
+operación aparte (su propio análisis de qué se pierde), no en el mismo paso que la inserción.
 
 ---
 
@@ -231,7 +288,10 @@ versionado) que combinó los datos de origen con el mapeo curado de taxonomías 
 **Campos dejados vacíos a propósito en la carga inicial**, para corrección manual posterior sobre los 10
 nodos (decisión del hito, por ser solo 10):
 - `affil_type` se fijó a **External** en los 10 y `affil_internal` / `affil_external` quedaron **vacíos**.
-- `field_ct_fcltmb_photo` quedó **vacío** (los datos de origen no traían imágenes utilizables).
+- `field_ct_fcltmb_photo` quedó **vacío** en la carga inicial (los datos de origen no traían imágenes
+  utilizables). **Posteriormente** se cargó la foto del nodo **95** (Juan José Ramos González); el resto sigue
+  sin foto y se pinta con el retrato de **iniciales** de la tarjeta/ficha. Sirve además de caso real para
+  validar las dos ramas del retrato (foto vs iniciales) en la tarjeta de `/about`.
 - `field_ct_fcltmb_courses` quedó **vacío** (requiere resolver cada asignatura a un nodo existente).
 
 El resto de campos (academic title, department, email, location, priority, active, bio, enlaces, perfiles
@@ -243,8 +303,10 @@ de investigación, áreas de aplicación y expertise) se cargaron desde los dato
 
 > **Configuración y contenido en BD, no en git.** El tipo de contenido `ct_faculty_member`, sus 20 campos,
 > los dos vocabularios y los 10 nodos son **configuración/contenido**: viven en la base de datos, no en el
-> repositorio (ver `../ARCHITECTURE.md`). El **código** de la presentación de la **página de detalle**
-> (componente `ula_faculty_detail`, plantilla `node--ct-faculty-member--full` y el preprocess del `.theme`)
-> **sí** se versiona en el repo; la **tarjeta/carrusel** de `/about` se versionará al abordarla (§4.2). Los
-> scripts de creación (content type, términos y nodos) son **de un solo uso** y **no se versionan**.
-> Cualquier operación sobre esta configuración exige **dump previo** de la BD.
+> repositorio (ver `../ARCHITECTURE.md`). El **código** de ambas presentaciones **sí** se versiona en el repo:
+> la **página de detalle** (componente `ula_faculty_detail`, plantilla `node--ct-faculty-member--full` y el
+> preprocess del `.theme`) y la **tarjeta/carrusel** de `/about` (componentes `ula_faculty_card` y
+> `ula_carousel`). En cambio, la **vista `faculty_cards`** y su **inserción** en el Layout Builder de `/about`
+> son **configuración** (BD), no git: viajan por el **dump**. Los scripts de creación (content type, términos
+> y nodos) son **de un solo uso** y **no se versionan**. Cualquier operación sobre esta configuración exige
+> **dump previo** de la BD.

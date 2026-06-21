@@ -1,0 +1,39 @@
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: ULA Carousel
+status: experimental
+description: >
+  Carrusel propio del design system ULA para presentar una colección de elementos (tarjetas u
+  otros) en una pista deslizable. Pensado como contenedor (Nivel 1) del Format de una vista: recibe
+  las filas en el slot 'content' (fuente "view_rows") y las coloca como diapositivas. Alternativa
+  autónoma a un carrusel de Bootstrap Italia: sin clases ni markup de BI, con JS propio (vanilla) que
+  SDC carga automáticamente. Comportamiento: navegación por grupos con flechas (tablet/escritorio) y
+  puntos (todos los tamaños), swipe táctil y teclado; SIN autoplay; respeta prefers-reduced-motion.
+  Nº de cards visibles en escritorio con 'visible' (en tablet se reduce a 2 y en móvil a 1, como en
+  ula_grid_row). Los puntos los genera el JS según el nº de grupos (que cambia por breakpoint).
+slots:
+  content:
+    title: Content
+    description: >
+      Los elementos a deslizar (p. ej. la fuente "view_rows" de una vista). Cada elemento es una
+      diapositiva.
+props:
+  type: object
+  properties:
+    visible:
+      title: 'Visible cards (desktop)'
+      description: 'Número de cards visibles a la vez en escritorio. En tablet se reduce a 2 y en móvil a 1. Por defecto, 3.'
+      type: string
+      enum:
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+      'meta:enum':
+        '1': '1 card'
+        '2': '2 cards'
+        '3': '3 cards'
+        '4': '4 cards'
+    label:
+      title: 'Accessible label'
+      description: 'Etiqueta accesible del carrusel (aria-label de la región). Opcional.'
+      type: string

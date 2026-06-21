@@ -68,6 +68,22 @@ funciona y posible base de la vista real). **Antes de tocar:** dump de BD (es co
 y confirmar qué se pierde.
 **Prioridad:** baja (higiene; condicionada a decidir el tipo de contenido definitivo y a rehacer About).
 **Detalle:** ver la tabla *Inventario de gadgets del piloto* más abajo (qué purgar y qué conservar).
+**Actualización (v1.7.0):** ya existe una **vista real derivada en producción**, `faculty_cards` (sección
+Faculty & Research de `/about`), construida tomando `consortium_universities` como referencia (flujo
+Views → UI Patterns, ver `docs/elements/layout/CONTENT-LAYOUT.md` §5). Por tanto `consortium_universities`
+**ya no es la única** referencia viva del patrón: la decisión de conservarla o purgarla puede tomarse con
+menos riesgo. Sigue sin purgarse sin decisión explícita, pero la condición que la retenía se ha debilitado.
+
+### 12. Fondo `--off-white` a nivel de marco para páginas de contenido
+Las páginas de contenido (empezando por la ficha de faculty `/faculty/...` y la sección de tarjetas de
+`/about`) ganan legibilidad si las **tarjetas blancas** resaltan sobre un fondo **`--off-white`** del marco,
+de forma **continua hasta el footer**. Se probó aportar ese lienzo desde el **componente** (full-bleed) y se
+**descartó**: producía una **discontinuidad blanca** entre el final del componente y el footer. La decisión es
+implementarlo a **nivel de marco** (la región de contenido / `body` del marco de páginas, no el componente),
+de modo que el off-white sea continuo bajo todo el contenido hasta el footer.
+**Antes de hacerlo:** localizar el punto del marco (`lscm_page` / `page.html.twig` / región de contenido) y
+verificar que no rompe páginas que hoy asumen fondo blanco.
+**Prioridad:** media (afecta a la presentación de todas las páginas de contenido).
 
 ## Inventario de gadgets del piloto (Paragraphs vs Layout Builder)
 
@@ -82,7 +98,7 @@ git.** Antes de purgar: **dump de BD**.
 | Bloques del layout del nodo 92 | Bloques de Layout Builder | `carousel_item`, `views_block` (×2), `field_block:…:type` (×2), `extra_field_block:…:links` | **Purgar** (caen con el nodo 92) |
 | `content_page` | Tipo de contenido (Paragraphs, vía `field_sections`) | bundle `content_page` — 1 nodo | **Purgar** — andamiaje de la valoración Paragraphs vs LB; vía descartada (ADR-LAYOUT-004) |
 | Nodo de `content_page` | Nodo | 1 nodo (tipo `content_page`) | **Purgar** (con su tipo) |
-| `consortium_universities` | Vista (display de bloque `block_1`, row UI Patterns) | `views.view.consortium_universities` | **Conservar / decidir** — referencia que funciona y posible base de la vista real; no purgar sin decidir |
+| `consortium_universities` | Vista (display de bloque `block_1`, row UI Patterns) | `views.view.consortium_universities` | **Conservar / decidir** — referencia que funciona; ya **no es la única** (existe `faculty_cards` derivada en producción, v1.7.0); decidir continuidad antes de purgar |
 | Universidades del consorcio | Contenido real (no andamiaje) | `ct_about_consortium_university` — 3 nodos | **Conservar** — contenido real del sitio |
 
 ## Resueltos

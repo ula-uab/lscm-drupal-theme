@@ -32,6 +32,11 @@
   - [5.5. La variante del componente](#55-la-variante-del-componente)
   - [5.6. Diagnóstico por comparación: checklist de un slot que no pinta](#56-diagnóstico-por-comparación-checklist-de-un-slot-que-no-pinta)
   - [5.7. Variante: una sola instancia (el hero de página)](#57-variante-una-sola-instancia-el-hero-de-página)
+  - [5.8. Slots opcionales: el guard de presencia con Twig debug](#58-slots-opcionales-el-guard-de-presencia-con-twig-debug)
+  - [5.9. Enlace/botón a la página de la entidad: «Link to Content»](#59-enlacebotón-a-la-página-de-la-entidad-link-to-content)
+  - [5.10. Un slot alimentado por varias fuentes](#510-un-slot-alimentado-por-varias-fuentes)
+  - [5.11. Leer un campo de una entidad referenciada (relación no requerida)](#511-leer-un-campo-de-una-entidad-referenciada-relación-no-requerida)
+  - [5.12. El contenedor de Nivel 1 puede ser un carrusel](#512-el-contenedor-de-nivel-1-puede-ser-un-carrusel)
 - [6. Validación: la prueba piloto `/about-lb`](#6-validación-la-prueba-piloto-about-lb)
 - [7. Independencia de Bootstrap Italia en este modelo](#7-independencia-de-bootstrap-italia-en-este-modelo)
 - [8. Implicación para la configuración (sitio sin config/sync)](#8-implicación-para-la-configuración-sitio-sin-configsync)
@@ -226,7 +231,10 @@ un slot acepta un campo renderizado (incluida una imagen); una prop de texto sol
 > **no se usa un campo de URL ni se almacena nada**: se marca, en la configuración de ese campo dentro de
 > la vista, la casilla **"Link this field to the original entity"** (`link_to_entity: true`). Es una
 > propiedad del campo **en la vista**. Si la entidad tiene página de detalle propia, este es el mecanismo
-> para enlazarla desde su tarjeta.
+> para enlazarla desde su tarjeta. **Salvedad importante:** esto sirve cuando el **texto del enlace es el
+> propio valor del campo** (p. ej. el nombre que enlaza a la ficha). Si se quiere un enlace con **texto fijo
+> distinto** (un botón «View profile»), `link_to_entity` + texto reescrito **no funciona** (se pierde el
+> `<a>`): ver §5.9.
 
 ### 5.3. Lección aprendida: `view_field` vs `entity_field` (y por qué la imagen fallaba)
 
@@ -266,8 +274,17 @@ El formatter de imagen vive, por tanto, **en el campo de la vista**, no en el sl
 consume lo ya renderizado.
 
 > **Nota sobre el tipo de campo.** Esto aplica a un campo **imagen directo** (tipo `image`). Si el campo
-> fuese una **referencia a media**, el formatter adecuado sería uno que renderice la entidad media (p. ej.
-> "Rendered entity"), pero el principio es el mismo: el formatter se configura en el campo, no en el slot.
+> fuese una **referencia a media**, el principio es el mismo (el formatter se configura en el campo, no en
+> el slot), **pero la elección del formatter es crítica para la independencia de Bootstrap Italia**: el
+> formatter **"Rendered entity"** (`entity_reference_entity_view`) renderiza la **entidad media completa** en
+> su view mode, que en este subtema atraviesa las plantillas de **Bootstrap Italia** (markup heredado dentro
+> del slot) y además trae más envoltorio del que una tarjeta necesita. La vía limpia y anti-BI es un formatter
+> que emita **solo la `<img>`**: **"Thumbnail"** (`media_thumbnail`) con un **image style** seleccionado (no
+> vacío) y *Link image to* = *Nothing*. Saca la imagen del thumbnail de la media sin renderizar la entidad, de
+> modo que al slot llega una `<img>` y nada de Bootstrap Italia. El recorte (p. ej. circular) lo aporta el CSS
+> del componente, no el image style. **Este matiz se incorporó al modelar la entidad Faculty** (ver
+> `../../entities/faculty-member.md` §4.2): la primera versión usó "Rendered entity" y metía markup BI; se
+> corrigió a `media_thumbnail`.
 
 ### 5.5. La variante del componente
 
@@ -352,6 +369,124 @@ marco (`.lscm-page__container`, max-width 1200px) para ocupar **todo el ancho** 
 como la portada. Esto es CSS del componente (`ula_hero.css`), **requiere página de una columna** (sin
 sidebars) y compensa el `padding-top` del marco; los detalles y avisos están comentados en el propio CSS. No
 es un asunto de Views ni de Layout Builder.
+
+### 5.8. Slots opcionales: el guard de presencia con Twig debug
+
+Un componente slot-based pinta cada bloque **por presencia** (`{% if slot %}`): si el slot trae contenido lo
+muestra, si está vacío lo omite (o pinta un respaldo). En el flujo Views → UI Patterns ese guard ingenuo
+**falla**, y la causa es sutil: **un campo de la vista sin valor NO llega al slot como cadena vacía**. Con el
+**Twig debugging ACTIVADO** —lo habitual en local— Views envuelve cada campo en comentarios de depuración:
+
+```html
+<!-- THEME DEBUG -->
+<!-- THEME HOOK: 'views_view_field' -->
+<!-- BEGIN OUTPUT from '.../views-view-field.html.twig' -->
+<!-- END OUTPUT from '.../views-view-field.html.twig' -->
+```
+
+Aunque el campo esté vacío, el slot recibe **esos comentarios** (y espacios). Para Twig, eso es una cadena
+**no vacía** → `{% if slot %}` da **siempre verdadero** → el bloque se pinta aunque no haya dato, y el
+respaldo (p. ej. el retrato de iniciales cuando no hay foto) **nunca** aparece.
+
+**Guard fiable**, válido con Twig debug ON y OFF: renderizar el slot, **eliminar los comentarios HTML** y ver
+si queda algo:
+
+```twig
+{%- set _has_value = slot is defined and (slot|render|preg_replace('/<!--.*?-->/s', '')|trim) is not empty -%}
+{% if _has_value %} … {% else %} … {% endif %}
+```
+
+Cuando hay dato, tras quitar comentarios queda contenido real (texto, una `<img>`, etc.) → verdadero. Cuando
+el campo venía vacío, solo quedaban comentarios → cadena vacía → falso. En producción (debug OFF) el slot
+vacío suele ser ya falsy, pero **el guard tiene que funcionar también en local** (donde se desarrolla): un
+guard que solo acierta en producción es una trampa para quien trabaje en local.
+
+> **Aviso de dependencia.** El filtro `preg_replace` en plantillas Twig **no siempre está disponible** (puede
+> requerir Twig Tweak u otra extensión). Si el entorno no lo tiene, la plantilla dará error de "filter
+> preg_replace does not exist"; en ese caso, una alternativa sin dependencias es trocear por los marcadores de
+> comentario (`split` por `<!--` / `-->`) y comprobar si queda alguna etiqueta. Verificar en el Drupal real.
+
+> **Lección aprendida (Faculty, slot `image` de `ula_faculty_card`).** Con `{% if image %}`, las tarjetas
+> **sin** foto no mostraban el retrato de iniciales (el slot vacío no era falsy por los comentarios de debug);
+> al endurecer el guard a "buscar literalmente `<img`" se rompió el caso **con** foto. El guard correcto es el
+> de arriba (quitar comentarios y mirar si queda algo). El detonante se confirmó comprobando que el Twig
+> debugging estaba activado, **no** suponiéndolo.
+
+### 5.9. Enlace/botón a la página de la entidad: «Link to Content»
+
+§5.2 explica que `link_to_entity: true` enlaza un campo a la página del nodo. Eso sirve cuando el **texto del
+enlace es el propio valor del campo** (el nombre que enlaza a la ficha). Pero a menudo una tarjeta necesita un
+**botón con texto fijo** —«View profile»— que apunte al nodo. Ahí hay tres caminos, y solo uno es limpio:
+
+- **`link_to_entity` + texto reescrito** (*Rewrite results → Override the output… with custom text*): **NO
+  funciona**. Al reescribir el texto, Views **descarta el `<a>`** que aportaba `link_to_entity`; al slot llega
+  el texto pelado «View profile» **sin enlace**, y el CSS del botón (que estila un `<a>`) no encuentra nada que
+  pintar.
+- **«Output this field as a custom link»** (enlace personalizado con *Link path*): exige escribir la ruta con
+  un **token** (nid o alias) que la vista debe exponer en *Replacement patterns*. Si la vista **no expone** un
+  token de ruta (solo tokens de campos de texto), este camino obliga a **añadir y reordenar** un campo de ruta
+  solo para esto. Frágil; se descarta salvo necesidad.
+- **Campo «Link to Content»** (`view_node`) — **la solución canónica.** Es un campo de Views (*Add → "Link to
+  Content"*, descripción «Provide a view link to the Content») que emite directamente
+  `<a href="/ruta-del-nodo">TEXTO</a>`, con el **texto del enlace** que se escribe en su opción *Text to
+  display*. Se desactiva su etiqueta, se pone *Text to display* = «View profile» y se mapea el slot `link` a
+  ese campo vía `view_field`. El `<a>` llega hecho desde la vista y el CSS del botón lo estila.
+
+> **Lección aprendida (Faculty, slot `link` de `ula_faculty_card`).** El botón «View profile» salía como texto
+> plano porque el campo usaba `link_to_entity` + texto reescrito (se perdía el `<a>`). La vista **no exponía**
+> token de ruta en *Replacement patterns* (solo campos de texto), así que «custom link» no era viable sin
+> añadir campos. Se resolvió sustituyendo ese campo por **«Link to Content»** con *Text to display* = «View
+> profile». Es el mecanismo a usar siempre que se quiera un botón de texto fijo hacia la página de la entidad.
+
+### 5.10. Un slot alimentado por varias fuentes
+
+Un slot **no** está limitado a una sola fuente: en el formulario del row se pueden **añadir varias fuentes** a
+un mismo slot, y UI Patterns las **concatena** por orden de su peso (`_weight`). Esto es útil cuando dos campos
+son **mutuamente excluyentes por entidad** y deben ocupar el **mismo hueco visual**: cada fila rellena uno u
+otro, nunca los dos, así que el slot muestra el que tenga valor.
+
+> **Lección aprendida (Faculty, slot `affiliation`).** La afiliación de un profesor es el **acrónimo de su
+> universidad interna** (vía relación, §5.11) **o** un **texto externo** (`field_ct_fcltmb_affil_external`),
+> nunca ambos. Se mapearon **las dos** fuentes al slot `affiliation` (acrónimo con `_weight` 0, externo con
+> `_weight` 1); como en cada nodo solo una tiene valor, el slot pinta la correcta. Difiere del patrón de
+> `consortium_universities`, donde cada slot tenía una única fuente; por eso se documenta aquí.
+
+### 5.11. Leer un campo de una entidad referenciada (relación no requerida)
+
+Un dato que la tarjeta necesita puede vivir **no en la entidad de la fila, sino en otra entidad que esta
+referencia**. El caso típico: la tarjeta lista nodos A (faculty) pero quiere mostrar un campo que está en el
+nodo B (universidad) al que A apunta por un campo de referencia. La vía en Views:
+
+1. **Añadir una relación** (*Advanced → Relationships*) sobre el campo de referencia de A hacia B (p. ej.
+   `field_ct_fcltmb_affil_internal` → Content).
+2. **Marcarla como NO requerida** (`required: false`). Esto es **crítico**: una relación **requerida** es un
+   *inner join* y **elimina de la vista todas las filas A que no tengan la referencia rellena** (si los nodos
+   no tienen afiliación interna, desaparecen todos). No requerida es un *left join*: las filas A se conservan, y
+   el campo de B sale vacío donde no haya referencia.
+3. **Añadir el campo de B** (p. ej. `field_uni_abbr`) y, en su configuración, fijar el desplegable
+   **«Relationship»** a la relación creada (por defecto pone *Do not use a relationship*). Eso es lo que hace
+   que el campo se lea **del nodo B**, no de A.
+
+> **Lección aprendida (Faculty, acrónimo de universidad).** El acrónimo (UAB…) vive en el nodo **universidad**
+> del consorcio, no en el faculty. Se trajo con una relación **no requerida** sobre `affil_internal` y el campo
+> `field_uni_abbr` colgado de esa relación. Síntoma a vigilar: al marcar la relación como requerida, el preview
+> de la vista **se vacía entero** (desaparecen los nodos sin afiliación interna). La primera comprobación ante
+> "se han ido todas las filas" es el flag `required` de las relaciones.
+
+### 5.12. El contenedor de Nivel 1 puede ser un carrusel
+
+§5.1 describe el Nivel 1 (contenedor) como una **rejilla** (`ula_grid_row`), pero el contenedor es
+**intercambiable**: cualquier componente que reciba `view_rows` en un slot sirve. El tema incluye
+**`ula_carousel`** (ver `../../COMPONENTS.md` §1.6) como Nivel 1 alternativo: en vez de disponer las filas en
+una cuadrícula estática, las pagina en un **carrusel** (flechas, puntos, swipe; sin autoplay). El encaje en la
+vista es idéntico al de la rejilla —*Format → Show: Component* = `bootstrap_ula_lscm:ula_carousel`, slot
+`content` ← `view_rows`— y cambia solo la prop de disposición: `ula_carousel` expone **`visible`** (cuántas
+tarjetas por vista: 3 escritorio / 2 tablet / 1 móvil) en lugar de `columns`. El Nivel 2 (la tarjeta) no se
+entera de en qué contenedor vive.
+
+> **Lección aprendida (Faculty).** La sección Faculty & Research de `/about` usa `ula_carousel` como Nivel 1 y
+> `ula_faculty_card` como Nivel 2. Demuestra que la receta de §5.1 no está atada a la rejilla: el contenedor es
+> una pieza más del modelo de dos niveles, sustituible sin tocar la tarjeta.
 
 ---
 

@@ -1,0 +1,55 @@
+{#
+  ula_faculty_card — tarjeta de Faculty para el carrusel de /about.
+
+  Slot-based (mismo modelo que ula_card_simple, flujo Views → UI Patterns): cada slot se alimenta
+  de un view_field y se pinta solo si viene relleno (por presencia).
+
+  Retrato: si el slot `image` trae una foto, se muestra; si no, se pintan las INICIALES calculadas
+  del texto del slot `name` (primera letra de la primera y de la última palabra).
+
+  Guard de la imagen (importante en el flujo Views -> UI Patterns):
+  Un campo de imagen SIN valor no llega como slot vacío. Además, con el Twig debugging ACTIVADO (lo
+  habitual en local), Views inyecta comentarios <!-- THEME DEBUG --> ... <!-- END OUTPUT --> aunque
+  el campo esté vacío. Por eso `{% if image %}` da siempre verdadero en local (los comentarios no son
+  cadena vacía) y nunca se ven las iniciales. El guard fiable, válido con debug ON y OFF: renderizar
+  el slot, eliminar los comentarios HTML y ver si queda algo (con foto queda el <img>; sin foto solo
+  quedaban comentarios/espacios).
+
+  Autónomo: sin markup ni clases de Bootstrap Italia. Colores/tipografía de ula-tokens.css.
+#}
+{%- set _name_text = name is defined ? (name|render|striptags|trim) : '' -%}
+{%- set _words = _name_text|split(' ')|filter(v => v|trim is not empty) -%}
+{%- set _initials = _words|length ? (_words|first|slice(0, 1) ~ (_words|length > 1 ? _words|last|slice(0, 1) : ''))|upper : '' -%}
+{%- set _has_image = image is defined and (image|render|preg_replace('/<!--.*?-->/s', '')|trim) is not empty -%}
+<article class="ula-faculty-card">
+
+  {% if _has_image %}
+    <div class="ula-faculty-card__photo">{{ image }}</div>
+  {% else %}
+    <div class="ula-faculty-card__avatar" aria-hidden="true">{{ _initials }}</div>
+  {% endif %}
+
+  {% if name %}
+    <h3 class="ula-faculty-card__name">{% if academic_title %}<span class="ula-faculty-card__acad">{{ academic_title }}</span> {% endif %}{{ name }}</h3>
+  {% endif %}
+
+  {% if position %}
+    <p class="ula-faculty-card__position">{{ position }}</p>
+  {% endif %}
+
+  {% if affiliation %}
+    <p class="ula-faculty-card__uni">{{ affiliation }}</p>
+  {% endif %}
+
+  {% if expertise or expertise_more %}
+    <div class="ula-faculty-card__chips">
+      {{ expertise }}
+      {% if expertise_more %}<span class="ula-faculty-card__chip-more">{{ expertise_more }}</span>{% endif %}
+    </div>
+  {% endif %}
+
+  {% if link %}
+    <div class="ula-faculty-card__more">{{ link }}</div>
+  {% endif %}
+
+</article>

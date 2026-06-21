@@ -29,21 +29,22 @@
 
 | Categoría | Total | Propios | Heredados en uso | Heredados muertos |
 |---|---|---|---|---|
-| **Componentes SDC** | 76 | 17 | 21 | 38 |
-| **Plantillas** (`templates/`) | 6 | 6 | 0 | (usa el `page.html.twig` de BI por herencia, sin fichero propio) |
+| **Componentes SDC** | 79 | 20 | 21 | 38 |
+| **Plantillas** (`templates/`) | 7 | 7 | 0 | (usa el `page.html.twig` de BI por herencia, sin fichero propio) |
 | **Librerías cargadas globalmente** | 6 | 3 | 3 | — |
 
 El grueso del trabajo de independencia, a nivel de componentes, se concentra en los **21 componentes
 heredados en uso**: de ellos saldrá la lista de piezas propias a crear (adaptando o rehaciendo). Los
-**38 muertos** se eliminan al final sin más. Los **17 propios** ya están (los 12 iniciales + `ula_card_simple`,
+**38 muertos** se eliminan al final sin más. Los **20 propios** ya están (los 12 iniciales + `ula_card_simple`,
 `ula_grid_row`, `ula_hero`, `ula_cta_band` y `ula_section_header`, añadidos para el modelo de contenido de
-páginas no-home con Layout Builder).
+páginas no-home con Layout Builder; más `ula_faculty_detail`, `ula_faculty_card` y `ula_carousel`, añadidos al
+modelar la entidad Faculty).
 
 ---
 
 ## 2. Componentes SDC (`components/`)
 
-### 2.1. Propios (17)
+### 2.1. Propios (20)
 
 Diseñados por nosotros. No requieren acción de independencia (ya son propios); se listan para
 completitud y para fijar la convención de nombres.
@@ -63,6 +64,9 @@ completitud y para fijar la convención de nombres.
 | `ula_hero` | Design system (`ula_*`, basado en slots) | Hero/cabecera de página; dos presentaciones vía prop `size` (page/home); reutiliza `ula_hero_stat` por composición para las stats |
 | `ula_cta_band` | Design system (`ula_*`, basado en slots) | Franja/tarjeta de cierre (CTA) antes del footer; borde azul + fondo claro; se alimenta de un `block_content` `cta_band` vía plantilla que lo compone (v1.6.2) |
 | `ula_section_header` | Design system (`ula_*`, basado en slots) | Cabecera de sección (tag con rayita dorada + título cuerpo-negrita + descripción opcional); se alimenta de un `block_content` `section_header` vía plantilla que lo compone (v1.6.3) |
+| `ula_faculty_detail` | Design system (`ula_*`, **bespoke por props**) | Ficha de detalle de un miembro del Faculty (página `/faculty/...`); se alimenta de una plantilla de nodo + preprocess con valores crudos, no por slots (ver `../entities/faculty-member.md` §4.1) |
+| `ula_faculty_card` | Design system (`ula_*`, basado en slots) | Tarjeta de un miembro del Faculty para el carrusel de `/about`; Nivel 2 del flujo Views → UI Patterns; retrato foto-o-iniciales (v1.7.0) |
+| `ula_carousel` | Design system (`ula_*`, basado en slots) | Contenedor de Nivel 1 (carrusel con flechas/puntos/swipe, sin autoplay); alternativa a `ula_grid_row` como Format de vista (v1.7.0) |
 | `lscm_page_header` | Marco de páginas (`lscm_*` propio) | Header del marco de páginas de contenido (Fase 1) |
 | `lscm_page_footer` | Marco de páginas (`lscm_*` propio) | Footer provisional del marco (Fase 1) |
 | `lscm-master-page` | Marco de la home (`lscm-*` propio) | Marco de la home |
@@ -143,6 +147,7 @@ navbar, navbar_nav, offcanvas, pagination, progress, progress_stacked, spinner
 | `templates/content/paragraph--hero-stat.html.twig` | Propia | Propio | Render del paragraph `hero_stat`: reutiliza `ula_hero_stat` por composición (v1.6.0) |
 | `templates/content/block--block-content--type--cta-band.html.twig` | Propia | Propio | Render del bloque `cta_band`: compone `ula_cta_band` con los campos del bloque (v1.6.2) |
 | `templates/content/block--block-content--type--section-header.html.twig` | Propia | Propio | Render del bloque `section_header`: compone `ula_section_header`; guarda campos opcionales con `isEmpty` (v1.6.3) |
+| `templates/content/node--ct-faculty-member--full.html.twig` | Propia | Propio | Render del nodo faculty (view mode `full`): compone `ula_faculty_detail` con la variable `faculty` (valores crudos vía preprocess); acotada a `full` (v1.6.x) |
 
 > **Resuelto en v1.5.0 (Fase 2):** el tema **ya tiene `page.html.twig` propio**
 > (`templates/layout/page.html.twig`), que sustituye al heredado de Bootstrap Italia para todas las
@@ -196,7 +201,7 @@ eliminar del `.info.yml` en la Fase 6.
 
 ## 6. Conclusión y uso de este inventario
 
-- **Lo que ya es propio:** 17 componentes SDC + 6 plantillas + 3 librerías. No requieren acción.
+- **Lo que ya es propio:** 20 componentes SDC + 7 plantillas + 3 librerías. No requieren acción.
 - **Lo que hay que adaptar/rehacer (el trabajo de fondo):** los **21 componentes de BI en uso** y el
   `page.html.twig` (crear propio). De aquí sale la lista de piezas propias a construir, página a página.
 - **Lo que se eliminará al final (Fase 6):** los **38 componentes muertos**, las **~43 regiones**
@@ -244,3 +249,14 @@ copiado ni adaptado nada de BI para lograrlo: es, literalmente, el CSS de BI tod
 > **Método sugerido al migrar un componente:** inspeccionar qué reglas de `bootstrap_italia/base` (u
 > otro CSS) le dan su aspecto actual, y reproducir el resultado equivalente con CSS propio basado en
 > los tokens `ula_*`. Así el componente migrado se ve igual o mejor, pero sin depender de BI.
+
+> **Primer contenido interno ya independiente de BI (v1.6.x–v1.7.0).** El cuadro de arriba describe el estado
+> **general**: el contenido interno de las páginas no-home se viste con `bootstrap_italia/base`. Pero la entidad
+> **Faculty** ya rompe esa dependencia en su parcela: tanto la **ficha de detalle** (`/faculty/...`, componente
+> `ula_faculty_detail`) como la **sección Faculty & Research de `/about`** (vista `faculty_cards` →
+> `ula_carousel` + `ula_faculty_card`) se visten **íntegramente con CSS propio `ula_*`**, sin clases ni markup
+> de Bootstrap Italia (la foto usa `media_thumbnail`, no «Rendered entity», para no arrastrar markup de BI; ver
+> `../entities/faculty-member.md` §4 y `../elements/layout/CONTENT-LAYOUT.md` §5). Es el **primer contenido
+> interno** (no marco) servido sin BI: no migra un componente concreto de §2.2, sino que estrena contenido
+> nuevo ya independiente. No permite aún retirar `bootstrap_italia/base` (el resto del contenido interno sigue
+> dependiendo de ella), pero marca el inicio de la senda de la Fase 6 a nivel de contenido.

@@ -1,0 +1,134 @@
+/**
+ * ula_carousel — carrusel propio del design system ULA.
+ *
+ * Autónomo: sin Bootstrap Italia; tokens de ula-tokens.css. Mobile-first, con los mismos
+ * breakpoints que ula_grid_row (base móvil / >=600 tablet / >=992 escritorio).
+ *
+ * Layout: grid [flecha · viewport · flecha] + fila de puntos debajo. En móvil las flechas se
+ * ocultan (swipe + puntos). El nº de cards visibles lo fija la variable --visible (que el JS lee
+ * para calcular los grupos).
+ *
+ * Altura uniforme: la diapositiva es flex y su hijo (la card) ocupa el 100%, de modo que todas las
+ * cards de la vista igualan altura a la más alta (la card ya crece su zona de chips).
+ */
+.ula-carousel {
+  --visible: 1;          /* base (móvil) */
+  --gap: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  column-gap: 0.75rem;
+}
+
+/* Viewport: recorta la pista; padding para que el realce/sombra de la card no se corte. */
+.ula-carousel__viewport {
+  overflow: hidden;
+  padding: 8px 2px 28px;
+}
+
+/* Pista deslizable. */
+.ula-carousel__track {
+  display: flex;
+  gap: var(--gap);
+  transition: transform 0.4s ease;
+  will-change: transform;
+}
+
+/* Cada diapositiva ocupa 1/visible del ancho (descontando los gaps). */
+.ula-carousel__slide {
+  flex: 0 0 calc((100% - (var(--visible) - 1) * var(--gap)) / var(--visible));
+  min-width: 0;
+  display: flex;
+}
+.ula-carousel__slide > * {
+  width: 100%;
+}
+
+/* Flechas (ocultas en móvil; se muestran desde tablet). */
+.ula-carousel__arrow {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--eu-blue);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.ula-carousel__arrow:hover:not(:disabled) {
+  background: var(--eu-blue);
+  color: var(--white);
+  border-color: var(--eu-blue);
+}
+.ula-carousel__arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.ula-carousel__arrow:focus-visible {
+  outline: 2px solid var(--eu-blue);
+  outline-offset: 2px;
+}
+
+/* Puntos (todos los tamaños). Los genera el JS. */
+.ula-carousel__dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 0.5rem;
+}
+.ula-carousel__dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--border);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.ula-carousel__dot:hover {
+  background: var(--text-light);
+}
+.ula-carousel__dot.is-active {
+  background: var(--eu-blue);
+  transform: scale(1.25);
+}
+.ula-carousel__dot:focus-visible {
+  outline: 2px solid var(--eu-blue);
+  outline-offset: 2px;
+}
+
+/* Tablet (>=600px): 2 cards visibles (salvo que la prop pida 1) y aparecen las flechas. */
+@media (min-width: 600px) {
+  .ula-carousel--visible-2,
+  .ula-carousel--visible-3,
+  .ula-carousel--visible-4 {
+    --visible: 2;
+  }
+  .ula-carousel {
+    grid-template-columns: auto 1fr auto;
+  }
+  .ula-carousel__arrow {
+    display: flex;
+  }
+  .ula-carousel__arrow--prev { grid-column: 1; }
+  .ula-carousel__viewport { grid-column: 2; }
+  .ula-carousel__arrow--next { grid-column: 3; }
+  .ula-carousel__dots { grid-column: 1 / -1; }
+}
+
+/* Escritorio (>=992px): el nº de cards elegido en 'visible'. */
+@media (min-width: 992px) {
+  .ula-carousel--visible-1 { --visible: 1; }
+  .ula-carousel--visible-2 { --visible: 2; }
+  .ula-carousel--visible-3 { --visible: 3; }
+  .ula-carousel--visible-4 { --visible: 4; }
+}
+
+/* Respeta la preferencia de reducir movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  .ula-carousel__track { transition: none; }
+}

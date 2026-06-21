@@ -1,0 +1,11 @@
+name: Preview
+props:
+  visible: '3'
+  label: 'Faculty carousel'
+slots:
+  content:
+    - '<div style="border:1.5px solid #d0d9ef;border-radius:20px;padding:2rem;text-align:center;background:#fff;font-family:Manrope,sans-serif;color:#0d1b3e;">Card 1</div>'
+    - '<div style="border:1.5px solid #d0d9ef;border-radius:20px;padding:2rem;text-align:center;background:#fff;font-family:Manrope,sans-serif;color:#0d1b3e;">Card 2</div>'
+    - '<div style="border:1.5px solid #d0d9ef;border-radius:20px;padding:2rem;text-align:center;background:#fff;font-family:Manrope,sans-serif;color:#0d1b3e;">Card 3</div>'
+    - '<div style="border:1.5px solid #d0d9ef;border-radius:20px;padding:2rem;text-align:center;background:#fff;font-family:Manrope,sans-serif;color:#0d1b3e;">Card 4</div>'
+    - '<div style="border:1.5px solid #d0d9ef;border-radius:20px;padding:2rem;text-align:center;background:#fff;font-family:Manrope,sans-serif;color:#0d1b3e;">Card 5</div>'

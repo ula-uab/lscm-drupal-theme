@@ -6,6 +6,10 @@
  * la display (Playfair) para el hero/portada. Pensado para fondo claro. Sin Bootstrap Italia.
  */
 
+.ula-section-header {
+  padding-top: 2.5rem;
+}
+
 .ula-section-header__tag {
   display: inline-flex;
   align-items: center;

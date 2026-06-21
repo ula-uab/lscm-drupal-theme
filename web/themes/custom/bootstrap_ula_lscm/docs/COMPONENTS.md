@@ -20,11 +20,13 @@
   - [1.3. `ula_hero`](#13-ula_hero)
   - [1.4. `ula_cta_band`](#14-ula_cta_band)
   - [1.5. `ula_section_header`](#15-ula_section_header)
+  - [1.6. `ula_carousel`](#16-ula_carousel)
 - [2. Tarjetas de contenido (`ula_*`, monopropósito)](#2-tarjetas-de-contenido-ula_-monopropósito)
   - [2.1. `ula_uni_card`](#21-ula_uni_card)
   - [2.2. `ula_spec_card`](#22-ula_spec_card)
   - [2.3. `ula_sem_card`](#23-ula_sem_card)
   - [2.4. `ula_req_card`](#24-ula_req_card)
+  - [2.5. `ula_faculty_card`](#25-ula_faculty_card)
 - [3. Ítems de sección (`ula_*`)](#3-ítems-de-sección-ula_)
   - [3.1. `ula_feature_item`](#31-ula_feature_item)
   - [3.2. `ula_why_item`](#32-ula_why_item)
@@ -228,6 +230,37 @@ campo vacío rompe el render (ver `CONCEPTOS-DRUPAL.md`).
 tratamiento propio (rayita dorada en vez de píldora, sobre fondo claro) y otro rol: el hero es la cabecera de
 **página**; `ula_section_header`, la cabecera de **sección** dentro de la página.
 
+### 1.6. `ula_carousel`
+
+Contenedor que pagina una colección de elementos en un **carrusel** (tira deslizante con flechas, puntos y
+*swipe*), como alternativa a la rejilla estática `ula_grid_row`. Pensado como **Nivel 1** (Format de una
+vista): recibe las filas en el slot `content` (fuente `view_rows`) y muestra **N tarjetas a la vez**,
+paginando el resto. Autónomo (sin Bootstrap Italia); colores y tipografía de los tokens. El Nivel 2 (la
+tarjeta de cada fila) es ajeno al carrusel: el contenedor es intercambiable con la rejilla sin tocar la
+tarjeta (ver `elements/layout/CONTENT-LAYOUT.md` §5.12).
+
+Slots:
+
+| Slot | Función |
+|---|---|
+| `content` | Los elementos a paginar (p. ej. `view_rows` de una vista). Cada elemento es una diapositiva |
+
+Props:
+
+| Prop | Tipo | Función |
+|---|---|---|
+| `visible` | enum `1`–`4` | Tarjetas visibles a la vez en escritorio (por defecto 3); mobile-first, se reduce a 2 en tablet (≥600) y 1 en móvil |
+| `label` | string | `aria-label` de la región del carrusel (p. ej. «Faculty & Research»). Opcional |
+
+**Comportamiento (JS propio `ula_carousel.js`).** JavaScript vanilla (IIFE, el patrón del tema; lo carga
+automáticamente el SDC), **idempotente** (marca con `data-` para no inicializar dos veces). Paginación **por
+grupos** según `visible`; genera los **puntos** según el número de grupos; **flechas** prev/next; soporte de
+**swipe** táctil y de **teclado**; **recalcula** al redimensionar; respeta `prefers-reduced-motion`. **Sin
+autoplay** (decisión de diseño: el avance es siempre acción del usuario).
+
+**Primer uso.** La sección Faculty & Research de `/about`, con `ula_faculty_card` como Nivel 2 (ver §2.5 y
+`entities/faculty-member.md` §4.2).
+
 ---
 
 ## 2. Tarjetas de contenido (`ula_*`, monopropósito)
@@ -285,6 +318,40 @@ Tarjeta de requisito de admisión (icono + título + descripción, vertical). Se
 | `icon` | string | Icono (emoji o carácter) |
 | `title` | string | Título del requisito |
 | `description` | string | Texto descriptivo |
+
+### 2.5. `ula_faculty_card`
+
+Tarjeta de un miembro del Faculty para el **carrusel** de la sección Faculty & Research de `/about`. A
+diferencia del resto de §2 (tarjetas de la home alimentadas por **props string**), esta es **slot-based** —del
+mismo modelo que `ula_card_simple` (§1.1)— porque se alimenta por el flujo **Views → UI Patterns** (slots ←
+`view_field` desde la vista `faculty_cards`; ver `entities/faculty-member.md` §4.2). Es el **Nivel 2** que
+pinta cada fila dentro del contenedor `ula_carousel` (§1.6). Autónomo (sin Bootstrap Italia); colores y
+tipografía de los tokens. Pensada para **fondo claro**. Cada bloque se pinta **por presencia**.
+
+Slots:
+
+| Slot | Función |
+|---|---|
+| `image` | Foto del profesor (campo media ya renderizado por su formatter en la vista). Opcional: si no hay foto real, se pinta el retrato de **iniciales** |
+| `name` | Nombre completo (con *link to entity* enlaza a la ficha de detalle). De su texto se calculan las iniciales del retrato de respaldo |
+| `academic_title` | Título académico (p. ej. «PhD»); se integra atenuado en la línea del nombre. Opcional |
+| `position` | Posición principal. Opcional |
+| `affiliation` | Afiliación compacta: acrónimo de la universidad (interna) o texto externo. Opcional |
+| `expertise` | Áreas de expertise como **chips** (cada valor, un elemento). Opcional |
+| `expertise_more` | Indicador «+N» de expertise restantes (chip de contorno discontinuo). Opcional; **hoy sin alimentar** |
+| `link` | Botón «View profile» a la ficha (campo **«Link to Content»** de la vista; ver `CONTENT-LAYOUT.md` §5.9). Opcional |
+
+No tiene props.
+
+**Retrato: foto o iniciales.** Si el slot `image` trae una `<img>` real se muestra (recortada en círculo de
+84px por CSS, `object-fit: cover`); si no, se pinta un avatar con las **iniciales** (primera letra de la
+primera y de la última palabra del nombre, calculadas en Twig). El guard que decide «hay imagen o no» **no**
+puede ser `{% if image %}`: en el flujo Views → UI Patterns con Twig debug activado el slot vacío trae
+comentarios de depuración y nunca sería falsy. Se usa el guard que elimina los comentarios HTML y comprueba si
+queda contenido (ver `elements/layout/CONTENT-LAYOUT.md` §5.8).
+
+**Altura uniforme en la pista.** La card es *flex column*; los chips crecen (`flex: 1`) y el botón se ancla
+abajo (`margin-top: auto`), de modo que todas las tarjetas de la fila igualan a la más alta.
 
 ---
 

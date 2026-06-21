@@ -1,0 +1,34 @@
+{#
+  ula_carousel — carrusel propio del design system ULA.
+
+  Nivel 1 (Format de una vista): el slot 'content' recibe la fuente "view_rows"; cada elemento es
+  una diapositiva. Se normaliza 'content' a secuencia y se itera (igual que ula_grid_row), envolviendo
+  cada fila en una diapositiva.
+
+  El JS propio (ula_carousel.js, auto-cargado por SDC) cablea flechas, puntos (que GENERA según el nº
+  de grupos), swipe y teclado. Sin Bootstrap Italia. La prop 'visible' fija las cards en escritorio
+  (el CSS reduce a 2 en tablet y 1 en móvil). Los puntos y la pista los pinta el CSS/JS propio.
+#}
+{% set items = (content and content is not sequence) ? [content] : content %}
+{% set visible = visible|default('3') %}
+<div class="ula-carousel ula-carousel--visible-{{ visible }}"{% if label %} role="group" aria-label="{{ label }}"{% endif %}>
+
+  <button type="button" class="ula-carousel__arrow ula-carousel__arrow--prev" aria-label="Previous">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+
+  <div class="ula-carousel__viewport">
+    <div class="ula-carousel__track">
+      {% for item in items %}
+        <div class="ula-carousel__slide">{{ item }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <button type="button" class="ula-carousel__arrow ula-carousel__arrow--next" aria-label="Next">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+
+  <div class="ula-carousel__dots"></div>
+
+</div>
