@@ -116,6 +116,7 @@ completados se archivan en el subdirectorio `archive/` de cada elemento.
 
 - **[`plans/paginas-contenido/`](plans/paginas-contenido/)** — plan maestro de **páginas de contenido e independencia de Bootstrap Italia**: el camino para desligar el tema de BI (marco `page.html.twig`, componentes SDC, librerías y regiones), articulado sobre las páginas de contenido (servidas por vistas, con header/footer propios). Piloto: About.
   - [`plan-sistema-paginas-contenido.md`](plans/paginas-contenido/plan-sistema-paginas-contenido.md) — **activo** (8 fases, 0–7; Fase 1 completada en v1.4.0).
+  - [`plan-libreria-inline-blocks.md`](plans/paginas-contenido/plan-libreria-inline-blocks.md) — **activo**: sub-plan de las Fases 3 y 4 (entrelazadas); desarrollo de la librería de artefactos de inline block (`inline_lb_*`) y los componentes SDC para el body de las páginas, complementando Views → UI Patterns. Plan validado; decisiones transversales (D1–D6) aún por resolver.
 - **[`plans/home/`](plans/home/)** — planes de la home:
   - [`archive/plan-colecciones-editables-e-interactividad.md`](plans/home/archive/plan-colecciones-editables-e-interactividad.md) — **completado** (v1.1.0 → v1.3.1): migración de las 8 colecciones a editables, interactividad (hamburguesa, pastillas con modal) y relación universidad↔semestre. La Fase 0 (limpieza de `page_home`) se reconvirtió en TO-DO transversal.
   - [`archive/plan-landing-parametrizada.md`](plans/home/archive/plan-landing-parametrizada.md) — **histórico**: plan inicial de la landing parametrizada (completado).
