@@ -16,3 +16,9 @@ env
 /backups/*.sql.gz
 .DS_Store
 .idea/
+
+
+# Dumps fuera de /backups o con nombres atípicos (p. ej. el fichero "-")
+/-
+/*.sql
+/*.sql.gz
