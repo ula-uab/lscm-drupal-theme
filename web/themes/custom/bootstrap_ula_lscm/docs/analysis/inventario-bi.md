@@ -30,7 +30,7 @@
 | Categoría | Total | Propios | Heredados en uso | Heredados muertos |
 |---|---|---|---|---|
 | **Componentes SDC** | 79 | 20 | 21 | 38 |
-| **Plantillas** (`templates/`) | 7 | 7 | 0 | (usa el `page.html.twig` de BI por herencia, sin fichero propio) |
+| **Plantillas** (`templates/`) | 15 | 15 | 0 | — (el `page.html.twig` propio sustituye al de BI desde v1.5.0; no hay plantillas heredadas) |
 | **Librerías cargadas globalmente** | 6 | 3 | 3 | — |
 
 > Estas cifras cuentan **elementos de producción**. Aparte, el repositorio versiona **material de
@@ -153,6 +153,14 @@ navbar, navbar_nav, offcanvas, pagination, progress, progress_stacked, spinner
 | `templates/content/block--block-content--type--cta-band.html.twig` | Propia | Propio | Render del bloque `cta_band`: compone `ula_cta_band` con los campos del bloque (v1.6.2) |
 | `templates/content/block--block-content--type--section-header.html.twig` | Propia | Propio | Render del bloque `section_header`: compone `ula_section_header`; guarda campos opcionales con `isEmpty` (v1.6.3) |
 | `templates/content/node--ct-faculty-member--full.html.twig` | Propia | Propio | Render del nodo faculty (view mode `full`): compone `ula_faculty_detail` con la variable `faculty` (valores crudos vía preprocess); acotada a `full` (v1.6.x) |
+| `templates/content/block--block-content--type--inline-lb-statgrid.html.twig` | Propia | Propio | Render del bloque `inline_lb_statgrid` (rejilla de cifras, inline block): compone `ula_grid_row` + `ula_hero_stat` desde el paragraph `inline_lb_p_stat` (v1.8.0) |
+| `templates/content/block--block-content--type--inline-lb-section-header.html.twig` | Propia | Propio | Render del bloque `inline_lb_section_header` (cabecera de sección como inline block): reutiliza `ula_section_header` (v1.8.0) |
+| `templates/content/block--block-content--type--inline-lb-richtext.html.twig` | Propia | Propio | Render del bloque `inline_lb_richtext` (texto enriquecido, variantes `plain`/`panel_blue`): CSS propio + librería (v1.8.0) |
+| `templates/content/block--block-content--type--inline-lb-steps.html.twig` | Propia | Propio | Render del bloque `inline_lb_steps` (cronología): compone `ula_timeline_item` desde el paragraph `inline_lb_p_step` (v1.8.0) |
+| `templates/content/block--block-content--type--inline-lb-pills.html.twig` | Propia | Propio | Render del bloque `inline_lb_pills` (pastillas/etiquetas): compone `ula_pill` / `ula_pill_group` (v1.8.0) |
+| `templates/content/block--block-content--type--inline-lb-cardgrid.html.twig` | Propia | Propio | Render del bloque `inline_lb_cardgrid` (rejilla de tarjetas): compone `ula_card_simple` en `ula_grid_row` desde el paragraph `inline_lb_p_card` (v1.8.0) |
+| `templates/content/block--block-content--type--inline-lb-stack.html.twig` | Propia | Propio | Render del bloque `inline_lb_stack` (pila heterogénea): mezcla piezas de texto y pastillas desde los paragraphs `inline_lb_p_text` / `inline_lb_p_pills` (v1.8.0) |
+| `templates/content/block--block-content--type--inline-lb-table.html.twig` | Propia | Propio | Render del bloque `inline_lb_table` (tabla de contenido): compone un `<table>` propio desde el paragraph `inline_lb_p_trow`, pintando exactamente `m` celdas por fila; CSS propio + librería (v1.8.1) |
 
 > **Resuelto en v1.5.0 (Fase 2):** el tema **ya tiene `page.html.twig` propio**
 > (`templates/layout/page.html.twig`), que sustituye al heredado de Bootstrap Italia para todas las
@@ -161,7 +169,7 @@ navbar, navbar_nav, offcanvas, pagination, progress, progress_stacked, spinner
 > `page.html.twig` de BI (sus 5 partials) y el diseño del propio están en
 > `../elements/layout/SHARED-FRAME-LAYOUT.md` §7–8 (ADR-LAYOUT-003).
 
-> **Material de referencia del piloto (no producción).** Además de las 7 plantillas propias de
+> **Material de referencia del piloto (no producción).** Además de las 15 plantillas propias de
 > producción de la tabla, en `templates/content/` viven **5 plantillas del piloto de inline blocks**
 > (mecanismo de body de sección; ver `../elements/layout/CONTENT-LAYOUT.md` §11–§12), versionadas como
 > **caso de uso documental**: `block--block-content--type--pilot-richtext.html.twig`,
@@ -223,7 +231,7 @@ eliminar del `.info.yml` en la Fase 6.
 
 ## 6. Conclusión y uso de este inventario
 
-- **Lo que ya es propio:** 20 componentes SDC + 7 plantillas + 3 librerías. No requieren acción.
+- **Lo que ya es propio:** 20 componentes SDC + 15 plantillas + 3 librerías. No requieren acción.
 - **Lo que hay que adaptar/rehacer (el trabajo de fondo):** los **21 componentes de BI en uso** y el
   `page.html.twig` (crear propio). De aquí sale la lista de piezas propias a construir, página a página.
 - **Lo que se eliminará al final (Fase 6):** los **38 componentes muertos**, las **~43 regiones**

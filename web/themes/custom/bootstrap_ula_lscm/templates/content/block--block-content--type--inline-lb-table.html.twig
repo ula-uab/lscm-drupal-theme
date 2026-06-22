@@ -1,0 +1,128 @@
+{#
+  Artefacto inline_lb_table — tabla de contenido (texto plano).
+  Body de página: una tabla con estética homogénea del design system `ula_*`,
+  editable en la propia página como inline block de Layout Builder (Core).
+  Independiente de Bootstrap Italia. Ver la especificación de diseño en
+  `docs/entities/ula-table.md` y el catálogo `docs/elements/layout/INLINE-BLOCKS-CATALOG.md`.
+
+  MODALIDAD. Variante del mecanismo C (Paragraphs multivalor para las filas) pero
+  HOMOGÉNEO: todas las filas (sub-header, contenido, footer) son del mismo tipo de
+  paragraph `inline_lb_p_trow` (un campo de celdas, texto plano multivalor). La
+  presentación —un `<table>` propio— se compone AQUÍ, con CSS propio por librería
+  (patrón de richtext/stack); NO se reutiliza ningún SDC ni el componente `table`
+  heredado de Bootstrap Italia (que es justo lo que esta entidad sustituye).
+
+  Tipo de bloque `inline_lb_table` (theme hook `block`). Campos:
+    - field_inline_lb_tb_cols      (integer 1-10): m = nº de columnas. Gobierna el
+      colspan del header y cuántas celdas se pintan por fila (garantiza que todas
+      las filas comparten m: RF-11).
+    - field_inline_lb_tb_header    (string, opcional): celda combinada del header
+      (una sola celda a m columnas). Se pinta si NO está vacía (activación por
+      presencia, RF-06).
+    - field_inline_lb_tb_titlecol  (boolean): «la primera columna es de títulos»
+      (RF-07). Cuando está activo, la 1.ª celda de cada FILA DE CONTENIDO va como
+      `<th scope="row">` con relleno propio; sub-header y footer no se ven afectados.
+    - field_inline_lb_tb_subheader (Paragraphs inline_lb_p_trow, 0..1): fila
+      sub-header opcional (m celdas → cabeceras de columna). Activación por presencia.
+    - field_inline_lb_tb_rows      (Paragraphs inline_lb_p_trow, 1..n): filas de
+      contenido (≥1 obligatoria).
+    - field_inline_lb_tb_footer    (Paragraphs inline_lb_p_trow, 0..1): fila footer
+      opcional. Activación por presencia.
+
+  COMPOSICIÓN ANTI-BI. Las celdas se leen como VALOR PLANO (`item.value`) desde la
+  entidad de cada paragraph (`.entity`), igual que statgrid/stack; NO se usa
+  `{{ content.field }}`, que pasaría por field.html.twig (= Bootstrap Italia en este
+  subtema). Por eso el artefacto NO depende del view display del campo Paragraphs.
+  El texto va siempre autoescapado (RF-08: texto plano).
+
+  CSS. La librería propia `inline_lb_table` (registrada en
+  bootstrap_ula_lscm.libraries.yml) aporta `.ula-table` y sus modificadores; usa los
+  tokens de ula-tokens.css. Se adjunta con attach_library (no carga global).
+
+  RESPONSIVE (RF-10). Scroll horizontal: el wrapper `.ula-table` desborda en X
+  (overflow-x:auto) y recorta las esquinas de las bandas al radio (overflow-y:hidden).
+
+  IMPRESCINDIBLE en un inline block: el armazón estándar de bloque
+  (`<div{{ attributes }}>`, `title_prefix`, `{% if label %}…{% endif %}`,
+  `title_suffix`). El control de Layout Builder (lápiz Configure/Move/Remove) viaja
+  en `title_suffix`/`attributes`; sin ellos el inline block no se puede editar. El
+  `{% if label %}` respeta la casilla «Display title».
+#}
+{{ attach_library('bootstrap_ula_lscm/inline_lb_table') }}
+{% import _self as t %}
+{% set b = content['#block_content'] %}
+{% set m = b.field_inline_lb_tb_cols.value|default(3) %}
+{% set m = min(10, max(1, m)) %}
+{% set titlecol = b.field_inline_lb_tb_titlecol.value %}
+{% set header = b.field_inline_lb_tb_header.value %}
+{% set sub_p = b.field_inline_lb_tb_subheader is not empty ? b.field_inline_lb_tb_subheader.0.entity : null %}
+{% set foot_p = b.field_inline_lb_tb_footer is not empty ? b.field_inline_lb_tb_footer.0.entity : null %}
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {% if label %}<h2{{ title_attributes }}>{{ label }}</h2>{% endif %}
+  {{ title_suffix }}
+  {% if b.field_inline_lb_tb_rows is not empty %}
+    <div class="ula-table">
+      <table class="ula-table__table">
+        {% if header is not empty or sub_p %}
+          <thead>
+            {% if header is not empty %}
+              <tr class="ula-table__row ula-table__row--header">
+                <th colspan="{{ m }}" scope="colgroup" class="ula-table__cell ula-table__cell--header">{{ header }}</th>
+              </tr>
+            {% endif %}
+            {% if sub_p %}
+              {{ t.trow(sub_p, m, 'subheader', 'th', 'col', false) }}
+            {% endif %}
+          </thead>
+        {% endif %}
+        <tbody>
+          {% for delta in b.field_inline_lb_tb_rows %}
+            {% set p = delta.entity %}
+            {% if p %}
+              {{ t.trow(p, m, 'body', 'td', '', titlecol) }}
+            {% endif %}
+          {% endfor %}
+        </tbody>
+        {% if foot_p %}
+          <tfoot>
+            {{ t.trow(foot_p, m, 'footer', 'td', '', false) }}
+          </tfoot>
+        {% endif %}
+      </table>
+    </div>
+  {% endif %}
+</div>
+
+{#
+  Macro de fila. Pinta EXACTAMENTE `m` celdas:
+    - rellena con vacío las celdas que falten (filas con menos de m valores),
+    - ignora las celdas que sobren (más de m) → enforce visual de m (RF-11).
+  Parámetros:
+    p            paragraph `inline_lb_p_trow` (o null).
+    m            nº de columnas.
+    modifier     'subheader' | 'body' | 'footer' (clase y semántica).
+    cell_tag     'th' | 'td' para las celdas normales de la fila.
+    cell_scope   scope de esas celdas ('col' en sub-header; '' en body/footer).
+    title_first  si true, la 1.ª celda va como <th scope="row"> (columna de títulos).
+#}
+{% macro trow(p, m, modifier, cell_tag, cell_scope, title_first) %}
+  {% set cells = [] %}
+  {% if p %}
+    {% for item in p.field_inline_lb_tr_cells %}
+      {% set cells = cells|merge([item.value]) %}
+    {% endfor %}
+  {% endif %}
+  <tr class="ula-table__row ula-table__row--{{ modifier }}">
+    {% for i in 1..m %}
+      {%- set val = cells[i - 1]|default('') -%}
+      {%- if title_first and i == 1 -%}
+        <th scope="row" class="ula-table__cell ula-table__cell--title">{{ val }}</th>
+      {%- elseif cell_scope -%}
+        <{{ cell_tag }} scope="{{ cell_scope }}" class="ula-table__cell ula-table__cell--{{ modifier }}">{{ val }}</{{ cell_tag }}>
+      {%- else -%}
+        <{{ cell_tag }} class="ula-table__cell ula-table__cell--{{ modifier }}">{{ val }}</{{ cell_tag }}>
+      {%- endif -%}
+    {% endfor %}
+  </tr>
+{% endmacro %}

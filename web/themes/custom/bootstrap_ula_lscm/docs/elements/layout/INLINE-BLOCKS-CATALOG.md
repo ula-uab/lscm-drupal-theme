@@ -48,7 +48,7 @@
   tipos de pieza; el editor las apila en el orden que quiera; cada pieza se pinta con su plantilla.
 
 **Convención de nombres.** Los artefactos siguen el patrón **`inline_lb_*`**, donde `*` describe su
-naturaleza (`richtext`, `statgrid`, `cardgrid`, `pills`, `stack`). Es el nombre del **tipo de bloque**
+naturaleza (`richtext`, `statgrid`, `cardgrid`, `pills`, `stack`, `table`). Es el nombre del **tipo de bloque**
 (`block_content`) y, por extensión, de su plantilla (`block--block-content--type--inline-lb-*.html.twig`)
 y de los paragraph types asociados (`inline_lb_p_*`).
 
@@ -176,6 +176,13 @@ no git); creación con script de un solo uso (no versionado); **dump previo** ob
 > (estrena los SDC `ula_pill`/`ula_pill_group`) · `inline_lb_cardgrid` → `entities/inline-lb-cardgrid.md`
 > (validación D3 resuelta) · `inline_lb_stack` → `entities/inline-lb-stack.md`. Pendientes conocidos: variante
 > `panel_blue` de richtext y diferencia visible de variantes de pills (en sus fichas).
+
+> **Ampliación (v1.8.1): `inline_lb_table`.** Se añade a la librería un **octavo** artefacto, la **tabla de
+> contenido** (`inline_lb_table` + paragraph `inline_lb_p_trow`). A diferencia de los siete anteriores, **no**
+> procede de la maqueta de About: cubre **datos tabulares de propósito general** (requisitos, comparativas,
+> calendarios, listados con cabeceras) sin la tabla heredada de Bootstrap Italia (componente `table`). Es una
+> **variante de C** (Paragraphs multivalor para las filas) **homogénea**, con presentación por **librería CSS
+> propia** (no SDC). Detalle en §4.7; ficha as-built: `entities/inline-lb-table.md`.
 
 > El catálogo siguiente cubre **el body que va debajo** de la cabecera de sección. La cabecera en sí está en
 > §3 (`inline_lb_section_header`).
@@ -341,6 +348,28 @@ La plantilla compone un `ula_timeline_item` por paso dentro del contenedor `.tim
 El contenedor `.timeline` lo aporta el artefacto (librería propia `inline_lb_steps`), no el componente.
 
 **Riesgo de contraste — bajo.** Sobre fondo claro. Detalle as-built en `entities/inline-lb-steps.md`.
+
+### 4.7. `inline_lb_table` (tabla de contenido) — **implementado (v1.8.1)**
+
+**Función.** **Datos tabulares de propósito general** (requisitos, comparativas, calendarios, listados con
+cabeceras) con estética homogénea `ula_*`. Sustituto de la **tabla heredada de Bootstrap Italia** (componente
+`table`, basado en `.table`/`.table-*`). No procede de la maqueta de About: es un miembro **de propósito
+general** de la librería.
+
+**Estructura.** Tipo de bloque `inline_lb_table` con `field_inline_lb_tb_cols` (integer 1–10 = `m`),
+`field_inline_lb_tb_header` (string opcional = celda combinada), `field_inline_lb_tb_titlecol` (boolean) y
+**tres** campos Paragraphs (`field_inline_lb_tb_subheader` 0..1, `field_inline_lb_tb_rows` 1..n,
+`field_inline_lb_tb_footer` 0..1) que referencian **un mismo** paragraph `inline_lb_p_trow` (campo de celdas
+`field_inline_lb_tr_cells`, `string` multivalor). La plantilla del bloque compone un `<table>` propio leyendo
+**valores planos** (anti-BI, sin `field.html.twig`), pintando **exactamente `m`** celdas por fila
+(rellena/trunca → invariante de columnas, RF-11). Activación de header/sub-header/footer **por presencia**.
+
+**Reutilización SDC.** **Ninguna**: la presentación es un `<table>` con **CSS propio** (librería
+`inline_lb_table`), no un SDC. No se reutiliza el componente `table` de Bootstrap Italia.
+
+**Riesgo de contraste — bajo.** Sobre fondo claro; paleta `ula_*` (rampa de azules). Detalle as-built y
+decisiones (modalidad C homogénea, responsive por scroll horizontal, cardinalidad fija 10 del campo de celdas,
+`color-mix` sin promover a token) en `entities/inline-lb-table.md`.
 
 ---
 

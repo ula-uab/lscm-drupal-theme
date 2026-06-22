@@ -1,0 +1,96 @@
+/**
+ * inline_lb_table — CSS de producción de la tabla de contenido.
+ *
+ * Registrado como librería `inline_lb_table` en bootstrap_ula_lscm.libraries.yml y
+ * adjuntado por la plantilla del bloque vía attach_library (no por carga global).
+ * Independiente de Bootstrap Italia; usa los tokens de ula-tokens.css. Toda la
+ * tipografía en Manrope (--font-body); la display (Playfair) queda reservada al hero.
+ *
+ * Estructura (de la especificación `docs/entities/ula-table.md` §3):
+ *   .ula-table                    wrapper: borde + radio + recorte + scroll horizontal.
+ *   .ula-table__table             la tabla (border-collapse).
+ *   .ula-table__cell--header      celda combinada del header (azul, texto blanco).
+ *   .ula-table__cell--subheader   cabeceras de columna (azul pálido, texto oscuro).
+ *   .ula-table__cell--body        celdas de contenido (casi blanco, texto medio).
+ *   .ula-table__cell--title       1.ª columna de títulos (color-mix, texto oscuro).
+ *   .ula-table__cell--footer      footer (azul pálido, texto oscuro).
+ *
+ * Rampa de relleno (4 niveles): azul profundo (header) → azul pálido
+ * (sub-header / footer) → azul muy suave (columna de títulos) → casi blanco (body).
+ */
+
+/* Wrapper: borde 1px, radio 12px y overflow para (a) recortar las esquinas de las
+ * bandas al radio y (b) permitir scroll horizontal en pantallas estrechas (RF-10). */
+.ula-table {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-family: var(--font-body);
+}
+
+.ula-table__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Base de celda: padding, alineación y separador de fila (1px). */
+.ula-table__cell {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Sin doble línea contra el borde del wrapper: la última fila no lleva separador.
+ * (El footer, además, nunca lleva borde inferior — regla explícita de §3.4.) */
+.ula-table__table tr:last-child .ula-table__cell {
+  border-bottom: none;
+}
+.ula-table__row--footer .ula-table__cell {
+  border-bottom: none;
+}
+
+/* header — celda combinada a m columnas: azul profundo, texto blanco. */
+.ula-table__cell--header {
+  background: var(--eu-blue);
+  color: var(--white);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+/* sub-header — cabeceras de columna: azul pálido, texto oscuro. */
+.ula-table__cell--subheader {
+  background: var(--border);
+  color: var(--text-dark);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* filas de contenido — casi blanco, texto medio, peso normal. */
+.ula-table__cell--body {
+  background: var(--off-white);
+  color: var(--text-mid);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+/* columna de títulos (1.ª col. de las filas de contenido, si la opción está activa)
+ * — un punto MÁS CLARA que el sub-header/footer: mezcla de --border (30%) y
+ * --off-white (70%), de modo que queda ENTRE el sub-header y el body. No es hoy un
+ * token: vive como color-mix de dos tokens existentes (sigue dentro del sistema).
+ * Decisión registrada: NO se promueve a token mientras sea el único uso. */
+.ula-table__cell--title {
+  background: color-mix(in srgb, var(--border) 30%, var(--off-white));
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* footer — mantiene relleno y tamaño del sub-header (azul pálido, texto oscuro). */
+.ula-table__cell--footer {
+  background: var(--border);
+  color: var(--text-dark);
+  font-size: 0.95rem;
+  font-weight: 700;
+}

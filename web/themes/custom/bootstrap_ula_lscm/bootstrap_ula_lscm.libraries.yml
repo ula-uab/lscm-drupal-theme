@@ -144,3 +144,15 @@ inline_lb_stack:
       css/inline-lb-stack.css: {}
   dependencies:
     - bootstrap_ula_lscm/ula_tokens
+
+# Artefacto de producción inline_lb_table (tabla de contenido, texto plano). Aporta
+# `.ula-table` y sus modificadores; el `<table>` lo compone la plantilla del bloque
+# (no reutiliza el componente `table` de Bootstrap Italia). La adjunta la plantilla
+# vía attach_library. Depende de los tokens globales.
+inline_lb_table:
+  version: 1.0
+  css:
+    theme:
+      css/inline-lb-table.css: {}
+  dependencies:
+    - bootstrap_ula_lscm/ula_tokens

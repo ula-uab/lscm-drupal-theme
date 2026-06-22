@@ -121,6 +121,10 @@ documentan en `docs/entities/`. Recogen su modelo de campos y las decisiones de 
 - **[`entities/inline-lb-stack.md`](entities/inline-lb-stack.md)** — `inline_lb_stack` (+ paragraphs
   `inline_lb_p_text` / `inline_lb_p_pills`): **pila heterogénea** que mezcla piezas de texto y pastillas en un
   bloque editable.
+- **[`entities/inline-lb-table.md`](entities/inline-lb-table.md)** — `inline_lb_table` (+ paragraph
+  `inline_lb_p_trow`): **tabla de contenido** (texto plano) con estética `ula_*`, sin Bootstrap Italia. La
+  plantilla compone un `<table>` propio (header combinado opcional, sub-header, filas de contenido, footer;
+  opción «primera columna de títulos»), pintando exactamente `m` celdas por fila; CSS propio + librería.
 - **[`entities/faculty-member.md`](entities/faculty-member.md)** — `ct_faculty_member`: el **profesorado del
   máster** (identidad académica, posición/roles, adscripción, áreas de aplicación y expertise, enlaces y
   perfiles de investigación). Incluye los dos vocabularios propios `tx_application_area` y `tx_expertise`.
